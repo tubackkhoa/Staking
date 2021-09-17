@@ -1,3 +1,3 @@
-import HomePageContainer from './componnets/HomePageContainer'
+import HomePageContainer from './components/HomePageContainer'
 
 export default HomePageContainer
