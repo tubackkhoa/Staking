@@ -1,11 +1,11 @@
 import { createContext, useContext, useReducer } from 'react'
-import initState from './initState'
+import mainAppInitState from './mainAppInitState'
 import MainAppReducer from './MainAppReducer'
 
-export const MainAppContext = createContext(initState)
+const MainAppContext = createContext(mainAppInitState)
 
 export const MainAppContextProvider = props => {
-    const [state, dispatch] = useReducer(MainAppReducer, initState)
+    const [state, dispatch] = useReducer(MainAppReducer, mainAppInitState)
 
     return (
         <MainAppContext.Provider value={[state, dispatch]}>
