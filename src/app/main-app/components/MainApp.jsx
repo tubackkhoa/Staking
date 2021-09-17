@@ -1,5 +1,5 @@
-import MainAppActions from 'app/_shared/MainAppContext/MainAppActions'
-import { useMainAppContext } from 'app/_shared/MainAppContext/MainAppContext'
+import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
+import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import { useEffect } from 'react'
 import MainAppHead from './MainAppHead'
 import MainAppNav from './MainAppNav'
