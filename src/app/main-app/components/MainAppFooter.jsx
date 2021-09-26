@@ -1,3 +1,4 @@
+import { icons } from 'assets'
 import PropTypes from 'prop-types'
 
 const NameAndEmail = () => {
@@ -16,8 +17,7 @@ const NameAndEmail = () => {
                         width: '283px',
                         borderRadius: '10px',
                         marginTop: '12px',
-                    }}
-                >
+                    }}>
                     <input
                         className="flex flex-1 text-white"
                         style={{
@@ -33,16 +33,14 @@ const NameAndEmail = () => {
                             width: '120px',
                             height: '40px',
                             borderRadius: '10px',
-                        }}
-                    >
+                        }}>
                         <p className="flex text-white">{'Email Me!'}</p>
                     </button>
                 </div>
             </div>
             <a
                 className="flex text-white font-semibold"
-                style={{ marginTop: '80px', fontSize: '16px' }}
-            >
+                style={{ marginTop: '80px', fontSize: '16px' }}>
                 {'HowlCity, Inc. All Rights Reserved'}
             </a>
         </div>
@@ -71,8 +69,7 @@ const HowlMarketFeatures = () => {
         <div className="flex flex-col">
             <a
                 className="flex text-white"
-                style={{ fontSize: '20px', fontWeight: 'bolder' }}
-            >
+                style={{ fontSize: '20px', fontWeight: 'bolder' }}>
                 {'Howl market'}
             </a>
             <div className="flex flex-col" style={{ marginTop: '24px' }}>
@@ -82,8 +79,7 @@ const HowlMarketFeatures = () => {
                         <a
                             key={id}
                             className="flex text-white"
-                            style={{ marginTop: '12px' }}
-                        >
+                            style={{ marginTop: '12px' }}>
                             {title}
                         </a>
                     )
@@ -116,12 +112,33 @@ const Supports = () => {
             onClick: () => undefined,
         },
     ]
+    const communities = [
+        {
+            id: 'communities1',
+            title: 'Instagram',
+            icon: icons.instagram,
+        },
+        {
+            id: 'communities2',
+            title: 'Instagram',
+            icon: icons.twitter,
+        },
+        {
+            id: 'communities3',
+            title: 'Instagram',
+            icon: icons.telegram,
+        },
+        {
+            id: 'communities4',
+            title: 'Instagram',
+            icon: icons.discord,
+        },
+    ]
     return (
         <div className="flex flex-col">
             <a
                 className="flex text-white"
-                style={{ fontSize: '20px', fontWeight: 'bolder' }}
-            >
+                style={{ fontSize: '20px', fontWeight: 'bolder' }}>
                 {'Support'}
             </a>
             <div className="flex flex-col" style={{ marginTop: '24px' }}>
@@ -131,10 +148,26 @@ const Supports = () => {
                         <a
                             key={id}
                             className="flex text-white"
-                            style={{ marginTop: '12px' }}
-                        >
+                            style={{ marginTop: '12px' }}>
                             {title}
                         </a>
+                    )
+                })}
+            </div>
+            <div className="flex flex-row" style={{ marginTop: 'auto' }}>
+                {communities.map((item, index) => {
+                    const { id, title, icon } = item
+                    return (
+                        <img
+                            key={id}
+                            className="flex"
+                            style={{
+                                margin: '0px 20px 0px 0px',
+                                width: '25px',
+                                height: '25px',
+                            }}
+                            src={icon}
+                        />
                     )
                 })}
             </div>
