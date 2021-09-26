@@ -24,6 +24,7 @@ const NameAndEmail = () => {
                             backgroundColor: '#1B1A21',
                             borderRadius: '10px',
                             paddingLeft: '18px',
+                            outline: 'none',
                         }}
                         placeholder={'Your Email'}
                     />
@@ -76,12 +77,12 @@ const HowlMarketFeatures = () => {
                 {features.map((item, index) => {
                     const { id, title, onClick } = item
                     return (
-                        <a
+                        <button
                             key={id}
                             className="flex text-white"
                             style={{ marginTop: '12px' }}>
                             {title}
-                        </a>
+                        </button>
                     )
                 })}
             </div>
@@ -145,12 +146,12 @@ const Supports = () => {
                 {features.map((item, index) => {
                     const { id, title, onClick } = item
                     return (
-                        <a
+                        <button
                             key={id}
                             className="flex text-white"
                             style={{ marginTop: '12px' }}>
                             {title}
-                        </a>
+                        </button>
                     )
                 })}
             </div>
@@ -158,16 +159,19 @@ const Supports = () => {
                 {communities.map((item, index) => {
                     const { id, title, icon } = item
                     return (
-                        <img
+                        <button
                             key={id}
                             className="flex"
-                            style={{
-                                margin: '0px 20px 0px 0px',
-                                width: '25px',
-                                height: '25px',
-                            }}
-                            src={icon}
-                        />
+                            style={{ margin: '0px 20px 0px 0px' }}>
+                            <img
+                                className="flex"
+                                style={{
+                                    width: '25px',
+                                    height: '25px',
+                                }}
+                                src={icon}
+                            />
+                        </button>
                     )
                 })}
             </div>
