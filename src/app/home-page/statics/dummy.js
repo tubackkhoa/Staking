@@ -6,7 +6,7 @@ export const nfts = [
         star: 3,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 1,
@@ -15,7 +15,7 @@ export const nfts = [
         star: 4,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 2,
@@ -24,7 +24,7 @@ export const nfts = [
         star: 5,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 3,
@@ -33,7 +33,7 @@ export const nfts = [
         star: 3,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 4,
@@ -42,7 +42,7 @@ export const nfts = [
         star: 4,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 5,
@@ -51,7 +51,7 @@ export const nfts = [
         star: 3,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     {
         id: 6,
@@ -60,7 +60,7 @@ export const nfts = [
         star: 3,
         like: 34,
         price: 100,
-        tokenCode: 'HWL'
+        tokenCode: 'HWL',
     },
     // {
     //     id: 7,
