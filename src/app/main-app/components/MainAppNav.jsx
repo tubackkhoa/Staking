@@ -3,21 +3,30 @@ import { colors } from 'config/colors'
 import Link from 'next/link'
 
 const ConnectWalletButton = () => {
-    const _onClickConnectWallet = () => {
-
-    }
-    return(
-        <button onClick={_onClickConnectWallet} style={{
-            display: 'flex',
-            minWidth: '150px', height: '40px',
-            borderRadius: '10px',
-            borderWidth: 1,
-            borderColor: colors.redViolet,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginLeft: 'auto',
-        }} >
-            <p style={{ display: 'flex', color: colors.redViolet, fontSize: '14px', lineHeight: '21px' }} >
+    const _onClickConnectWallet = () => {}
+    return (
+        <button
+            onClick={_onClickConnectWallet}
+            style={{
+                display: 'flex',
+                minWidth: '150px',
+                height: '40px',
+                borderRadius: '10px',
+                borderWidth: 1,
+                borderColor: colors.redViolet,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: 'auto',
+            }}
+        >
+            <p
+                style={{
+                    display: 'flex',
+                    color: colors.redViolet,
+                    fontSize: '14px',
+                    lineHeight: '21px',
+                }}
+            >
                 {'Connect wallet'}
             </p>
         </button>
@@ -45,7 +54,10 @@ const MainAppNav = () => {
     ]
 
     return (
-        <nav className="bg-hwl-gray-1" style={{ display: 'flex', width: 'auto'}} >
+        <nav
+            className="bg-hwl-gray-1"
+            style={{ display: 'flex', width: 'auto' }}
+        >
             <div
                 style={{
                     display: 'flex',
@@ -53,14 +65,16 @@ const MainAppNav = () => {
                     height: 40,
                     margin: '32px 64px 32px 64px',
                     flexDirection: 'row',
-                }}>
+                }}
+            >
                 <a
                     style={{
                         color: '#F2F2F2',
                         fontSize: 26,
                         lineHeight: '32px',
                         fontWeight: 600,
-                    }}>
+                    }}
+                >
                     {'HowlCity'}
                 </a>
                 <div
@@ -74,7 +88,8 @@ const MainAppNav = () => {
                         minWidth: 332,
                         marginLeft: 72,
                         padding: '0px 16px 0px 16px',
-                    }}>
+                    }}
+                >
                     <img style={{ width: 24, height: 24 }} src={icons.search} />
                     <input
                         style={{
@@ -94,7 +109,8 @@ const MainAppNav = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         margin: '0px 32px 0px 32px',
-                    }}>
+                    }}
+                >
                     {topics.map((item, index) => {
                         const { id, title } = item
                         return (
@@ -106,13 +122,14 @@ const MainAppNav = () => {
                                     fontSize: 16,
                                     lineHeight: '24px',
                                     fontWeight: '600',
-                                }}>
+                                }}
+                            >
                                 {title}
                             </p>
                         )
                     })}
                 </div>
-                <ConnectWalletButton/>
+                <ConnectWalletButton />
             </div>
         </nav>
     )

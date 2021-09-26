@@ -26,14 +26,11 @@ const MainApp = ({ pageProps, Component }) => {
     }
 
     return (
-        <div
-            className="flex flex-1 flex-col bg-hwl-gray-1"
-            style={{ height: '100vh' }}>
+        <div className="flex flex-1 flex-col bg-hwl-gray-1 MainApp">
             <MainAppHead />
             <MainAppNav />
-            <MainAppBody />
+            <MainAppBody {...{ pageProps, Component }} />
             <MainAppFooter />
-            {/* <Component {...pageProps} /> */}
         </div>
     )
 }
