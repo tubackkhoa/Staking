@@ -1,8 +1,10 @@
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import { useEffect } from 'react'
-import MainAppHead from './MainAppHead'
+import { MainAppHead } from './MainAppHead'
 import MainAppNav from './MainAppNav'
+import MainAppBody from './MainAppBody'
+import MainAppFooter from './MainAppFooter'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
@@ -24,13 +26,15 @@ const MainApp = ({ pageProps, Component }) => {
     }
 
     return (
-        <>
+        <div
+            className="flex flex-1 flex-col bg-hwl-gray-1"
+            style={{ height: '100vh' }}>
             <MainAppHead />
-            <div>
-                <MainAppNav />
-                <Component {...pageProps} />
-            </div>
-        </>
+            <MainAppNav />
+            <MainAppBody />
+            <MainAppFooter />
+            {/* <Component {...pageProps} /> */}
+        </div>
     )
 }
 
