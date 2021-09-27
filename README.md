@@ -1,3 +1,13 @@
+## Deploy contracts on localhost
+Deployed contract address in `deployed_address.json`
+```bash
+npx hardhat node
+npx hardhat run scripts/deploy_marketplace.js --network localhost
+npx hardhat run scripts/deploy_howltoken.js --network localhost
+npx hardhat run scripts/deploy_nft.js --network localhost
+npx hardhat run scripts/initialize_marketplace.js --network localhost
+```
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
