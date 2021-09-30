@@ -8,7 +8,7 @@ const deploy = async () => {
     const nft = await GameItem.deploy(obj.marketAddress)
 
     obj.nftAddress = nft.address
-    fs.writeFileSync('address.json', JSON.stringify(obj))
+    fs.writeFileSync('deployed_address.json', JSON.stringify(obj))
 
     console.log('Contract deploy to a address:', nft.address)
 }

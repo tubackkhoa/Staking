@@ -1,9 +1,17 @@
 ## Deploy contracts on localhost
 ```bash
 npx hardhat node
-npx hardhat run scripts/deploy_marketplace.js --network localhost
+=> start server, open another terminal
+
+npx hardhat run scripts/deploy_marketplace.js --network localhost 
+=> Result: Contract deploy to a address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
 npx hardhat run scripts/deploy_howltoken.js --network localhost
+=> Result: Contract deploy to a address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+
 npx hardhat run scripts/deploy_nft.js --network localhost
+=> Result: Contract deploy to a address: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+
 npx hardhat run scripts/initialize_marketplace.js --network localhost
 ```
 Deployed contract address in `deployed_address.json`
