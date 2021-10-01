@@ -26,7 +26,7 @@ const MainApp = ({ pageProps, Component }) => {
 
     useEffect(() => {
         _init()
-        loadNFTs()
+        // loadNFTs()
     }, [])
 
     const loadNFTs = async () => {

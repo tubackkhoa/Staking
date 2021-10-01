@@ -1,8 +1,18 @@
 import { icons } from 'assets'
 import QuickFilterBar from './QuickFilterBar'
 import { nfts } from '../statics/dummy'
+import { useRouter } from 'next/dist/client/router'
+import React, { useGlobal } from 'reactn';
+import { globalKeys } from 'app/store';
 
 const HomePage = () => {
+    const route = useRouter();
+    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect);
+
+    const onClickNft = ({ nft }) => {
+        route.push('./item-details')
+        setItemSelect(nft);
+    };
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage">
             <QuickFilterBar />
@@ -10,7 +20,7 @@ const HomePage = () => {
                 {nfts.map(item => {
                     const { id, title, image, like, price, tokenCode } = item
                     return (
-                        <button key={id} className="flex flex-col NftItem">
+                        <button key={id} onClick={()=> onClickNft({ nft: item })} className="flex flex-col NftItem">
                             <img
                                 className="flex"
                                 style={{

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "contract-local": "npx hardhat run scripts/deploy_marketplace.js --network localhost && npx hardhat run scripts/deploy_howltoken.js --network localhost && npx hardhat run scripts/deploy_nft.js --network localhost && npx hardhat run scripts/initialize_marketplace.js --network localhost"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -16,14 +17,14 @@
     "@nomiclabs/hardhat-web3": "^2.0.0",
     "@openzeppelin/contracts": "^4.3.1",
     "autoprefixer": "^10.3.4",
-    "classnames": "^2.3.1",
     "chai": "^4.3.4",
+    "classnames": "^2.3.1",
+    "dotenv": "^10.0.0",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.6",
     "hardhat": "^2.6.1",
-    "dotenv": "^10.0.0",
     "next": "11.1.2",
     "next-seo": "^4.27.0",
     "postcss": "^8.3.6",
@@ -31,10 +32,10 @@
     "prop-types": "^15.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "reactn": "^2.2.7",
     "sass": "^1.41.1",
     "tailwindcss": "^2.2.15",
     "web3modal": "^1.9.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

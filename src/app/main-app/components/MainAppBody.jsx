@@ -1,9 +1,8 @@
-import LeftSideBar from './LeftSideBar'
+import LeftSideBar from '../../home-page/components/LeftSideBar'
 
 const MainAppBody = ({ pageProps, Component }) => {
     return (
         <div className="flex flex-1">
-            <LeftSideBar />
             <Component {...pageProps} />
         </div>
     )
