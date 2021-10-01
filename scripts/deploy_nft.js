@@ -6,6 +6,7 @@ const deploy = async () => {
 
     const GameItem = await ethers.getContractFactory('GameItem')
     const nft = await GameItem.deploy(obj.marketAddress)
+    await nft.deployed()
 
     obj.nftAddress = nft.address
     fs.writeFileSync('deployed_address.json', JSON.stringify(obj))

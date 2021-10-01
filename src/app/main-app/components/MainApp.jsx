@@ -1,23 +1,14 @@
-import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
-import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
-import { useEffect, useState  } from 'react'
+import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import Web3Modal from "web3modal"
 
+import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
+import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 import { MainAppHead } from './MainAppHead'
 import MainAppNav from './MainAppNav'
 import MainAppBody from './MainAppBody'
 import MainAppFooter from './MainAppFooter'
 
-import {
-  nftAddress,
-  tokenAddress,
-  marketAddress
-} from '../../../../deployed_address.json'
-
-import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
-import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
-
+import connectWallet from '../wallet'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
@@ -25,29 +16,37 @@ const MainApp = ({ pageProps, Component }) => {
     const [loadingState, setLoadingState] = useState('not-loaded')
 
     useEffect(() => {
-        _init()
-        loadNFTs()
+        //_init()
+        loadUserNFTs()
     }, [])
 
-    const loadNFTs = async () => {
-      // connect wallet
-      const web3Modal = new Web3Modal({
-        network: "localhost", // rinkeby // mainnet
-        cacheProvider: false,
-      })
-      const connection = await web3Modal.connect()
-      const provider = new ethers.providers.Web3Provider(connection)
-      const signer = provider.getSigner()
-      
-      // create marketContract
-      const marketplaceContract = new ethers.Contract(marketAddress, Marketplace.abi, signer)
-      const gameItemContract = new ethers.Contract(nftAddress, GameItem.abi, provider)
-  
-      const myAssets = await gameItemContract.balanceOf(signer._address);
-      console.log*(myAssets);
-  
+    const loadUserNFTs = async () => {
+        const { marketplaceContract, gameItemContract, signer } =
+            await connectWallet()
+
+        const price = await marketplaceContract.getListingPrice()
+        console.log(price)
+
+        const nft = await marketplaceContract.getUserNFTs()
+        console.log(nft)
+
+        const test2 = await marketplaceContract.getActiveSales()
+        console.log(test2)
+
+        const test3 = await marketplaceContract.getInactiveSales()
+        console.log(test3)
+
+        const test4 = await marketplaceContract.getUserPurchasedSales()
+        console.log(test4)
+
+        const test5 = await marketplaceContract.getUserCreatedSales()
+        console.log(test5)
+
+        const numToken = await gameItemContract.balanceOf(
+            await signer.getAddress()
+        )
+        console.log(numToken)
     }
-  
 
     useEffect(() => {
         _logMainAppContext()
