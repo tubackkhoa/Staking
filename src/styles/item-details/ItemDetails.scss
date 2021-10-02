@@ -1,14 +1,21 @@
-.ItemSelected {
-    .ItemImage {
-        width: 500px;
-        height: 500px;
-    }
-    .ItemInfoBlock {
-        margin-left: 80px;
-        
-        .ItemName {
-            font-size: 28px;
-            line-height: 42px;
+.ItemSelectedContainer {
+    .ItemSelected {
+        .ItemImage {
+            width: 500px;
+            height: 500px;
+        }
+        .ItemInfoBlock {
+            margin-left: 80px;
+            
+            .ItemName {
+                font-size: 28px;
+                line-height: 42px;
+            }
+
+            .CreatorAvatar {
+                width: 50px;
+                height: 50px;
+            }
         }
     }
 }

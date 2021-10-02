@@ -17,7 +17,7 @@ const MainApp = ({ pageProps, Component }) => {
 
     useEffect(() => {
         _init()
-        loadUserNFTs()
+        // loadUserNFTs()
     }, [])
 
     const loadUserNFTs = async () => {
@@ -30,8 +30,8 @@ const MainApp = ({ pageProps, Component }) => {
         const nft = await marketplaceContract.getUserNFTs()
         console.log(nft)
 
-        console.log('tokenId', nft[0].tokenId.toNumber())
-        console.log('URI', nft[0].URI)
+        // console.log('tokenId', nft[0].tokenId.toNumber())
+        // console.log('URI', nft[0].URI)
 
         const test2 = await marketplaceContract.getActiveSales()
         console.log(test2)
