@@ -3,6 +3,7 @@
         .ItemImage {
             width: 500px;
             height: 500px;
+            border-radius: 20px;
         }
         .ItemInfoBlock {
             margin-left: 80px;
@@ -15,6 +16,52 @@
             .CreatorAvatar {
                 width: 50px;
                 height: 50px;
+            }
+
+            .InfoPagesContainer {
+                margin-top: 30px;
+
+                .InfoPageHeader {
+                    border-bottom-width: 1px;
+                    border-bottom-color: #2D2E36;
+                }
+
+                .InfoPageItem {
+                    margin-right: 25px;
+                }
+
+                .InfoPageItemContent {
+                    margin-top: 30px;
+                    max-width: 420px;
+                }
+            }
+
+            .ActionButtonsContainer {
+                margin-top: 30px;
+
+                .ActionButtonItem {
+                    min-width: 200px;
+                    min-height: 45px;
+                    padding: 12px 48px 12px 48px;
+                    border-width: 1px;
+                    border-color: #4664F0;
+                    margin-right: 20px;
+                    border-radius: 10px;
+
+                    .ButtonBuy {
+                        background-color: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
+                    }
+
+                    .ButtonMakeOffer {
+                        border-width: 1px;
+                        border-color: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
+                    }
+
+                    .ActionButtonsTitle {
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+                }
             }
         }
     }

@@ -17,16 +17,14 @@ const ConnectWalletButton = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginLeft: 'auto',
-            }}
-        >
+            }}>
             <p
                 style={{
                     display: 'flex',
                     color: colors.redViolet,
                     fontSize: '14px',
                     lineHeight: '21px',
-                }}
-            >
+                }}>
                 {'Connect wallet'}
             </p>
         </button>
@@ -56,8 +54,7 @@ const MainAppNav = () => {
     return (
         <nav
             className="bg-hwl-gray-1"
-            style={{ display: 'flex', width: 'auto' }}
-        >
+            style={{ display: 'flex', width: 'auto' }}>
             <div
                 style={{
                     display: 'flex',
@@ -65,16 +62,14 @@ const MainAppNav = () => {
                     height: 40,
                     margin: '32px 64px 32px 64px',
                     flexDirection: 'row',
-                }}
-            >
+                }}>
                 <a
                     style={{
                         color: '#F2F2F2',
                         fontSize: 26,
                         lineHeight: '32px',
                         fontWeight: 600,
-                    }}
-                >
+                    }}>
                     {'HowlCity'}
                 </a>
                 <div
@@ -88,8 +83,7 @@ const MainAppNav = () => {
                         minWidth: 332,
                         marginLeft: 72,
                         padding: '0px 16px 0px 16px',
-                    }}
-                >
+                    }}>
                     <img style={{ width: 24, height: 24 }} src={icons.search} />
                     <input
                         style={{
@@ -102,30 +96,25 @@ const MainAppNav = () => {
                     />
                 </div>
                 <div
-                    style={{
-                        display: 'flex',
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        margin: '0px 32px 0px 32px',
-                    }}
-                >
+                    className="flex flex-1 flex-row justify-center items-center"
+                    style={{ margin: '0px 32px 0px 32px' }}>
                     {topics.map((item, index) => {
                         const { id, title } = item
                         return (
-                            <p
-                                key={id}
-                                style={{
-                                    color: '#F2F2F2',
-                                    margin: '0px 12px 0px 12px',
-                                    fontSize: 16,
-                                    lineHeight: '24px',
-                                    fontWeight: '600',
-                                }}
-                            >
-                                {title}
-                            </p>
+                            <button
+                                key={`topics-${id}`}
+                                className="flex"
+                                style={{ margin: '0px 12px 0px 12px' }}>
+                                <p
+                                    style={{
+                                        color: '#F2F2F2',
+                                        fontSize: 16,
+                                        lineHeight: '24px',
+                                        fontWeight: '600',
+                                    }}>
+                                    {title}
+                                </p>
+                            </button>
                         )
                     })}
                 </div>
