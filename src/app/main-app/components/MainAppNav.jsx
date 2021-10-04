@@ -1,9 +1,13 @@
 import { icons } from 'assets'
 import { colors } from 'config/colors'
+import { useRouter } from 'next/dist/client/router'
 import Link from 'next/link'
+import connectWallet from '../wallet'
 
 const ConnectWalletButton = () => {
-    const _onClickConnectWallet = () => {}
+    const _onClickConnectWallet = () => {
+        connectWallet();
+    }
     return (
         <button
             onClick={_onClickConnectWallet}
@@ -32,22 +36,35 @@ const ConnectWalletButton = () => {
 }
 
 const MainAppNav = () => {
+    const route = useRouter();
     const topics = [
         {
             id: 0,
             title: 'Explore',
+            onClick: () => {
+                
+            }
         },
         {
             id: 1,
-            title: 'My favorites',
+            title: 'My assets',
+            onClick: () => {
+                route.push('./my-assets');
+            }
         },
         {
             id: 2,
             title: 'Lend',
+            onClick: () => {
+                
+            }
         },
         {
             id: 3,
             title: 'Borrow',
+            onClick: () => {
+                
+            }
         },
     ]
 
@@ -99,10 +116,11 @@ const MainAppNav = () => {
                     className="flex flex-1 flex-row justify-center items-center"
                     style={{ margin: '0px 32px 0px 32px' }}>
                     {topics.map((item, index) => {
-                        const { id, title } = item
+                        const { id, title, onClick } = item
                         return (
                             <button
                                 key={`topics-${id}`}
+                                onClick={onClick}
                                 className="flex"
                                 style={{ margin: '0px 12px 0px 12px' }}>
                                 <p

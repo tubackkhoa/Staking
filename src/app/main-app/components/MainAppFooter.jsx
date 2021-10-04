@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const NameAndEmail = () => {
     return (
         <div className="flex flex-col">
-            <a className="flex text-white">{'HowlCity'}</a>
+            <a className="flex text-white text-semibold" style={{ fontSize: '26px' }} >{'HowlCity'}</a>
             <div className="flex flex-col" style={{ marginTop: '40px' }}>
                 <a className="flex text-white" style={{}}>
                     {'Get the lastes Updates'}

@@ -18,17 +18,22 @@ const connectWallet = async () => {
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
+    // console.log({ signer })
 
     const marketplaceContract = new ethers.Contract(
         marketAddress,
         Marketplace.abi,
         signer
     )
+    console.log({ marketplaceContract })
+    // console.log('Check address = ' + marketplaceContract.address)
+
     const gameItemContract = new ethers.Contract(
         nftAddress,
         GameItem.abi,
         signer
     )
+    console.log({ gameItemContract })
 
     return { marketplaceContract, gameItemContract, signer }
 }

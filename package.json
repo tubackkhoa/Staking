@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "contract-local": "npx hardhat run scripts/deploy_marketplace.js --network localhost && npx hardhat run scripts/deploy_howltoken.js --network localhost && npx hardhat run scripts/deploy_nft.js --network localhost && npx hardhat run scripts/initialize_marketplace.js --network localhost"
+    "server": "npx hardhat node && sh deploy_local.sh"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
