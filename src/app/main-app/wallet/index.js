@@ -1,11 +1,7 @@
 import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
 
-import {
-    nftAddress,
-    tokenAddress,
-    marketAddress,
-} from '../../../../deployed_address.json'
+import { marketAddress, nftAddress } from '../../../../deployed_address.json'
 
 import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'

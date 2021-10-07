@@ -1,13 +1,14 @@
 import { icons } from 'assets'
 import { colors } from 'config/colors'
 import { useRouter } from 'next/dist/client/router'
-import Link from 'next/link'
 import connectWallet from '../wallet'
+import Link from 'next/link'
 
 const ConnectWalletButton = () => {
     const _onClickConnectWallet = () => {
         connectWallet()
     }
+
     return (
         <button
             onClick={_onClickConnectWallet}
@@ -74,15 +75,23 @@ const MainAppNav = () => {
                     margin: '32px 64px 32px 64px',
                     flexDirection: 'row',
                 }}>
-                <a
-                    style={{
-                        color: '#F2F2F2',
-                        fontSize: 26,
-                        lineHeight: '32px',
-                        fontWeight: 600,
-                    }}>
-                    {'HowlCity'}
-                </a>
+                <Link href="/">
+                    <a
+                        className="flex flex-wrap items-center"
+                        style={{
+                            color: '#F2F2F2',
+                            fontSize: 26,
+                            lineHeight: '32px',
+                            fontWeight: 600,
+                        }}>
+                        <img
+                            src="/howl.png"
+                            alt="HowlCity"
+                            className="h-full"
+                        />
+                        <span className="ml-2">{'HowlCity'}</span>
+                    </a>
+                </Link>
                 <div
                     style={{
                         display: 'flex',

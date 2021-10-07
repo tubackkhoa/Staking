@@ -34,8 +34,7 @@ const QuickFilterBar = () => {
                     <button
                         onClick={_onClick}
                         key={id || index}
-                        className="flex flex-row bg-hwl-gray-4 SearchItem"
-                    >
+                        className="flex flex-row bg-hwl-gray-4 SearchItem">
                         <span className="text-white">{title}</span>
                         <img className="ArrowDownIcon" src={icons.arrowDown} />
                     </button>

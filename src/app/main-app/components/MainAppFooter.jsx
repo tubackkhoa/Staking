@@ -1,5 +1,4 @@
 import { icons } from 'assets'
-import PropTypes from 'prop-types'
 
 const NameAndEmail = () => {
     return (

@@ -1,18 +1,18 @@
 .QuickFilterBar {
-    padding-left: 24px;
-    height: 72px;
-    margin: 0 32px;
-    border-radius: 12px;
+  padding-left: 24px;
+  height: 72px;
+  margin: 0 32px;
+  border-radius: 12px;
 
-    .SearchItem {
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-right: 16px;
+  .SearchItem {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-right: 16px;
 
-        .ArrowDownIcon {
-            width: 24px;
-            height: 24px;
-            margin-left: 3px;
-        }
+    .ArrowDownIcon {
+      width: 24px;
+      height: 24px;
+      margin-left: 3px;
     }
+  }
 }
