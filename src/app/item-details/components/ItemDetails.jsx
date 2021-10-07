@@ -56,12 +56,16 @@ const ActionButtons = () => {
     const onClickMakeOffer = () => {}
     return (
         <div className="ActionButtonsContainer flex flex-row">
-            <button onClick={onClickBuy} className="ActionButtonItem ButtonBuy flex justify-center items-center">
+            <button
+                onClick={onClickBuy}
+                className="ActionButtonItem ButtonBuy flex justify-center items-center">
                 <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {'Buy for 4.5 ETH'}
                 </a>
             </button>
-            <button onClick={onClickMakeOffer} className="ActionButtonItem MakeOffer flex justify-center items-center" >
+            <button
+                onClick={onClickMakeOffer}
+                className="ActionButtonItem MakeOffer flex justify-center items-center">
                 <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {'Make Offer'}
                 </a>

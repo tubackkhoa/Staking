@@ -93,13 +93,19 @@ const HomePage = () => {
                                         className="flex justify-center items-center"
                                         style={{
                                             padding: '4px 6px 4px 6px',
-                                            backgroundColor: colors.yellowBinance,
+                                            backgroundColor:
+                                                colors.yellowBinance,
                                             borderRadius: '4px',
                                         }}>
-                                            <a className="flex" style={{ fontSize: '11px', color: colors.black1 }} >
-                                                {'BSC'}
-                                            </a>
-                                        </div>
+                                        <a
+                                            className="flex"
+                                            style={{
+                                                fontSize: '11px',
+                                                color: colors.black1,
+                                            }}>
+                                            {'BSC'}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </button>

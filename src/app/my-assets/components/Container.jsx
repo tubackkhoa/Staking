@@ -1,6 +1,6 @@
 import MyAssetsList from './MyAssetsList'
 
-const Container = (props) => {
+const Container = props => {
     return (
         <>
             <MyAssetsList />

@@ -1,11 +1,10 @@
 import MainAppContainer from 'app/main-app'
 import 'styles/index.scss'
-import React, { setGlobal } from 'reactn';
-import { globalKeys } from 'app/store';
+import React, { setGlobal } from 'reactn'
+import { globalKeys } from 'app/store'
 
 setGlobal({
-    [globalKeys.itemSelect]: null
-});
-
+    [globalKeys.itemSelect]: null,
+})
 
 export default MainAppContainer

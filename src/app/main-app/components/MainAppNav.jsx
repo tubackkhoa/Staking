@@ -6,7 +6,7 @@ import connectWallet from '../wallet'
 
 const ConnectWalletButton = () => {
     const _onClickConnectWallet = () => {
-        connectWallet();
+        connectWallet()
     }
     return (
         <button
@@ -36,35 +36,29 @@ const ConnectWalletButton = () => {
 }
 
 const MainAppNav = () => {
-    const route = useRouter();
+    const route = useRouter()
     const topics = [
         {
             id: 0,
             title: 'Explore',
-            onClick: () => {
-                
-            }
+            onClick: () => {},
         },
         {
             id: 1,
             title: 'My assets',
             onClick: () => {
-                route.push('./my-assets');
-            }
+                route.push('./my-assets')
+            },
         },
         {
             id: 2,
             title: 'Lend',
-            onClick: () => {
-                
-            }
+            onClick: () => {},
         },
         {
             id: 3,
             title: 'Borrow',
-            onClick: () => {
-                
-            }
+            onClick: () => {},
         },
     ]
 

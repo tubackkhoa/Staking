@@ -50,8 +50,7 @@ const LeftSideBar = () => {
                                 'flex items-center GroupMenuItem',
                                 { SelectedItem: isSelect }
                             )}
-                            onClick={_onClick}
-                        >
+                            onClick={_onClick}>
                             <a className="text-white">{title}</a>
                         </button>
                     )

@@ -16,18 +16,23 @@ task('balance', "Prints an account's balance")
     })
 
 task('mint', 'Mint NFT')
-    .addOptionalParam('quantity', "Number of NFT to be minted", 1, types.int)
-    .addOptionalParam('address', "The account's address", '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', types.string)
+    .addOptionalParam('quantity', 'Number of NFT to be minted', 1, types.int)
+    .addOptionalParam(
+        'address',
+        "The account's address",
+        '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        types.string
+    )
     .setAction(async (args, hre) => {
         const contractAbi = require('../artifacts/contracts/GameItem.sol/GameItem.json')
-        const {nftAddress} = require('../deployed_address.json')
+        const { nftAddress } = require('../deployed_address.json')
 
         const gameItem = new ethers.Contract(
             nftAddress,
             contractAbi.abi,
             await ethers.getSigner()
         )
-        
+
         for (let i = 0; i < args.quantity; i++) {
             let res = await gameItem.mintNFT(
                 args.address,
