@@ -29,7 +29,7 @@ First, run the development server:
 # run hardhat node
 yarn hat
 # deploy smart contract to local network
-yarn network
+yarn net
 # run next js
 yarn dev
 ```

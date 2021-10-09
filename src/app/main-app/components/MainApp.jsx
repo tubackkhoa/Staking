@@ -49,6 +49,10 @@ const MainApp = ({ pageProps, Component }) => {
             await signer.getAddress()
         )
         console.log({ numToken })
+        
+        // const resCreateSale = await marketplaceContract.createSale({
+
+        // })
     }
 
     // useEffect(() => {
