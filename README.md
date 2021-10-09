@@ -26,8 +26,11 @@ with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/
 First, run the development server:
 
 ```bash
-npm run dev
-# or
+# run hardhat node
+yarn hat
+# deploy smart contract to local network
+yarn network
+# run next js
 yarn dev
 ```
 

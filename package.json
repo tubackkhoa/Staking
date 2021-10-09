@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "server": "npx hardhat node && sh deploy_local.sh"
+    "hat": "npx hardhat node",
+    "network": "sh deploy_local.sh"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -17,6 +18,7 @@
     "@nomiclabs/hardhat-web3": "^2.0.0",
     "@openzeppelin/contracts": "^4.3.1",
     "autoprefixer": "^10.3.4",
+    "axios": "^0.22.0",
     "chai": "^4.3.4",
     "classnames": "^2.3.1",
     "dotenv": "^10.0.0",

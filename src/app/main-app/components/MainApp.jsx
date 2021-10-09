@@ -11,7 +11,6 @@ import connectWallet from '../wallet'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
-    const [nfts, setNfts] = useState([])
     const [loadingState, setLoadingState] = useState('not-loaded')
 
     useEffect(() => {
@@ -26,23 +25,25 @@ const MainApp = ({ pageProps, Component }) => {
         const price = await marketplaceContract.getListingPrice()
         console.log(price)
 
-        const nft = await marketplaceContract.getUserNFTs()
-        console.log(nft)
+        const nfts = await marketplaceContract.getUserNFTs()
+        console.log({ nfts })
+
+        dispatch(MainAppActions.setMyAssetNfts(nfts))
 
         // console.log('tokenId', nft[0].tokenId.toNumber())
         // console.log('URI', nft[0].URI)
 
-        const test2 = await marketplaceContract.getActiveSales()
-        console.log(test2)
+        const activeSales = await marketplaceContract.getActiveSales()
+        console.log({ activeSales })
 
-        const test3 = await marketplaceContract.getInactiveSales()
-        console.log(test3)
+        const inactiveSales = await marketplaceContract.getInactiveSales()
+        console.log({ inactiveSales })
 
-        const test4 = await marketplaceContract.getUserPurchasedSales()
-        console.log(test4)
+        const userPurchasedSales = await marketplaceContract.getUserPurchasedSales()
+        console.log({ userPurchasedSales })
 
-        const test5 = await marketplaceContract.getUserCreatedSales()
-        console.log(test5)
+        const userCreatedSales = await marketplaceContract.getUserCreatedSales()
+        console.log({ userCreatedSales })
 
         const numToken = await gameItemContract.balanceOf(
             await signer.getAddress()
@@ -50,16 +51,16 @@ const MainApp = ({ pageProps, Component }) => {
         console.log({ numToken })
     }
 
-    useEffect(() => {
-        _logMainAppContext()
-    }, [state])
+    // useEffect(() => {
+    //     _logMainAppContext()
+    // }, [state])
 
-    const _logMainAppContext = () => {
-        console.log(`App state: ${JSON.stringify(state)}`)
-    }
+    // const _logMainAppContext = () => {
+    //     console.log(`App new state: ${JSON.stringify(state)}`)
+    // }
 
     const _init = () => {
-        dispatch(MainAppActions.sayHello())
+        dispatch(MainAppActions.sayHello(999))
     }
 
     return (

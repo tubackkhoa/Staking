@@ -125,7 +125,7 @@ const MainAppNav = () => {
                                 key={`topics-${id}`}
                                 onClick={onClick}
                                 className="flex"
-                                style={{ margin: '0px 12px 0px 12px' }}>
+                                style={{ margin: '0px 16px 0px 16px' }}>
                                 <p
                                     style={{
                                         color: '#F2F2F2',
