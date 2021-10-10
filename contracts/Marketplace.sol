@@ -170,7 +170,7 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
     /* Returns all active sales */
     function getActiveSales() external view returns (Sale[] memory) {
         uint256 saleCount = _saleIds.current();
-        uint256 activeSaleCount = saleCount - _saleInactive.current();
+        uint256 activeSaleCount = saleCount - _saleInactive.current() - _saleSold.current();
 
         uint256 currentIndex = 0;
         Sale[] memory sales = new Sale[](activeSaleCount);
