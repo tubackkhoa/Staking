@@ -50,10 +50,10 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
 
     mapping(uint256 => Sale) private Sales;
 
-    event SaleCreated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, bool isSold);
-    event SaleUpdated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price);
-    event SaleCanceled(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price);
-    event TokenSold(uint indexed saleId, uint256 indexed tokenId, address seller, uint256 price, bool isSold);
+    event SaleCreated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, bool isSold, uint256 lastUpdated);
+    event SaleUpdated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
+    event SaleCanceled(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
+    event SaleSold(uint indexed saleId, uint256 indexed tokenId, address seller, uint256 price, bool isSold, uint256 lastUpdated);
 
     modifier onlySeller(uint256 saleId) {
         require(msg.sender == Sales[saleId].seller, "Invalid sale seller");
@@ -74,6 +74,7 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
     function createSale(uint256 tokenId, uint256 price) external payable nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
         require(msg.value == listingPrice, "Price must be equal to listing price");
+        require(nft.ownerOf(tokenId) == msg.sender, "You do not own this token");
 
         _saleIds.increment();
         uint256 saleId = _saleIds.current();
@@ -96,16 +97,20 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
             tokenId,
             msg.sender,
             price,
-            false
+            false,
+            block.timestamp
         );
     }
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
-    function buyToken(uint256 saleId, uint256 price) external nonReentrant {
+    function purchaseSale(uint256 saleId, uint256 price) external nonReentrant {
+        uint256 allowance = howl.allowance(msg.sender, address(this));
+        require(allowance >= price, "Not enough allowance");
+
         Sale storage sale = Sales[saleId];
         require((sale.isActive == true) && (sale.isSold == false), "Sale was ended.");
-        require(msg.sender != sale.seller, "Buyer is seller of this item.");
+        //require(msg.sender != sale.seller, "Buyer is seller of this item.");
         require(price == sale.price, "Please submit the asking price in order to complete the purchase.");
 
         uint256 tokenId = sale.tokenId;
@@ -118,12 +123,13 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
 
         _saleSold.increment();
 
-        emit TokenSold(
+        emit SaleSold(
             saleId,
             tokenId,
             sale.seller,
             price,
-            sale.isSold
+            sale.isSold,
+            block.timestamp
         );
     }
 
@@ -138,7 +144,8 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
             saleId,
             sale.tokenId,
             sale.seller,
-            sale.price
+            sale.price,
+            block.timestamp
         );
     }
 
@@ -155,7 +162,8 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
             saleId,
             sale.tokenId,
             sale.seller,
-            sale.price
+            sale.price,
+            block.timestamp
         );
     }
 
