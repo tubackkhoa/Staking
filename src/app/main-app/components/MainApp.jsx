@@ -22,10 +22,10 @@ const MainApp = ({ pageProps, Component }) => {
     let isApproved
 
     useEffect(() => {
-        autoConnect()
+        autoConnectAndCreateSales()
     }, [])
-    
-    const autoConnect = async () => {
+
+    const autoConnectAndCreateSales = async () => {
         let res = await connectWallet()
         marketplaceContract = res.marketplaceContract
         gameItemContract = res.gameItemContract
@@ -36,26 +36,33 @@ const MainApp = ({ pageProps, Component }) => {
         _init()
         loadUserNFTs()
 
-        await approve()
-        //await createSale()
+        await approveAddress()
+        const tokenIdList = [1, 2, 3]
+        await createListSale({ tokenIds: tokenIdList })
         //await purchaseSale()
     }
 
-    const createSale = async () => {
+    const createListSale = async ({ tokenIds = [] }) => {
+        if (!Array.isArray(tokenIds) || tokenIds.length === 0) {
+            console.log('Invalid tokenIds!')
+            return
+        }
         // create sales with tokenId 1,2,3
         if (!isApproved) throw new Error('not approve')
         const res = await Promise.all(
-            [1, 2, 3].map(async tokenId => {
-                
-                const ownerOfTokenAddress = await gameItemContract.ownerOf(tokenId)
-                
+            tokenIds.map(async tokenId => {
+                const ownerOfTokenAddress = await gameItemContract.ownerOf(
+                    tokenId
+                )
+
                 // check if the seller is the owner of this token
                 // if true then the seller can sell
                 // else return error
                 if (ownerOfTokenAddress === signerAddress) {
                     try {
                         const initPrice = '10'
-                        const createdSale = await marketplaceContract.createSale(
+                        const createdSale =
+                            await marketplaceContract.createSale(
                                 tokenId,
                                 ethers.utils.parseEther(initPrice)
                             )
@@ -64,13 +71,13 @@ const MainApp = ({ pageProps, Component }) => {
                         console.log(err?.data?.message)
                     }
                 } else {
-                    console.log('not owner of tokenId')
+                    console.log('Not owner of tokenId')
                 }
             })
         )
     }
 
-    const approve = async () => {
+    const approveAddress = async () => {
         isApproved = await gameItemContract.isApprovedForAll(
             signerAddress,
             marketplaceContract.address
@@ -84,18 +91,21 @@ const MainApp = ({ pageProps, Component }) => {
         }
     }
 
-    const purchaseSale = async () => {
+    const purchaseSale = async ({ saleId = -1, price = '10' }) => {
+        if (!saleId || saleId === -1) {
+            return
+        }
         // buy token
         try {
             const approveAllowance = await howlTokenContract.approve(
                 marketplaceContract.address,
-                ethers.utils.parseEther('10')
+                ethers.utils.parseEther(price)
             )
             console.log({ approveAllowance })
 
             const purchaseToken = await marketplaceContract.purchaseSale(
-                /*saleId=*/ 1,
-                /*price=*/ ethers.utils.parseEther('10')
+                /*saleId=*/ saleId,
+                /*price=*/ ethers.utils.parseEther(price)
             )
             console.log({ purchaseToken })
         } catch (err) {
@@ -113,7 +123,13 @@ const MainApp = ({ pageProps, Component }) => {
         dispatch(MainAppActions.setMyAssetNfts(nfts))
 
         const activeSales = await marketplaceContract.getActiveSales()
+
         console.log({ activeSales })
+
+        // each active sale, get uri by tokenURI func - param: tokenId
+        // const url = await gameItemContract.tokenURI(1)
+
+        // get available
 
         //const inactiveSales = await marketplaceContract.getInactiveSales()
         //console.log({ inactiveSales })
