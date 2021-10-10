@@ -3,6 +3,7 @@ import { colors } from 'config/colors'
 import { useRouter } from 'next/dist/client/router'
 import connectWallet from '../wallet'
 import Link from 'next/link'
+import { routes } from 'config/routes'
 
 const ConnectWalletButton = () => {
     const _onClickConnectWallet = () => {
@@ -42,13 +43,15 @@ const MainAppNav = () => {
         {
             id: 0,
             title: 'Explore',
-            onClick: () => {},
+            onClick: () => {
+                route.push(routes.mainApp)
+            },
         },
         {
             id: 1,
             title: 'My assets',
             onClick: () => {
-                route.push('./my-assets')
+                route.push(routes.myAssets)
             },
         },
         {

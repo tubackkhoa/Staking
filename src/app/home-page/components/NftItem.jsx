@@ -28,7 +28,7 @@ const ItemRating = ({ numberStar = 0 }) => {
 }
 
 const NftItem = ({ item, index, onClick }) => {
-    const { URI, contractAddress } = item
+    const { URI, contractAddress, tokenId } = item
 
     const [attributes, setAttributes] = useState({
         id: '',

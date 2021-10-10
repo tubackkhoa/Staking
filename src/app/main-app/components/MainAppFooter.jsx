@@ -1,4 +1,5 @@
 import { icons } from 'assets'
+import { useRouter } from 'next/dist/client/router'
 
 const NameAndEmail = () => {
     return (
@@ -52,11 +53,14 @@ const NameAndEmail = () => {
 }
 
 const HowlMarketFeatures = () => {
+    const route = useRouter()
     const features = [
         {
             id: 'features0',
             title: 'Explore',
-            onClick: () => undefined,
+            onClick: () => {
+
+            },
         },
         {
             id: 'features1',

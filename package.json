@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "hat": "npx hardhat node",
-    "network": "sh deploy_local.sh"
+    "net": "sh deploy_local.sh"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

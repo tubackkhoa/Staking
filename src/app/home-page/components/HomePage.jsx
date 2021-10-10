@@ -7,30 +7,29 @@ import { NftItem } from './NftItem'
 import React, { useGlobal } from 'reactn'
 import { globalKeys } from 'app/store'
 import { useRouter } from 'next/dist/client/router'
+import { routes } from 'config/routes'
 
 const HomePage = () => {
     const route = useRouter()
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const [state, dispatch] = useMainAppContext()
-    const { nfts } = state
-
-    // useEffect(() => {
-    //     console.log('Check new state = ', state)
-    // }, [state])
+    const { nfts = [] } = state
 
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage">
             <QuickFilterBar />
             <div className="NftItems flex flex-wrap">
-                {nfts.map((item, index) => {
+                {Array.isArray(nfts) && nfts.map((item, index) => {
                     if (!item) return null
+                    const tokenIdString = item.tokenId.toString()
+                    const itemKey = `NftItem-${tokenIdString}`
                     return (
                         <NftItem
-                            key={item?.contractAddress}
+                            key={itemKey}
                             item={item}
                             index={index}
                             onClick={({ nft }) => {
-                                route.push('./item-details')
+                                route.push(routes.itemDetails)
                                 setItemSelect(nft)
                             }}
                         />
