@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
 
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
@@ -13,15 +14,85 @@ const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
     const [loadingState, setLoadingState] = useState('not-loaded')
 
-    useEffect(() => {
+    let marketplaceContract, gameItemContract, signer, howlTokenContract, signerAddress, isApproved
+
+    useEffect(async () => {
+        let res = await connectWallet()
+        marketplaceContract = res.marketplaceContract
+        gameItemContract = res.gameItemContract
+        signer = res.signer
+        howlTokenContract = res.howlTokenContract
+        signerAddress = await signer.getAddress()
+
         _init()
         loadUserNFTs()
+        
+        await approve()
+        //await createSale()
+        //await purchaseSale()
     }, [])
 
-    const loadUserNFTs = async () => {
-        const { marketplaceContract, gameItemContract, signer } =
-            await connectWallet()
+    const createSale = async () => {
+        // create sales with tokenId 1,2,3
+        if (!isApproved) throw new Error('not approve')
+        const res = await Promise.all(
+            [1, 2, 3].map(async tokenId => {
+                const ownerOfToken = await gameItemContract.ownerOf(tokenId)
+                // check if the seller is the owner of this token
+                // if true then the seller can sell
+                // else return error
+                if (ownerOfToken == signerAddress) {
+                    try {
+                        const createdSale =
+                            await marketplaceContract.createSale(
+                                tokenId,
+                                ethers.utils.parseEther('10')
+                            )
+                        console.log({ createdSale })
+                    } catch (err) {
+                        console.log(err?.data?.message)
+                    }
+                } else {
+                    console.log('not owner of tokenId')
+                }
+            })
+        )
+    }
 
+    const approve = async () => {
+        isApproved = await gameItemContract.isApprovedForAll(
+            signerAddress,
+            marketplaceContract.address
+        )
+        console.log({isApproved})
+        if (!isApproved) {
+            const approval = await gameItemContract.approveAddress(
+                marketplaceContract.address
+            )
+            console.log({ approval })
+        }
+    }
+
+    const purchaseSale = async () => {
+        // buy token
+        try {
+            const approveAllowance = await howlTokenContract.approve(
+                marketplaceContract.address,
+                ethers.utils.parseEther('10')
+            )
+            console.log({ approveAllowance })
+
+            const purchaseToken = await marketplaceContract.purchaseSale(
+                /*saleId=*/ 1,
+                /*price=*/ ethers.utils.parseEther('10')
+            )
+            console.log({ purchaseToken })
+        } catch (err) {
+            console.log(err?.data?.message)
+        }
+    }
+
+    const loadUserNFTs = async () => {
         const price = await marketplaceContract.getListingPrice()
         console.log(price)
 
@@ -30,29 +101,24 @@ const MainApp = ({ pageProps, Component }) => {
 
         dispatch(MainAppActions.setMyAssetNfts(nfts))
 
-        // console.log('tokenId', nft[0].tokenId.toNumber())
-        // console.log('URI', nft[0].URI)
-
         const activeSales = await marketplaceContract.getActiveSales()
         console.log({ activeSales })
 
-        const inactiveSales = await marketplaceContract.getInactiveSales()
-        console.log({ inactiveSales })
+        //const inactiveSales = await marketplaceContract.getInactiveSales()
+        //console.log({ inactiveSales })
 
-        const userPurchasedSales = await marketplaceContract.getUserPurchasedSales()
+        // get balance of HOWL token
+        const howlTokenBalance = ethers.utils.formatEther(
+            await howlTokenContract.balanceOf(signerAddress)
+        )
+        console.log(parseInt(howlTokenBalance))
+
+        const userPurchasedSales =
+            await marketplaceContract.getUserPurchasedSales()
         console.log({ userPurchasedSales })
 
         const userCreatedSales = await marketplaceContract.getUserCreatedSales()
         console.log({ userCreatedSales })
-
-        const numToken = await gameItemContract.balanceOf(
-            await signer.getAddress()
-        )
-        console.log({ numToken })
-        
-        // const resCreateSale = await marketplaceContract.createSale({
-
-        // })
     }
 
     // useEffect(() => {

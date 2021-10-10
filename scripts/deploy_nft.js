@@ -2,12 +2,11 @@ const { ethers } = require('hardhat')
 const fs = require('fs')
 
 const deploy = async () => {
-    let obj = JSON.parse(fs.readFileSync('deployed_address.json'))
-
     const GameItem = await ethers.getContractFactory('GameItem')
-    const nft = await GameItem.deploy(obj.marketAddress)
+    const nft = await GameItem.deploy()
     await nft.deployed()
 
+    let obj = JSON.parse(fs.readFileSync('deployed_address.json'))
     obj.nftAddress = nft.address
     fs.writeFileSync('deployed_address.json', JSON.stringify(obj))
 

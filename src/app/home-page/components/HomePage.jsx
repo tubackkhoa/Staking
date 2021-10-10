@@ -26,7 +26,7 @@ const HomePage = () => {
                     if (!item) return null
                     return (
                         <NftItem
-                            key={item?.contractAddress}
+                            key={item?.tokenId}
                             item={item}
                             index={index}
                             onClick={({ nft }) => {
