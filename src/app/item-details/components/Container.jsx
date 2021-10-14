@@ -1,6 +1,6 @@
 import ItemDetails from './ItemDetails'
 
-const HomePageContainer = props => {
+const Container = props => {
     return (
         <>
             <ItemDetails />
@@ -8,4 +8,4 @@ const HomePageContainer = props => {
     )
 }
 
-export default HomePageContainer
+export default Container

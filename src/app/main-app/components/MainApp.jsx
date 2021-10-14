@@ -34,11 +34,12 @@ const MainApp = ({ pageProps, Component }) => {
         signerAddress = await signer.getAddress()
 
         _init()
-        loadUserNFTs()
+        getMyAssets()
 
-        await approveAddress()
-        const tokenIdList = [1, 2, 3]
-        await createListSale({ tokenIds: tokenIdList })
+        // await approveAddress()
+        // const tokenIdList = [1, 2, 3]
+        // await createListSale({ tokenIds: tokenIdList })
+
         //await purchaseSale()
     }
 
@@ -113,7 +114,7 @@ const MainApp = ({ pageProps, Component }) => {
         }
     }
 
-    const loadUserNFTs = async () => {
+    const getMyAssets = async () => {
         const price = await marketplaceContract.getListingPrice()
         console.log(price)
 
@@ -161,10 +162,12 @@ const MainApp = ({ pageProps, Component }) => {
     }
 
     return (
-        <div className="flex flex-1 flex-col bg-hwl-gray-1 MainApp">
-            <MainAppHead />
-            <MainAppNav />
-            <MainAppBody {...{ pageProps, Component }} />
+        <div className="flex flex-1 flex-col bg-hwl-gray-1">
+            <div className="MainApp flex flex-col">
+                <MainAppHead />
+                <MainAppNav />
+                <MainAppBody {...{ pageProps, Component }} />
+            </div>
             <MainAppFooter />
         </div>
     )

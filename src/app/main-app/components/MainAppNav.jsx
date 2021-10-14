@@ -37,7 +37,37 @@ const ConnectWalletButton = () => {
     )
 }
 
-const MainAppNav = () => {
+const SearchBar = () => {
+    return (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#1B1A21',
+                height: 40,
+                borderRadius: 10,
+                minWidth: 332,
+                marginLeft: 72,
+                padding: '0px 16px 0px 16px',
+            }}>
+            <img style={{ width: 24, height: 24 }} src={icons.search} />
+            <input
+                style={{
+                    display: 'flex',
+                    color: '#FFFFFF',
+                    backgroundColor: 'transparent',
+                    marginLeft: 10,
+                    outline: 'none',
+                    border: 'none',
+                }}
+                placeholder={'Search Item'}
+            />
+        </div>
+    )
+}
+
+const MainAppNav = ({ showSearchBar = false }) => {
     const route = useRouter()
     const topics = [
         {
@@ -57,19 +87,27 @@ const MainAppNav = () => {
         {
             id: 2,
             title: 'Lend',
-            onClick: () => {},
+            onClick: () => {
+                route.push(routes.lending)
+            },
         },
         {
             id: 3,
             title: 'Borrow',
-            onClick: () => {},
+            onClick: () => {
+                route.push(routes.borrow)
+            },
         },
     ]
 
     return (
         <nav
             className="bg-hwl-gray-1"
-            style={{ display: 'flex', width: 'auto' }}>
+            style={{
+                display: 'flex',
+                width: 'auto',
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.16)',
+            }}>
             <div
                 style={{
                     display: 'flex',
@@ -92,32 +130,10 @@ const MainAppNav = () => {
                             alt="HowlCity"
                             className="h-full"
                         />
-                        <span className="ml-2">{'HowlCity'}</span>
+                        <span className="ml-4">{'HowlCity'}</span>
                     </a>
                 </Link>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        backgroundColor: '#1B1A21',
-                        height: 40,
-                        borderRadius: 10,
-                        minWidth: 332,
-                        marginLeft: 72,
-                        padding: '0px 16px 0px 16px',
-                    }}>
-                    <img style={{ width: 24, height: 24 }} src={icons.search} />
-                    <input
-                        style={{
-                            display: 'flex',
-                            color: '#FFFFFF',
-                            backgroundColor: 'transparent',
-                            marginLeft: 10,
-                        }}
-                        placeholder={'Search Item'}
-                    />
-                </div>
+                {!!showSearchBar && <SearchBar />}
                 <div
                     className="flex flex-1 flex-row justify-center items-center"
                     style={{ margin: '0px 32px 0px 32px' }}>

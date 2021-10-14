@@ -1,11 +1,11 @@
-import HomePage from './HomePage'
+import ActiveSaleGrid from './ActiveSaleGrid'
 import LeftSideBar from './LeftSideBar'
 
 const HomePageContainer = props => {
     return (
         <>
             <LeftSideBar />
-            <HomePage />
+            <ActiveSaleGrid />
         </>
     )
 }

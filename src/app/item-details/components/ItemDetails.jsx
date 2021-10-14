@@ -129,7 +129,7 @@ const ItemDetails = () => {
     const itemImageSrc = itemSelect?.image || ''
 
     return (
-        <div className="ItemSelectedContainer bg-hwl-gray-1 flex flex-1 flex-col">
+        <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
             <div className="ItemSelected flex flex-row self-center">
                 <img
                     className="ItemImage flex"

@@ -1,9 +1,9 @@
-import MyAssetsList from './MyAssetsList'
+import MyAssetsGrid from './MyAssetsGrid'
 
 const Container = props => {
     return (
         <>
-            <MyAssetsList />
+            <MyAssetsGrid />
         </>
     )
 }
