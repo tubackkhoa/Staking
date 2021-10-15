@@ -26,14 +26,16 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const autoConnectAndCreateSales = async () => {
-        let res = await connectWallet()
-        marketplaceContract = res.marketplaceContract
-        gameItemContract = res.gameItemContract
-        signer = res.signer
-        howlTokenContract = res.howlTokenContract
+        let walletInfo = await connectWallet()
+        console.log({ walletInfo });
+        // const { marketplaceContract, gameItemContract, signer, howlTokenContract } = walletInfo
+        marketplaceContract = walletInfo.marketplaceContract
+        gameItemContract = walletInfo.gameItemContract
+        signer = walletInfo.signer
+        howlTokenContract = walletInfo.howlTokenContract
+
         signerAddress = await signer.getAddress()
 
-        _init()
         getMyAssets()
 
         // await approveAddress()
@@ -156,10 +158,6 @@ const MainApp = ({ pageProps, Component }) => {
     // const _logMainAppContext = () => {
     //     console.log(`App new state: ${JSON.stringify(state)}`)
     // }
-
-    const _init = () => {
-        dispatch(MainAppActions.sayHello(999))
-    }
 
     return (
         <div className="flex flex-1 flex-col bg-hwl-gray-1">

@@ -4,10 +4,26 @@ import { useRouter } from 'next/dist/client/router'
 import connectWallet from '../wallet'
 import Link from 'next/link'
 import { routes } from 'config/routes'
+import { globalKeys } from 'app/store'
+import { useGlobal } from 'reactn'
 
 const ConnectWalletButton = () => {
+    const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
+
     const _onClickConnectWallet = () => {
-        connectWallet()
+        const walletInfo = connectWallet()
+        console.log({ walletInfo })
+        if(!walletInfo){
+            console.log('connectWallet failed!')
+            return;
+        }
+        const {  marketplaceContract, gameItemContract, signer, howlTokenContract } = walletInfo;
+        setWalletInfo({
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+        })
     }
 
     return (

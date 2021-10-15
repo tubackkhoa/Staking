@@ -47,7 +47,6 @@ const NftItem = ({ item, index, onClick }) => {
     })
 
     useEffect(() => {
-        console.log('Check tokenId toString = ', item.tokenId.toString())
         axios
             .get(URI)
             .then(function (response) {
@@ -81,14 +80,9 @@ const NftItem = ({ item, index, onClick }) => {
                     },
                 })
             }
-            className="flex flex-col NftItem">
+            className="NftItemContainer flex flex-col items-center w-52 h-80 hover:bg-blue-300 rounded-xl">
             <img
-                className="flex"
-                style={{
-                    width: '182px',
-                    height: '182px',
-                    borderRadius: '20px',
-                }}
+                className="flex rounded-xl w-48 h-48"
                 src={itemInfo?.image}
             />
             <div className="flex flex-1 flex-col items-left w-full Info">

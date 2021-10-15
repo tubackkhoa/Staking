@@ -132,7 +132,7 @@ const ItemDetails = () => {
         <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
             <div className="ItemSelected flex flex-row self-center">
                 <img
-                    className="ItemImage flex"
+                    className="flex w-96 h-96 rounded-3xl"
                     src={itemSelect?.image}
                     alt="main-item-image"
                 />

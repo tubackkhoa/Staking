@@ -6,17 +6,17 @@ const LeftSideBar = () => {
     const options = [
         {
             id: 0,
-            title: 'Moto-bike',
+            title: 'Dirt Bike',
             onClick: () => undefined,
         },
         {
             id: 1,
-            title: 'Accessories',
+            title: 'Sport Bike',
             onClick: () => undefined,
         },
         {
             id: 2,
-            title: 'Performance pack',
+            title: 'Scramble',
             onClick: () => undefined,
         },
         {

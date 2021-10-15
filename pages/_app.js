@@ -5,6 +5,7 @@ import { globalKeys } from 'app/store'
 
 setGlobal({
     [globalKeys.itemSelect]: null,
+    [globalKeys.walletInfo]: null,
 })
 
 export default MainAppContainer

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import QuickFilterBar from './QuickFilterBar'
-import { nfts } from '../statics/dummy'
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import React, { useGlobal } from 'reactn'
@@ -16,9 +15,9 @@ const ActiveSaleGrid = () => {
     const { nfts = [] } = state
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 flex flex-1 HomePage">
+        <div className="first-letter:bg-hwl-gray-1 flex flex-col flex-1 ActiveSaleGridContainer">
             {/* <QuickFilterBar /> */}
-            <div className="NftItems flex flex-1 flex-wrap justify-center p-4">
+            <div className="flex flex-1 flex-wrap justify-center p-4">
                 {Array.isArray(nfts) && nfts.map((item, index) => {
                     if (!item) return null
                     const tokenIdString = item.tokenId.toString()

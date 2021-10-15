@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import React, { useGlobal } from 'reactn'
+import { useGlobal } from 'reactn'
 
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
@@ -14,6 +14,10 @@ const MyAssetsGrid = () => {
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
+
+    useEffect(()=>{
+
+    },[])
 
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage flex flex-1">

@@ -11,11 +11,17 @@ import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketp
 import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HowlToken.json'
 
+const networks = {
+    localhost: 'localhost',
+}
+
 const connectWallet = async () => {
+    console.log('Check in connectWallet');
     const web3Modal = new Web3Modal({
-        network: 'localhost',
+        network: networks.localhost,
         cacheProvider: false,
     })
+    // auto connect metamask wallet
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
@@ -26,7 +32,7 @@ const connectWallet = async () => {
         Marketplace.abi,
         signer
     )
-    console.log({ marketplaceContract })
+    // console.log({ marketplaceContract })
     // console.log('Check address = ' + marketplaceContract.address)
 
     const gameItemContract = new ethers.Contract(
@@ -34,14 +40,14 @@ const connectWallet = async () => {
         GameItem.abi,
         signer
     )
-    console.log({ gameItemContract })
+    // console.log({ gameItemContract })
 
     const howlTokenContract = new ethers.Contract(
         tokenAddress,
         HowlToken.abi,
         signer
     )
-    console.log({ howlTokenContract })
+    // console.log({ howlTokenContract })
 
     return { marketplaceContract, gameItemContract, signer, howlTokenContract }
 }

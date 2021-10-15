@@ -1,7 +1,7 @@
 import ActiveSaleGrid from './ActiveSaleGrid'
 import LeftSideBar from './LeftSideBar'
 
-const HomePageContainer = props => {
+const Container = props => {
     return (
         <>
             <LeftSideBar />
@@ -10,4 +10,4 @@ const HomePageContainer = props => {
     )
 }
 
-export default HomePageContainer
+export default Container

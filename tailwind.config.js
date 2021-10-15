@@ -10,6 +10,8 @@ module.exports = {
                 'hwl-gray-2': '#26272E',
                 'hwl-gray-3': '#363943',
                 'hwl-gray-4': '#535562',
+                'blue-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #029CC1 100%)',
+                'yellow-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #E2C656 100%)',
             },
         },
     },
