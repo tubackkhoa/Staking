@@ -5,7 +5,12 @@ import { globalKeys } from 'app/store'
 
 setGlobal({
     [globalKeys.itemSelect]: null,
-    [globalKeys.walletInfo]: null,
+    [globalKeys.walletInfo]: {
+        marketplaceContract: null,
+        gameItemContract: null,
+        s: null,
+        howlTokenContract: null,
+    },
 })
 
 export default MainAppContainer

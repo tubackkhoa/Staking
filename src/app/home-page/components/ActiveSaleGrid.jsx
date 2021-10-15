@@ -12,15 +12,15 @@ const ActiveSaleGrid = () => {
     const route = useRouter()
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const [state, dispatch] = useMainAppContext()
-    const { nfts = [] } = state
+    const { activeSales: dataList = [] } = state
 
     return (
         <div className="first-letter:bg-hwl-gray-1 flex flex-col flex-1 ActiveSaleGridContainer">
             {/* <QuickFilterBar /> */}
             <div className="flex flex-1 flex-wrap justify-center p-4">
-                {Array.isArray(nfts) && nfts.map((item, index) => {
+                {Array.isArray(dataList) && dataList.map((item, index) => {
                     if (!item) return null
-                    const tokenIdString = item.tokenId.toString()
+                    const tokenIdString = item?.tokenId?.toString()
                     const itemKey = `NftItem-${tokenIdString}`
                     return (
                         <NftItem

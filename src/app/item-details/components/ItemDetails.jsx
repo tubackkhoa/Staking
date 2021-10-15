@@ -77,7 +77,7 @@ const ItemDetails = () => {
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const route = useRouter()
     useEffect(() => {
-        console.log('Check new itemSelect = ', itemSelect)
+        // console.log('Check new itemSelect = ', itemSelect)
         if (!itemSelect) {
             route.back()
             return

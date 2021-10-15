@@ -29,7 +29,7 @@ const LeftSideBar = () => {
     const [optionSelect, setOptionSelect] = useState(options[0])
 
     return (
-        <div className="LeftSideBar flex w-1/6 flex-col items-center">
+        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0">
             <div className="flex flex-row GroupMenu">
                 <a className="flex text-white">Marketplace</a>
                 <img className="ToggleBtn" src={icons.arrowDown} />
