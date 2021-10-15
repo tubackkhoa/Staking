@@ -188,7 +188,7 @@ const Supports = () => {
 
 const MainAppFooter = () => {
     return (
-        <div className="flex bg-hwl-gray-1 py-8" style={{ boxShadow: '0px -4px 12px rgba(0, 0, 0, 0.08)' }}>
+        <div className="flex bg-nav-bar py-8" style={{ boxShadow: '0px -4px 12px rgba(0, 0, 0, 0.08)' }}>
             <div className="flex flex-row justify-around w-full">
                 <NameAndEmail />
                 <HowlMarketFeatures />

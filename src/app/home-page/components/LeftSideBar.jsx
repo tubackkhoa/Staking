@@ -19,17 +19,12 @@ const LeftSideBar = () => {
             title: 'Scramble',
             onClick: () => undefined,
         },
-        {
-            id: 3,
-            title: 'Classic collections',
-            onClick: () => undefined,
-        },
     ]
 
     const [optionSelect, setOptionSelect] = useState(options[0])
 
     return (
-        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0">
+        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0 p-8 w-60">
             <div className="flex flex-row GroupMenu">
                 <a className="flex text-white">Marketplace</a>
                 <img className="ToggleBtn" src={icons.arrowDown} />

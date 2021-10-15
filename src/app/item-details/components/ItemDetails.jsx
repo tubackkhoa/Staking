@@ -52,7 +52,7 @@ const InfoPages = () => {
 
 const ActionButtons = () => {
     const onClickBuy = () => {}
-    const onClickMakeOffer = () => {}
+    // const onClickMakeOffer = () => {}
     return (
         <div className="ActionButtonsContainer flex flex-row">
             <button
@@ -62,13 +62,13 @@ const ActionButtons = () => {
                     {'Buy for 4.5 ETH'}
                 </a>
             </button>
-            <button
+            {/* <button
                 onClick={onClickMakeOffer}
                 className="ActionButtonItem MakeOffer flex justify-center items-center">
                 <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {'Make Offer'}
                 </a>
-            </button>
+            </button> */}
         </div>
     )
 }

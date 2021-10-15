@@ -21,7 +21,6 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const getData = async () => {
-        console.log('Check in getData')
         const {
             marketplaceContract,
             gameItemContract,
@@ -30,13 +29,20 @@ const MainApp = ({ pageProps, Component }) => {
             signerAddress,
         } = await connectWalletAndGetContract()
 
-        console.log({ marketplaceContract })
+        // console.log({ marketplaceContract })
 
         // await _getMyAssets({
         //     marketCont: marketplaceContract,
         //     tokenCont: howlTokenContract,
         //     signerAddress,
         // })
+
+        await _getActiveSales({
+            marketCont: marketplaceContract,
+            tokenCont: howlTokenContract,
+            signerAddress,
+            gameItemContract,
+        })
 
         await _testCreateActiveSale({
             marketCont: marketplaceContract,
@@ -63,14 +69,17 @@ const MainApp = ({ pageProps, Component }) => {
         tokenCont,
         signerAddress,
     }) => {
-        console.log('Check _testCreateActiveSale', { signerAddress, marketCont, gameItemContract })
-        const reqApprove = await _approveAddress({ signerAddress, marketCont, gameItemContract })
-        console({ reqApprove })
-        if(!reqApprove){
+        const reqApprove = await _approveAddress({
+            signerAddress,
+            marketCont,
+            gameItemContract,
+        })
+        console.log({ reqApprove })
+        if (!reqApprove) {
             throw new Error('Not approve!')
         }
 
-        const tokenIdList = [1,2,3,4,5]
+        const tokenIdList = [1, 2, 3]
         await createSales({
             tokenIds: tokenIdList,
             signerAddress,
@@ -97,6 +106,7 @@ const MainApp = ({ pageProps, Component }) => {
         }
         // create sales with tokenId 1,2,3
         if (!isApproved) throw new Error('not approve')
+
         const res = await Promise.all(
             tokenIds.map(async tokenId => {
                 const ownerOfTokenAddress = await gameItemContract?.ownerOf(
@@ -122,7 +132,7 @@ const MainApp = ({ pageProps, Component }) => {
                 }
             })
         )
-        console.log('Check res', res)
+        // console.log('Check res', res)
     }
 
     const _approveAddress = async ({
@@ -130,9 +140,6 @@ const MainApp = ({ pageProps, Component }) => {
         marketCont,
         gameItemContract,
     }) => {
-        console.log('Check approveAddress')
-        console.log('Check signerAddress = ' + signerAddress)
-        
         isApproved = await gameItemContract?.isApprovedForAll(
             signerAddress,
             marketCont?.address
@@ -140,14 +147,11 @@ const MainApp = ({ pageProps, Component }) => {
         console.log({ isApproved })
 
         if (!isApproved) {
-            console.log('Check isApproved === false', gameItemContract)
-            console.log('Check marketCont', marketCont)
             const approval = await gameItemContract?.approveAddress(
                 marketCont?.address
             )
             console.log('Check approval = ', approval)
         }
-        
         return isApproved
     }
 
@@ -178,48 +182,75 @@ const MainApp = ({ pageProps, Component }) => {
         }
     }
 
-    const _getMyAssets = async ({ marketCont, tokenCont, signerAddress }) => {
+    const _getMyAssets = async ({ marketCont }) => {
         console.log({ marketCont })
         const price = await marketCont?.getListingPrice()
-        // console.log({ price })
-
+        console.log({ price })
         const nfts = await marketCont?.getUserNFTs()
-        // console.log({ nfts })
-
         dispatch(MainAppActions.setMyAssetNfts(nfts))
+    }
 
+    const _getActiveSales = async ({
+        marketCont,
+        tokenCont,
+        signerAddress,
+        gameItemContract,
+    }) => {
         const activeSales = await marketCont?.getActiveSales()
+        console.log({ activeSales })
 
-        // console.log({ activeSales })
+        const activeSalesFull = await Promise.all(
+            activeSales.map(async item => {
+                const {
+                    buyer,
+                    isActive,
+                    isSold,
+                    price,
+                    saleId,
+                    lastUpdated,
+                    seller,
+                    tokenId,
+                    length,
+                } = item
+                // each active sale, get uri by tokenURI func - param: tokenId
+                const uriOfNft = await gameItemContract?.tokenURI(1)
+                console.log('Check uriOfNft = ' + uriOfNft)
+                return {
+                    ...item,
+                    URI: uriOfNft,
+                    contractAddress: '',
+                    tokenId,
+                }
+            })
+        )
 
-        // each active sale, get uri by tokenURI func - param: tokenId
-        // const url = await gameItemContract.tokenURI(1)
-
-        // get available
-
-        const inactiveSales = await marketCont?.getInactiveSales()
-        console.log({ inactiveSales })
+        console.log({ activeSalesFull })
+        dispatch(MainAppActions.setState({ activeSales: activeSalesFull }))
 
         // get balance of HOWL token
-        const howlTokenBalance = ethers.utils.formatEther(
-            await tokenCont?.balanceOf(signerAddress)
-        )
+        // const howlTokenBalance = ethers.utils.formatEther(
+        //     await tokenCont?.balanceOf(signerAddress)
+        // )
+        // console.log('Check howlTokenBalance')
         // console.log(parseInt(howlTokenBalance))
+    }
+
+    const _getInactiveSales = async ({ marketCont }) => {
+        const inactiveSales = await marketCont?.getInactiveSales()
+        console.log({ inactiveSales })
 
         const userPurchasedSales = await marketCont?.getUserPurchasedSales()
         console.log({ userPurchasedSales })
 
         const userCreatedSales = await marketCont?.getUserCreatedSales()
         console.log({ userCreatedSales })
+
+        dispatch(MainAppActions.setState({
+            inactiveSales,
+            userPurchasedSales,
+            userCreatedSales,
+        }))
     }
-
-    // useEffect(() => {
-    //     _logMainAppContext()
-    // }, [state])
-
-    // const _logMainAppContext = () => {
-    //     console.log(`App new state: ${JSON.stringify(state)}`)
-    // }
 
     return (
         <div className="flex flex-1 flex-col bg-hwl-gray-1">

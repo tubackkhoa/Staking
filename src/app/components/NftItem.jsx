@@ -12,6 +12,7 @@ const ItemRating = ({ numberStar = 0 }) => {
                     return (
                         <div key={`ItemRating-${index}`}>
                             <img
+                                alt="star-image"
                                 className="flex"
                                 style={{
                                     width: '18px',
@@ -27,8 +28,7 @@ const ItemRating = ({ numberStar = 0 }) => {
     )
 }
 
-const NftItem = ({ item, index, onClick }) => {
-    const { URI, contractAddress, tokenId } = item
+const NftItem = ({ URI, contractAddress, tokenId, index, onClick }) => {
 
     const [attributes, setAttributes] = useState({
         id: '',
@@ -51,9 +51,9 @@ const NftItem = ({ item, index, onClick }) => {
             .get(URI)
             .then(function (response) {
                 // handle success
-                console.log({ response })
+                // console.log({ response })
                 if (response.status !== 200) {
-                    console.log('Get nft info fail!')
+                    console.log(`Get NFT's info fail!`)
                     return
                 }
                 const { attributes, description, image, name } = response.data
@@ -66,7 +66,7 @@ const NftItem = ({ item, index, onClick }) => {
             .then(function () {
                 // always executed
             })
-    }, [item])
+    }, [URI, contractAddress, tokenId])
 
     return (
         <button
@@ -80,8 +80,9 @@ const NftItem = ({ item, index, onClick }) => {
                     },
                 })
             }
-            className="NftItemContainer flex flex-col items-center w-52 h-80 hover:bg-blue-300 rounded-xl">
+            className="NftItemContainer flex flex-col items-center w-52 h-80 hover:shadow-cardNft rounded-lg m-4 p-3">
             <img
+                alt="itemInfo-image"
                 className="flex rounded-xl w-48 h-48"
                 src={itemInfo?.image}
             />

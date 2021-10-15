@@ -15,29 +15,30 @@ const MyAssetsGrid = () => {
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
 
-    useEffect(()=>{
-
-    },[])
-
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage flex flex-1">
-            <div className="NftItems flex flex-wrap flex-1 justify-center p-4">
-                {Array.isArray(nfts) && nfts.map((item, index) => {
-                    if (!item) return null
-                    const tokenIdString = item.tokenId.toString()
-                    const itemKey = `NftItem-${tokenIdString}`
-                    return (
-                        <NftItem
-                            key={itemKey}
-                            item={item}
-                            index={index}
-                            onClick={({ nft }) => {
-                                route.push(routes.itemDetails)
-                                setItemSelect(nft)
-                            }}
-                        />
-                    )
-                })}
+            <div className="NftItems flex flex-wrap flex-1 p-4 ml-60">
+                {Array.isArray(nfts) &&
+                    nfts.map((item, index) => {
+                        if (!item) return null
+                        const tokenIdString = item.tokenId.toString()
+                        const itemKey = `NftItem-${tokenIdString}`
+                        const { URI, contractAddress, tokenId } = item
+
+                        return (
+                            <NftItem
+                                key={itemKey}
+                                URI={URI}
+                                contractAddress={contractAddress}
+                                tokenId={tokenId}
+                                index={index}
+                                onClick={({ nft }) => {
+                                    route.push(routes.itemDetails)
+                                    setItemSelect(nft)
+                                }}
+                            />
+                        )
+                    })}
             </div>
         </div>
     )

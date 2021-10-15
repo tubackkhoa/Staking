@@ -16,7 +16,7 @@ const networks = {
 }
 
 const connectWallet = async () => {
-    console.log('Check in connectWallet');
+    // console.log('Check in connectWallet');
     const web3Modal = new Web3Modal({
         network: networks.localhost,
         cacheProvider: false,

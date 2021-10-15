@@ -58,28 +58,28 @@ const Container = props => {
 
         dispatch(MainAppActions.setMyAssetNfts(nfts))
 
-        const activeSales = await marketCont?.getActiveSales()
-        console.log({ activeSales })
+        // const activeSales = await marketCont?.getActiveSales()
+        // console.log({ activeSales })
 
         // each active sale, get uri by tokenURI func - param: tokenId
         // const url = await gameItemContract.tokenURI(1)
 
         // get available
 
-        const inactiveSales = await marketCont?.getInactiveSales()
-        console.log({ inactiveSales })
+        // const inactiveSales = await marketCont?.getInactiveSales()
+        // console.log({ inactiveSales })
 
-        // get balance of HOWL token
-        const howlTokenBalance = ethers.utils.formatEther(
-            await tokenCont?.balanceOf(signerAddress)
-        )
-        // console.log(parseInt(howlTokenBalance))
+        // // get balance of HOWL token
+        // const howlTokenBalance = ethers.utils.formatEther(
+        //     await tokenCont?.balanceOf(signerAddress)
+        // )
+        // // console.log(parseInt(howlTokenBalance))
 
-        const userPurchasedSales = await marketCont?.getUserPurchasedSales()
-        console.log({ userPurchasedSales })
+        // const userPurchasedSales = await marketCont?.getUserPurchasedSales()
+        // console.log({ userPurchasedSales })
 
-        const userCreatedSales = await marketCont?.getUserCreatedSales()
-        console.log({ userCreatedSales })
+        // const userCreatedSales = await marketCont?.getUserCreatedSales()
+        // console.log({ userCreatedSales })
     }
 
     return (

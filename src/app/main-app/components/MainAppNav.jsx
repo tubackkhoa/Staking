@@ -29,23 +29,15 @@ const ConnectWalletButton = () => {
     return (
         <button
             onClick={_onClickConnectWallet}
+            className="flex h-10 w-40 rounded-lg justify-center items-center ml-auto"
             style={{
-                display: 'flex',
-                minWidth: '150px',
-                height: '40px',
-                borderRadius: '10px',
                 borderWidth: 1,
                 borderColor: colors.redViolet,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft: 'auto',
             }}>
             <p
+                className="flex text-sm"
                 style={{
-                    display: 'flex',
                     color: colors.redViolet,
-                    fontSize: '14px',
-                    lineHeight: '21px',
                 }}>
                 {'Connect wallet'}
             </p>
@@ -118,20 +110,13 @@ const MainAppNav = ({ showSearchBar = false }) => {
 
     return (
         <nav
-            className="bg-hwl-gray-1"
+            className="bg-nav-bar"
             style={{
                 display: 'flex',
                 width: 'auto',
                 boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.16)',
             }}>
-            <div
-                style={{
-                    display: 'flex',
-                    flex: 1,
-                    height: 40,
-                    margin: '32px 64px 32px 64px',
-                    flexDirection: 'row',
-                }}>
+            <div className="flex flex-1 flex-row mx-8 py-4">
                 <Link href="/">
                     <a
                         className="flex flex-wrap items-center"
@@ -144,7 +129,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
                         <img
                             src="/howl.png"
                             alt="HowlCity"
-                            className="h-full"
+                            className="flex h-12 w-12"
                         />
                         <span className="ml-4">{'HowlCity'}</span>
                     </a>
