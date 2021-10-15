@@ -4,6 +4,7 @@ import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
 import { icons } from 'assets'
 import { dummyInfoPages } from './dummy'
+import { ethers } from 'ethers'
 
 const InfoPages = () => {
     const [pages, setPages] = useState([])
@@ -50,25 +51,53 @@ const InfoPages = () => {
     )
 }
 
-const ActionButtons = () => {
-    const onClickBuy = () => {}
-    // const onClickMakeOffer = () => {}
+const BuyButton = ({ saleId, price }) => {
+
+    const _purchaseSale = async ({
+        saleId = -1,
+        price = '10',
+        marketCont,
+        tokenCont,
+    }) => {
+        if (!saleId || saleId === -1) {
+            return
+        }
+        // buy token
+        try {
+            const approveAllowance = await tokenCont?.approve(
+                marketCont.address,
+                ethers.utils.parseEther(price)
+            )
+            console.log({ approveAllowance })
+
+            const purchaseToken = await marketCont.purchaseSale(
+                /*saleId=*/ saleId,
+                /*price=*/ ethers.utils.parseEther(price)
+            )
+            console.log({ purchaseToken })
+        } catch (err) {
+            console.log(err?.data?.message)
+        }
+    }
+
+    const onClickBuy = () => {
+        // _purchaseSale()
+    }
+
+    if(!price) return null
+
+    console.log(price)
+    const priceInEther = ethers.utils.parseEther(price.toString())
+
     return (
         <div className="ActionButtonsContainer flex flex-row">
             <button
                 onClick={onClickBuy}
                 className="ActionButtonItem ButtonBuy flex justify-center items-center">
                 <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
-                    {'Buy for 4.5 ETH'}
+                    {`Buy for ${priceInEther} HWL`}
                 </a>
             </button>
-            {/* <button
-                onClick={onClickMakeOffer}
-                className="ActionButtonItem MakeOffer flex justify-center items-center">
-                <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
-                    {'Make Offer'}
-                </a>
-            </button> */}
         </div>
     )
 }
@@ -77,12 +106,12 @@ const ItemDetails = () => {
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const route = useRouter()
     useEffect(() => {
-        // console.log('Check new itemSelect = ', itemSelect)
+        console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
         if (!itemSelect) {
             route.back()
             return
         }
-        const { id, image, like, price, star, title, tokenCode } = itemSelect
+        const { id, image, like, price, star, title, tokenCode, saleId } = itemSelect
     }, [itemSelect])
 
     const ItemRating = ({ numberStar = 5 }) => {
@@ -132,7 +161,7 @@ const ItemDetails = () => {
         <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
             <div className="ItemSelected flex flex-row self-center">
                 <img
-                    className="flex w-96 h-96 rounded-3xl"
+                    className="flex w-96 h-96 rounded-3xl transition-all"
                     src={itemSelect?.image}
                     alt="main-item-image"
                 />
@@ -150,7 +179,7 @@ const ItemDetails = () => {
                     <ItemRating numberStar={4} />
                     <CreatorView />
                     <InfoPages />
-                    <ActionButtons />
+                    <BuyButton saleId={itemSelect?.saleId} price={itemSelect?.price} />
                 </div>
             </div>
         </div>

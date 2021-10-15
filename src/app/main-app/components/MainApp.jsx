@@ -21,6 +21,7 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const getData = async () => {
+
         const {
             marketplaceContract,
             gameItemContract,
@@ -29,13 +30,8 @@ const MainApp = ({ pageProps, Component }) => {
             signerAddress,
         } = await connectWalletAndGetContract()
 
-        // console.log({ marketplaceContract })
-
-        // await _getMyAssets({
-        //     marketCont: marketplaceContract,
-        //     tokenCont: howlTokenContract,
-        //     signerAddress,
-        // })
+        // const provider = new ethers.providers.JsonRpcProvider()
+        // const market = new ethers.Contract(address, abi, provider)
 
         await _getActiveSales({
             marketCont: marketplaceContract,
@@ -80,7 +76,7 @@ const MainApp = ({ pageProps, Component }) => {
         }
 
         const tokenIdList = [1, 2, 3]
-        await createSales({
+        await _createSales({
             tokenIds: tokenIdList,
             signerAddress,
             marketCont,
@@ -90,10 +86,10 @@ const MainApp = ({ pageProps, Component }) => {
         return
         const saleId = -1
         const price = '10'
-        await purchaseSale({ saleId, price, marketCont, tokenCont })
+        await _purchaseSale({ saleId, price, marketCont, tokenCont })
     }
 
-    const createSales = async ({
+    const _createSales = async ({
         tokenIds = [],
         signerAddress,
         marketCont,
@@ -155,41 +151,6 @@ const MainApp = ({ pageProps, Component }) => {
         return isApproved
     }
 
-    const purchaseSale = async ({
-        saleId = -1,
-        price = '10',
-        marketCont,
-        tokenCont,
-    }) => {
-        if (!saleId || saleId === -1) {
-            return
-        }
-        // buy token
-        try {
-            const approveAllowance = await tokenCont?.approve(
-                marketCont.address,
-                ethers.utils.parseEther(price)
-            )
-            console.log({ approveAllowance })
-
-            const purchaseToken = await marketCont.purchaseSale(
-                /*saleId=*/ saleId,
-                /*price=*/ ethers.utils.parseEther(price)
-            )
-            console.log({ purchaseToken })
-        } catch (err) {
-            console.log(err?.data?.message)
-        }
-    }
-
-    const _getMyAssets = async ({ marketCont }) => {
-        console.log({ marketCont })
-        const price = await marketCont?.getListingPrice()
-        console.log({ price })
-        const nfts = await marketCont?.getUserNFTs()
-        dispatch(MainAppActions.setMyAssetNfts(nfts))
-    }
-
     const _getActiveSales = async ({
         marketCont,
         tokenCont,
@@ -245,11 +206,13 @@ const MainApp = ({ pageProps, Component }) => {
         const userCreatedSales = await marketCont?.getUserCreatedSales()
         console.log({ userCreatedSales })
 
-        dispatch(MainAppActions.setState({
-            inactiveSales,
-            userPurchasedSales,
-            userCreatedSales,
-        }))
+        dispatch(
+            MainAppActions.setState({
+                inactiveSales,
+                userPurchasedSales,
+                userCreatedSales,
+            })
+        )
     }
 
     return (

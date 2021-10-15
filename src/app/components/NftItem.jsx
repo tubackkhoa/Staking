@@ -80,7 +80,7 @@ const NftItem = ({ URI, contractAddress, tokenId, index, onClick }) => {
                     },
                 })
             }
-            className="NftItemContainer flex flex-col items-center w-52 h-80 hover:shadow-cardNft rounded-lg m-4 p-3">
+            className="NftItemContainer flex flex-col items-center w-52 h-80 rounded-lg m-4 p-3">
             <img
                 alt="itemInfo-image"
                 className="flex rounded-xl w-48 h-48"

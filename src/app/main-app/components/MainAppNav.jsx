@@ -11,13 +11,13 @@ const ConnectWalletButton = () => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
 
     const _onClickConnectWallet = () => {
-        const walletInfo = connectWallet()
-        console.log({ walletInfo })
-        if(!walletInfo){
+        const wallet = connectWallet()
+        console.log({ wallet })
+        if(!wallet){
             console.log('connectWallet failed!')
             return;
         }
-        const {  marketplaceContract, gameItemContract, signer, howlTokenContract } = walletInfo;
+        const {  marketplaceContract, gameItemContract, signer, howlTokenContract } = wallet;
         setWalletInfo({
             marketplaceContract,
             gameItemContract,
@@ -25,6 +25,8 @@ const ConnectWalletButton = () => {
             howlTokenContract,
         })
     }
+
+    if(walletInfo?.marketplaceContract) return null;
 
     return (
         <button

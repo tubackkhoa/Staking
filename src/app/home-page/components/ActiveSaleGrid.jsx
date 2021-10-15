@@ -14,10 +14,6 @@ const ActiveSaleGrid = () => {
     const [state, dispatch] = useMainAppContext()
     const { activeSales: dataList = [] } = state
 
-    // useEffect(()=>{
-    //     console.log('Check new activeSales = ' + JSON.stringify(dataList));
-    // }, [dataList])
-
     return (
         <div className="first-letter:bg-hwl-gray-1 flex flex-col flex-1 ActiveSaleGridContainer">
             {/* <QuickFilterBar /> */}
@@ -28,16 +24,26 @@ const ActiveSaleGrid = () => {
                     const { buyer, isActive, isSold, price, saleId, lastUpdated, seller, tokenId, length, URI, contractAddress } = item
                     const tokenIdString = item?.tokenId?.toString()
                     const itemKey = `NftItem-${tokenIdString}`
+                    // console.log('Check price = ' + price)
                     return (
                         <NftItem
                             key={itemKey}
                             URI={URI}
                             contractAddress={contractAddress}
                             tokenId={tokenId}
+                            price={price}
                             index={index}
                             onClick={({ nft }) => {
                                 route.push(routes.itemDetails)
-                                setItemSelect(nft)
+                                setItemSelect({
+                                    ...nft,
+                                    saleId,
+                                    buyer,
+                                    isActive,
+                                    isSold,
+                                    price,
+                                    seller,
+                                })
                             }}
                         />
                     )
