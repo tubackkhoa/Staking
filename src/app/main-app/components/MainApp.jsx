@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
@@ -9,10 +11,14 @@ import MainAppBody from './MainAppBody'
 import MainAppFooter from './MainAppFooter'
 
 import connectWallet from '../wallet'
+import { useGlobal } from 'reactn'
+import { globalKeys } from 'app/store'
+import { utils } from 'utils'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
     const [loadingState, setLoadingState] = useState('not-loaded')
+    const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     // const [isApproved, setApproved] = useState(false)
     let isApproved = false
 
@@ -21,7 +27,6 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const getData = async () => {
-
         const {
             marketplaceContract,
             gameItemContract,
@@ -29,6 +34,14 @@ const MainApp = ({ pageProps, Component }) => {
             howlTokenContract,
             signerAddress,
         } = await connectWalletAndGetContract()
+
+        setWalletInfo({
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            signerAddress,
+        })
 
         // const provider = new ethers.providers.JsonRpcProvider()
         // const market = new ethers.Contract(address, abi, provider)
@@ -38,6 +51,10 @@ const MainApp = ({ pageProps, Component }) => {
             tokenCont: howlTokenContract,
             signerAddress,
             gameItemContract,
+        })
+
+        await _getInactiveSales({
+            marketCont: marketplaceContract,
         })
 
         await _testCreateActiveSale({
@@ -50,7 +67,7 @@ const MainApp = ({ pageProps, Component }) => {
 
     const connectWalletAndGetContract = async () => {
         let walletInfo = await connectWallet()
-        console.log({ walletInfo })
+        // console.log({ walletInfo })
         const signerAddress = await walletInfo.signer.getAddress()
         console.log({ signerAddress })
         return {
@@ -76,7 +93,7 @@ const MainApp = ({ pageProps, Component }) => {
         }
 
         const tokenIdList = [1, 2, 3]
-        await _createSales({
+        await _createSale({
             tokenIds: tokenIdList,
             signerAddress,
             marketCont,
@@ -84,37 +101,32 @@ const MainApp = ({ pageProps, Component }) => {
         })
 
         return
-        const saleId = -1
-        const price = '10'
-        await _purchaseSale({ saleId, price, marketCont, tokenCont })
     }
 
-    const _createSales = async ({
+    const _createSale = async ({
         tokenIds = [],
         signerAddress,
         marketCont,
         gameItemContract,
     }) => {
-        console.log('Check in createSales')
         if (!Array.isArray(tokenIds) || tokenIds.length === 0) {
             console.log('Invalid tokenIds!')
             return
         }
-        // create sales with tokenId 1,2,3
         if (!isApproved) throw new Error('not approve')
-
         const res = await Promise.all(
             tokenIds.map(async tokenId => {
                 const ownerOfTokenAddress = await gameItemContract?.ownerOf(
                     tokenId
                 )
-                console.log({ ownerOfTokenAddress })
+                // console.log({ ownerOfTokenAddress })
                 // check if the seller is the owner of this token
                 // if true then the seller can sell
                 // else return error
                 if (ownerOfTokenAddress === signerAddress) {
                     try {
-                        const initPrice = '10'
+                        const initPrice = `${utils.getRandom(20, 30)}`
+                        console.log('Check initPrice = ' + initPrice)
                         const createdSale = await marketCont?.createSale(
                             tokenId,
                             ethers.utils.parseEther(initPrice)
@@ -175,7 +187,6 @@ const MainApp = ({ pageProps, Component }) => {
                 } = item
                 // each active sale, get uri by tokenURI func - param: tokenId
                 const uriOfNft = await gameItemContract?.tokenURI(1)
-                console.log('Check uriOfNft = ' + uriOfNft)
                 return {
                     ...item,
                     URI: uriOfNft,
@@ -184,27 +195,28 @@ const MainApp = ({ pageProps, Component }) => {
                 }
             })
         )
-
         console.log({ activeSalesFull })
         dispatch(MainAppActions.setState({ activeSales: activeSalesFull }))
+    }
 
+    const _getBalanceOfToken = async () => {
         // get balance of HOWL token
-        // const howlTokenBalance = ethers.utils.formatEther(
-        //     await tokenCont?.balanceOf(signerAddress)
-        // )
-        // console.log('Check howlTokenBalance')
-        // console.log(parseInt(howlTokenBalance))
+        const balance = ethers.utils.formatEther(
+            await tokenCont?.balanceOf(signerAddress)
+        )
+        const balanceFloat = parseFloat(howlTokenBalance)
+        console.log('Check balanceFloat = ' + balanceFloat)
     }
 
     const _getInactiveSales = async ({ marketCont }) => {
         const inactiveSales = await marketCont?.getInactiveSales()
-        console.log({ inactiveSales })
+        // console.log({ inactiveSales })
 
         const userPurchasedSales = await marketCont?.getUserPurchasedSales()
-        console.log({ userPurchasedSales })
+        // console.log({ userPurchasedSales })
 
         const userCreatedSales = await marketCont?.getUserCreatedSales()
-        console.log({ userCreatedSales })
+        // console.log({ userCreatedSales })
 
         dispatch(
             MainAppActions.setState({
@@ -217,6 +229,7 @@ const MainApp = ({ pageProps, Component }) => {
 
     return (
         <div className="flex flex-1 flex-col bg-hwl-gray-1">
+            <ToastContainer />
             <div className="MainApp flex flex-col">
                 <MainAppHead />
                 <MainAppNav />

@@ -20,7 +20,7 @@ const ActiveSaleGrid = () => {
             <div className="flex flex-1 flex-wrap p-4">
                 {Array.isArray(dataList) && dataList.map((item, index) => {
                     if (!item) return null
-                    console.log({ item })
+                    // console.log({ item })
                     const { buyer, isActive, isSold, price, saleId, lastUpdated, seller, tokenId, length, URI, contractAddress } = item
                     const tokenIdString = item?.tokenId?.toString()
                     const itemKey = `NftItem-${tokenIdString}`

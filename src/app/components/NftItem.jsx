@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { icons } from 'assets'
 import { colors } from 'config/colors'
 import axios from 'axios'
+import { ethers } from 'ethers'
+import BigNumber from "bignumber.js";
 
 const ItemRating = ({ numberStar = 0 }) => {
     return (
@@ -28,14 +30,13 @@ const ItemRating = ({ numberStar = 0 }) => {
     )
 }
 
-const NftItem = ({ URI, contractAddress, tokenId, index, onClick }) => {
+const NftItem = ({ URI, contractAddress, tokenId, price, index, onClick }) => {
 
     const [attributes, setAttributes] = useState({
         id: '',
         title: '',
         image: '',
         like: 99,
-        price: 0,
         tokenCode: 'HWL',
         star: 5,
     })
@@ -68,6 +69,10 @@ const NftItem = ({ URI, contractAddress, tokenId, index, onClick }) => {
             })
     }, [URI, contractAddress, tokenId])
 
+    if(price === null || price === undefined) return null;
+    console.log('Check price = ', price)
+    const priceInHwl = ethers.utils.formatEther(price) || ''
+
     return (
         <button
             onClick={() =>
@@ -91,7 +96,7 @@ const NftItem = ({ URI, contractAddress, tokenId, index, onClick }) => {
                 <div
                     className="flex flex-row items-center w-full"
                     style={{ marginTop: '4px' }}>
-                    <a className="flex text-white Price">{attributes?.price}</a>
+                    <a className="flex text-white Price">{priceInHwl}</a>
                     <a className="flex text-white TokenCode">
                         {attributes?.tokenCode}
                     </a>

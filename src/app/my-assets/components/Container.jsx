@@ -18,7 +18,7 @@ const Container = props => {
 
     const _getData = async () => {
         const walletInfo = await connectWallet()
-        console.log({ walletInfo })
+        console.log('check main _getData', { walletInfo })
 
         if (!walletInfo) {
             console.log('connectWallet failed!')
@@ -32,15 +32,16 @@ const Container = props => {
             howlTokenContract,
         } = walletInfo
 
+        const signerAddress = await signer?.getAddress()
+
         setWalletInfo({
             marketplaceContract,
             gameItemContract,
             signer,
             howlTokenContract,
+            signerAddress,
         })
 
-        const signerAddress = await signer?.getAddress()
-        
         await _getMyAssets({
             marketCont: marketplaceContract,
             tokenCont: howlTokenContract,
