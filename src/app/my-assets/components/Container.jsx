@@ -50,12 +50,13 @@ const Container = props => {
     }
 
     const _getMyAssets = async ({ marketCont, tokenCont, signerAddress }) => {
-        console.log({ marketCont })
         const listingPrice = await marketCont?.getListingPrice()
         console.log({ listingPrice })
+        const listingPriceFloat = ethers.utils.formatEther(listingPrice)
+        console.log({ listingPriceFloat })
 
         const nfts = await marketCont?.getUserNFTs()
-        console.log({ nfts })
+        // console.log({ nfts })
 
         dispatch(MainAppActions.setMyAssetNfts(nfts))
 

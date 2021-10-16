@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import { ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
@@ -46,6 +46,12 @@ const MainApp = ({ pageProps, Component }) => {
         // const provider = new ethers.providers.JsonRpcProvider()
         // const market = new ethers.Contract(address, abi, provider)
 
+        await _createTestActiveSale({
+            marketCont: marketplaceContract,
+            gameItemContract,
+            signerAddress,
+        })
+
         await _getActiveSales({
             marketCont: marketplaceContract,
             tokenCont: howlTokenContract,
@@ -55,13 +61,6 @@ const MainApp = ({ pageProps, Component }) => {
 
         await _getInactiveSales({
             marketCont: marketplaceContract,
-        })
-
-        await _testCreateActiveSale({
-            marketCont: marketplaceContract,
-            tokenCont: howlTokenContract,
-            gameItemContract,
-            signerAddress,
         })
     }
 
@@ -76,10 +75,9 @@ const MainApp = ({ pageProps, Component }) => {
         }
     }
 
-    const _testCreateActiveSale = async ({
+    const _createTestActiveSale = async ({
         marketCont,
         gameItemContract,
-        tokenCont,
         signerAddress,
     }) => {
         const reqApprove = await _approveAddress({
@@ -89,7 +87,8 @@ const MainApp = ({ pageProps, Component }) => {
         })
         console.log({ reqApprove })
         if (!reqApprove) {
-            throw new Error('Not approve!')
+            toast.error(`Address not approve, can't create test active sales!`)
+            return
         }
 
         const tokenIdList = [1, 2, 3]
@@ -113,7 +112,11 @@ const MainApp = ({ pageProps, Component }) => {
             console.log('Invalid tokenIds!')
             return
         }
-        if (!isApproved) throw new Error('not approve')
+        if (!isApproved) {
+            toast.error(`Address not approve, can't create new active sale!`)
+            return
+        }
+        
         const res = await Promise.all(
             tokenIds.map(async tokenId => {
                 const ownerOfTokenAddress = await gameItemContract?.ownerOf(
@@ -126,7 +129,7 @@ const MainApp = ({ pageProps, Component }) => {
                 if (ownerOfTokenAddress === signerAddress) {
                     try {
                         const initPrice = `${utils.getRandom(20, 30)}`
-                        console.log('Check initPrice = ' + initPrice)
+                        // console.log('Check initPrice = ' + initPrice)
                         const createdSale = await marketCont?.createSale(
                             tokenId,
                             ethers.utils.parseEther(initPrice)
@@ -152,7 +155,7 @@ const MainApp = ({ pageProps, Component }) => {
             signerAddress,
             marketCont?.address
         )
-        console.log({ isApproved })
+        // console.log({ isApproved })
 
         if (!isApproved) {
             const approval = await gameItemContract?.approveAddress(
@@ -170,7 +173,7 @@ const MainApp = ({ pageProps, Component }) => {
         gameItemContract,
     }) => {
         const activeSales = await marketCont?.getActiveSales()
-        console.log({ activeSales })
+        // console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
             activeSales.map(async item => {
@@ -195,7 +198,7 @@ const MainApp = ({ pageProps, Component }) => {
                 }
             })
         )
-        console.log({ activeSalesFull })
+        // console.log({ activeSalesFull })
         dispatch(MainAppActions.setState({ activeSales: activeSalesFull }))
     }
 

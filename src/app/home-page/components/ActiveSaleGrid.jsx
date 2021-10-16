@@ -6,7 +6,7 @@ import React, { useGlobal } from 'reactn'
 import { globalKeys } from 'app/store'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
-import { NftItem } from '../../components'
+import { NftCard } from '../../components'
 
 const ActiveSaleGrid = () => {
     const route = useRouter()
@@ -23,10 +23,10 @@ const ActiveSaleGrid = () => {
                     // console.log({ item })
                     const { buyer, isActive, isSold, price, saleId, lastUpdated, seller, tokenId, length, URI, contractAddress } = item
                     const tokenIdString = item?.tokenId?.toString()
-                    const itemKey = `NftItem-${tokenIdString}`
+                    const itemKey = `NftCard-${tokenIdString}`
                     // console.log('Check price = ' + price)
                     return (
-                        <NftItem
+                        <NftCard
                             key={itemKey}
                             URI={URI}
                             contractAddress={contractAddress}

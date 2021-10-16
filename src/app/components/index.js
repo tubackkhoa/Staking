@@ -1,5 +1,5 @@
-import { NftItem } from './NftItem'
+import NftCard from './NftCard'
 
 export {
-    NftItem,
+    NftCard,
 }

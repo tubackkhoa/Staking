@@ -30,7 +30,7 @@ const ItemRating = ({ numberStar = 0 }) => {
     )
 }
 
-const NftItem = ({ URI, contractAddress, tokenId, price, index, onClick }) => {
+const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) => {
 
     const [attributes, setAttributes] = useState({
         id: '',
@@ -69,8 +69,12 @@ const NftItem = ({ URI, contractAddress, tokenId, price, index, onClick }) => {
             })
     }, [URI, contractAddress, tokenId])
 
-    if(price === null || price === undefined) return null;
-    console.log('Check price = ', price)
+    if(price === null || price === undefined) {
+        console.log({ price })
+        console.log(`Invalid price, can't show NFT card!`)
+        return null
+    }
+    // console.log('Check price = ', price)
     const priceInHwl = ethers.utils.formatEther(price) || ''
 
     return (
@@ -85,7 +89,7 @@ const NftItem = ({ URI, contractAddress, tokenId, price, index, onClick }) => {
                     },
                 })
             }
-            className="NftItemContainer flex flex-col items-center w-52 h-80 rounded-lg m-4 p-3">
+            className="NftCardContainer flex flex-col items-center w-52 h-80 rounded-lg m-4 p-3">
             <img
                 alt="itemInfo-image"
                 className="flex rounded-xl w-48 h-48"
@@ -136,4 +140,4 @@ const NftItem = ({ URI, contractAddress, tokenId, price, index, onClick }) => {
     )
 }
 
-export { NftItem }
+export default NftCard

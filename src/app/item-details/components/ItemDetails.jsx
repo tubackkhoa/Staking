@@ -56,9 +56,9 @@ const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     // console.log('Check walletInfo = ', walletInfo)
 
-    useEffect(()=>{
-        console.log('Check new walletInfo = ', walletInfo);
-    }, [walletInfo])
+    // useEffect(()=>{
+    //     console.log('Check new walletInfo = ', walletInfo);
+    // }, [walletInfo])
 
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
@@ -109,26 +109,28 @@ const BuyButton = ({ saleId, price }) => {
             // value: BigNumber {_hex: '0x00', _isBigNumber: true}
             // wait: (confirmations) => {…}
             console.log({ purchaseToken })
+            toast.success('Create sale successfully!')
 
         } catch (err) {
+            toast.error(`Create sale failed with error ${err?.data?.message}!`)
             console.log(err?.data?.message)
         }
     }
 
     const onClickBuy = async () => {
 
-        toast.info('Processing')
+        toast.info('Confirm your transaction!')
         console.log({ walletInfo })
         // return
         const signerAddress = walletInfo?.signerAddress || await walletInfo?.signer?.getAddress()
         console.log({ signerAddress })
-        const wei = await tokenCont?.balanceOf(signerAddress) // is an BigNumberish
-        console.log({ wei }) // 
+        const weiBigNumber = await tokenCont?.balanceOf(signerAddress) // is an BigNumberish
+        console.log({ weiBigNumber }) // 
         // _hex: "0x019d971e4fe8401e74000000"
         // _isBigNumber: true
 
         // get balance of HOWL token
-        const howlTokenBalanceWeiInt = parseInt(ethers.utils.formatEther(wei))
+        const howlTokenBalanceWeiInt = parseInt(ethers.utils.formatEther(weiBigNumber))
         console.log({ howlTokenBalanceWeiInt })  // 500000000
         
         console.log({ price }) // is BigNumber
