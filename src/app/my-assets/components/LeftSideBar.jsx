@@ -6,17 +6,17 @@ const LeftSideBar = () => {
     const options = [
         {
             id: 0,
-            title: 'Dirt Bike',
+            title: 'My NFTs Bike',
             onClick: () => undefined,
         },
         {
             id: 1,
-            title: 'Sport Bike',
+            title: 'My active sales',
             onClick: () => undefined,
         },
         {
             id: 2,
-            title: 'Scramble',
+            title: 'My purchased sales',
             onClick: () => undefined,
         },
     ]
@@ -25,10 +25,6 @@ const LeftSideBar = () => {
 
     return (
         <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0 p-8 w-60">
-            <div className="flex flex-row GroupMenu">
-                <a className="flex text-white">Bike type</a>
-                <img className="ToggleBtn" src={icons.arrowDown} />
-            </div>
             <div className="flex-col GroupMenuItems">
                 {options.map(item => {
                     const { id, title } = item

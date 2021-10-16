@@ -7,6 +7,7 @@ import { useGlobal } from 'reactn'
 import { globalKeys } from 'app/store'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
+import LeftSideBar from './LeftSideBar'
 
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
@@ -86,6 +87,7 @@ const Container = props => {
 
     return (
         <>
+            <LeftSideBar />
             <MyAssetsGrid />
         </>
     )

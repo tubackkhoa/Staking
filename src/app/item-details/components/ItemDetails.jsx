@@ -3,50 +3,30 @@ import { globalKeys } from 'app/store'
 import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
 import { icons } from 'assets'
-import { dummyInfoPages } from './dummy'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 
-const InfoPages = () => {
-    const [pages, setPages] = useState([])
-    const [pageSelect, setPageSelect] = useState(null)
-    useEffect(() => {
-        setPages(dummyInfoPages)
-        setPageSelect(dummyInfoPages[0])
-    }, [])
-
+const InfoPages = ({ description }) => {
+    // console.log('Check description = ' + description)
+    const borderBottomColor = 'white'
     return (
         <div className="InfoPagesContainer flex flex-col w-full">
             <div className="InfoPageHeader flex flex-row text-white w-full">
-                {pages.map((item, index) => {
-                    const { id, title, content } = item
-                    const isSelect = pageSelect?.id === id
-                    const borderBottomColor = isSelect ? 'white' : 'transparent'
-                    const titleWeight = isSelect ? 600 : 400
-                    const onClick = () => {
-                        setPageSelect(item)
-                    }
-                    return (
-                        <button
-                            onClick={onClick}
-                            key={`InfoPages-${id}`}
-                            className="InfoPageItem flex flex-col"
-                            style={{ fontWeight: titleWeight }}>
-                            <a>{title}</a>
-                            <div
-                                className="flex"
-                                style={{
-                                    width: '54px',
-                                    marginTop: '10px',
-                                    backgroundColor: borderBottomColor,
-                                }}
-                            />
-                        </button>
-                    )
-                })}
+                <div
+                    className="InfoPageItem flex flex-col font-semibold">
+                    <a>{'Details'}</a>
+                    <div
+                        className="flex mt-0.5"
+                        style={{
+                            width: '54px',
+                            marginTop: '10px',
+                            backgroundColor: borderBottomColor,
+                        }}
+                    />
+                </div>
             </div>
             <div className="InfoPageItemContent flex flex-col">
-                <p className="flex text-white">{pageSelect?.content}</p>
+                <p className="flex text-white">{description}</p>
             </div>
         </div>
     )
@@ -109,35 +89,37 @@ const BuyButton = ({ saleId, price }) => {
             // value: BigNumber {_hex: '0x00', _isBigNumber: true}
             // wait: (confirmations) => {…}
             console.log({ purchaseToken })
-            toast.success('Create sale successfully!')
-
+            toast.success(`Purchase sale NFT successfully!`)
         } catch (err) {
-            toast.error(`Create sale failed with error ${err?.data?.message}!`)
+            toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
             console.log(err?.data?.message)
         }
     }
 
     const onClickBuy = async () => {
-
         toast.info('Confirm your transaction!')
         console.log({ walletInfo })
         // return
-        const signerAddress = walletInfo?.signerAddress || await walletInfo?.signer?.getAddress()
+        const signerAddress =
+            walletInfo?.signerAddress ||
+            (await walletInfo?.signer?.getAddress())
         console.log({ signerAddress })
         const weiBigNumber = await tokenCont?.balanceOf(signerAddress) // is an BigNumberish
-        console.log({ weiBigNumber }) // 
+        console.log({ weiBigNumber }) //
         // _hex: "0x019d971e4fe8401e74000000"
         // _isBigNumber: true
 
         // get balance of HOWL token
-        const howlTokenBalanceWeiInt = parseInt(ethers.utils.formatEther(weiBigNumber))
-        console.log({ howlTokenBalanceWeiInt })  // 500000000
-        
+        const howlTokenBalanceWeiInt = parseInt(
+            ethers.utils.formatEther(weiBigNumber)
+        )
+        console.log({ howlTokenBalanceWeiInt }) // 500000000
+
         console.log({ price }) // is BigNumber
         const priceInt = ethers.utils.formatEther(price)
         console.log({ priceInt })
 
-        const priceInHwl = priceInt/howlTokenBalanceWeiInt
+        const priceInHwl = priceInt / howlTokenBalanceWeiInt
         console.log({ priceInHwl })
         _purchaseSale({
             saleId,
@@ -149,15 +131,13 @@ const BuyButton = ({ saleId, price }) => {
 
     if (!price) return null
 
-    console.log(price)
+    // console.log(price)
     const priceInHwl = ethers.utils.formatEther(price)
-    console.log('Check priceInHwl = ' + priceInHwl)
+    // console.log('Check priceInHwl = ' + priceInHwl)
 
     return (
-        <div className="ActionButtonsContainer flex flex-row">
-            <button
-                onClick={onClickBuy}
-                className="ActionButtonItem ButtonBuy flex justify-center items-center">
+        <div className="ActionButtonsContainer flex flex-row mt-8">
+            <button onClick={onClickBuy} className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
                 <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {`Buy for ${priceInHwl} HWL`}
                 </a>
@@ -171,7 +151,7 @@ const ItemDetails = () => {
 
     const route = useRouter()
     useEffect(() => {
-        console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
+        // console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
         if (!itemSelect) {
             route.back()
             return
@@ -221,7 +201,7 @@ const ItemDetails = () => {
         )
     }
 
-    const itemImageSrc = itemSelect?.image || ''
+    // const itemImageSrc = itemSelect?.image || ''
 
     return (
         <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
@@ -234,17 +214,17 @@ const ItemDetails = () => {
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
                 <div className="ItemInfoBlock flex flex-col">
                     <p className="ItemName flex text-white">
-                        {'RedX Ninja H2R'}
+                        {itemSelect?.name}
                     </p>
-                    <div className="flex flex-row text-white">
+                    {/* <div className="flex flex-row text-white">
                         <p className="flex">{'From'}</p>
-                        <p className="flex">{'4.5 HOWL'}</p>
+                        <p className="flex ml-0.5">{'4.5 HOWL'}</p>
                         <p className="flex">{' . '}</p>
                         <p className="flex">{'20 of 25 available'}</p>
-                    </div>
+                    </div> */}
                     <ItemRating numberStar={4} />
                     <CreatorView />
-                    <InfoPages />
+                    <InfoPages description={itemSelect?.description} />
                     <BuyButton
                         saleId={itemSelect?.saleId}
                         price={itemSelect?.price}

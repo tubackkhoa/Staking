@@ -17,7 +17,7 @@ const MyAssetsGrid = () => {
 
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage flex flex-1">
-            <div className="NftCards flex flex-wrap flex-1 p-4 ml-60">
+            <div className="NftCards flex flex-wrap flex-1 p-4">
                 {Array.isArray(nfts) &&
                     nfts.map((item, index) => {
                         if (!item) return null

@@ -54,8 +54,6 @@ const MainApp = ({ pageProps, Component }) => {
 
         await _getActiveSales({
             marketCont: marketplaceContract,
-            tokenCont: howlTokenContract,
-            signerAddress,
             gameItemContract,
         })
 
@@ -68,7 +66,7 @@ const MainApp = ({ pageProps, Component }) => {
         let walletInfo = await connectWallet()
         // console.log({ walletInfo })
         const signerAddress = await walletInfo.signer.getAddress()
-        console.log({ signerAddress })
+        // console.log({ signerAddress })
         return {
             ...walletInfo,
             signerAddress,
@@ -87,7 +85,7 @@ const MainApp = ({ pageProps, Component }) => {
         })
         console.log({ reqApprove })
         if (!reqApprove) {
-            toast.error(`Address not approve, can't create test active sales!`)
+            toast.error(`Address not approved, can't create test active sales!`)
             return
         }
 
@@ -98,7 +96,6 @@ const MainApp = ({ pageProps, Component }) => {
             marketCont,
             gameItemContract,
         })
-
         return
     }
 
@@ -113,7 +110,7 @@ const MainApp = ({ pageProps, Component }) => {
             return
         }
         if (!isApproved) {
-            toast.error(`Address not approve, can't create new active sale!`)
+            toast.error(`Address not approved, can't create new active sale!`)
             return
         }
         
@@ -134,12 +131,15 @@ const MainApp = ({ pageProps, Component }) => {
                             tokenId,
                             ethers.utils.parseEther(initPrice)
                         )
+                        toast.success('Create sale successfully!')
                         console.log({ createdSale })
                     } catch (err) {
-                        console.log(err?.data?.message)
+                        toast.error(`Create sale failed, ${err?.data?.message}`)
+                        console.log(err)
                     }
                 } else {
-                    console.log('Not owner of tokenId')
+                    toast.warning(`Not owner of tokenId \n Your address is ${signerAddress} \n Owner of token address is ${ownerOfTokenAddress}`)
+                    console.log(`Not owner of tokenId ${signerAddress}`)
                 }
             })
         )
@@ -161,19 +161,18 @@ const MainApp = ({ pageProps, Component }) => {
             const approval = await gameItemContract?.approveAddress(
                 marketCont?.address
             )
-            console.log('Check approval = ', approval)
+            isApproved = true
+            // console.log('Check approval = ', approval)
         }
         return isApproved
     }
 
     const _getActiveSales = async ({
         marketCont,
-        tokenCont,
-        signerAddress,
         gameItemContract,
     }) => {
         const activeSales = await marketCont?.getActiveSales()
-        // console.log({ activeSales })
+        console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
             activeSales.map(async item => {
@@ -208,7 +207,7 @@ const MainApp = ({ pageProps, Component }) => {
             await tokenCont?.balanceOf(signerAddress)
         )
         const balanceFloat = parseFloat(howlTokenBalance)
-        console.log('Check balanceFloat = ' + balanceFloat)
+        // console.log('Check balanceFloat = ' + balanceFloat)
     }
 
     const _getInactiveSales = async ({ marketCont }) => {
