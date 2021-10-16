@@ -1,42 +1,81 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
-import "./GameItem.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable {
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+
+contract Marketplace is 
+    Initializable,
+    UUPSUpgradeable,
+    ReentrancyGuardUpgradeable,
+    OwnableUpgradeable,
+    IERC721Receiver {
+
+    using SafeMath for uint256;
     using Counters for Counters.Counter;
-    using SafeERC20 for IERC20;
 
     Counters.Counter private _saleIds;
     Counters.Counter private _saleSold;
     Counters.Counter private _saleInactive;
 
-    address payable _owner;
-    IERC20 howl;
-    GameItem nft;
-    uint256 listingPrice = 0 ether;
+    uint256 private feePercentX10;
+    address private feeReceiver;
+    IERC20 public howl;
+    IERC721 public nft;
 
     function initialize(address erc20, address erc721) external initializer {
-        _owner = payable(msg.sender);
+        __Ownable_init();
+
         howl = IERC20(erc20);
-        nft = GameItem(erc721);
+        nft = IERC721(erc721);
+
+        feePercentX10 = 10;
+        feeReceiver = msg.sender;
     }
+
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner { }
 
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)
         external pure override returns (bytes4) {
         return 0x150b7a02;
     }
 
+    /**
+        Fee percent and fee receiver
+    */
+    function getFee() external view returns (uint256) {
+        return feePercentX10;
+    }
+
+    function setFee(uint256 newFee) external onlyOwner {
+        require(newFee <= 100, "Fee percent must be smaller than 10%");
+        feePercentX10 = newFee;
+    }
+
+    function getFeeReceiver() external view returns (address) {
+        return feeReceiver;
+    }
+
+    function setFeeReceiver(address newFeeReceiver) external onlyOwner {
+        require(newFeeReceiver != address(0), "setFeeReceiver: null address");
+        feeReceiver = newFeeReceiver;
+    }
+
+    /**
+        Sale
+    */
     struct Sale {
         uint256 saleId;
         uint256 tokenId;
@@ -54,30 +93,22 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
     event SaleUpdated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
     event SaleCanceled(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
     event SaleSold(uint indexed saleId, uint256 indexed tokenId, address seller, uint256 price, bool isSold, uint256 lastUpdated);
+    event FeeTransfered(uint saleId, uint256 tokenId, address seller, address buyer, address feeReceiver, uint256 fee, uint256 lastUpdated);
 
     modifier onlySeller(uint256 saleId) {
         require(msg.sender == Sales[saleId].seller, "Invalid sale seller");
         _;
     }
 
-    /* Returns the listing price of the contract */
-    function getListingPrice() external view returns (uint256) {
-        return listingPrice;
-    }
-
-    function changeListingPrice(uint256 newListingPrice) external onlyOwner {
-        require(newListingPrice > 0, "Price must be at least 1 wei");
-        listingPrice = newListingPrice;
-    }
-  
     /* Places an item for sale on the marketplace */
-    function createSale(uint256 tokenId, uint256 price) external payable nonReentrant {
+    function createSale(uint256 tokenId, uint256 price) external nonReentrant {
         require(price > 0, "Price must be at least 1 wei");
-        require(msg.value == listingPrice, "Price must be equal to listing price");
         require(nft.ownerOf(tokenId) == msg.sender, "You do not own this token");
 
         _saleIds.increment();
         uint256 saleId = _saleIds.current();
+
+        nft.safeTransferFrom(msg.sender, address(this), tokenId);
 
         Sales[saleId] = Sale(
             saleId,
@@ -89,8 +120,6 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
             true,
             block.timestamp
         );
-
-        nft.safeTransferFrom(msg.sender, address(this), tokenId);
 
         emit SaleCreated(
             saleId,
@@ -104,22 +133,31 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
 
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
-    function purchaseSale(uint256 saleId, uint256 price) external nonReentrant {
+    function purchaseSale(uint256 saleId) external nonReentrant {
+        Sale storage sale = Sales[saleId];
+        uint256 price = sale.price;
+
         uint256 allowance = howl.allowance(msg.sender, address(this));
         require(allowance >= price, "Not enough allowance");
-
-        Sale storage sale = Sales[saleId];
         require((sale.isActive == true) && (sale.isSold == false), "Sale was ended.");
-        //require(msg.sender != sale.seller, "Buyer is seller of this item.");
-        require(price == sale.price, "Please submit the asking price in order to complete the purchase.");
+        require(msg.sender != sale.seller, "Buyer is seller of this item.");
+
+        // transfer to fee receiver
+        bool feeReceiverTxSuccess = howl.transferFrom(msg.sender, feeReceiver, price.mul(feePercentX10).div(1000));
+        require(feeReceiverTxSuccess, "Failed to transfer fee");
+
+        // transfer to seller
+        bool sellerTxSuccess = howl.transferFrom(msg.sender, sale.seller, price.mul(1000 - feePercentX10).div(1000));
+        require(sellerTxSuccess, "Failed to transfer token");
 
         uint256 tokenId = sale.tokenId;
-        howl.safeTransferFrom(msg.sender, sale.seller, price);
         nft.transferFrom(address(this), msg.sender, tokenId);
+        uint256 currentTime = block.timestamp;
 
         sale.isSold = true;
         sale.isActive = false;
         sale.buyer = msg.sender;
+        sale.lastUpdated = currentTime;
 
         _saleSold.increment();
 
@@ -129,13 +167,23 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
             sale.seller,
             price,
             sale.isSold,
-            block.timestamp
+            currentTime
+        );
+
+        emit FeeTransfered(
+            saleId,
+            tokenId,
+            sale.seller,
+            sale.buyer,
+            feeReceiver,
+            price.mul(feePercentX10).div(1000),
+            currentTime
         );
     }
 
-    function changePrice(uint256 saleId, uint256 newPrice) external onlySeller(saleId) {
+    function changeSalePrice(uint256 saleId, uint256 newPrice) external onlySeller(saleId) {
         Sale storage sale = Sales[saleId];
-        require(sale.isActive == true, "Sale was ended.");
+        require(sale.isActive && !sale.isSold, "Sale was ended.");
         require(newPrice > 0, "Price must be at least 1 wei");
 
         sale.price = newPrice;
@@ -151,7 +199,7 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
 
     function cancelSale(uint256 saleId) external nonReentrant onlySeller(saleId) {
         Sale storage sale = Sales[saleId];
-        require(sale.isActive == true, "Sale was ended.");
+        require(sale.isActive, "Sale was ended.");
 
         nft.transferFrom(address(this), msg.sender, sale.tokenId);
         sale.isActive = false;
@@ -176,22 +224,6 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
         Sale[] memory sales = new Sale[](activeSaleCount);
         for (uint256 i = 1; i <= saleCount; i++) {
             if (Sales[i].isActive) {
-                Sale storage sale = Sales[i];
-                sales[currentIndex++] = sale;
-            }
-        }
-
-        return sales;
-    }
-
-    /* Returns all inactive sales */
-    function getInactiveSales() external view returns (Sale[] memory) {
-        uint256 inactiveSaleCount = _saleInactive.current();
-
-        uint256 currentIndex = 0;
-        Sale[] memory sales = new Sale[](inactiveSaleCount);
-        for (uint256 i = 1; i <= _saleIds.current(); i++) {
-            if (!Sales[i].isActive) {
                 Sale storage sale = Sales[i];
                 sales[currentIndex++] = sale;
             }
@@ -257,8 +289,8 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
 
         TokenInfo[] memory tokens = new TokenInfo[](balance);
         for (uint256 i = 0; i < balance; i++) {
-            uint256 tokenId = nft.tokenOfOwnerByIndex(msg.sender, i);
-            string memory uri = nft.tokenURI(tokenId);
+            uint256 tokenId = ERC721Enumerable(address(nft)).tokenOfOwnerByIndex(msg.sender, i);
+            string memory uri = ERC721URIStorage(address(nft)).tokenURI(tokenId);
             
             tokens[i] = TokenInfo(
                 tokenId, address(nft), uri
@@ -268,3 +300,4 @@ contract Marketplace is ReentrancyGuard, IERC721Receiver, Initializable, Ownable
         return tokens;
     }
 }
+

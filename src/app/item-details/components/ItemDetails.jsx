@@ -34,7 +34,7 @@ const InfoPages = ({ description }) => {
 
 const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
-    // console.log('Check walletInfo = ', walletInfo)
+    console.log('Check walletInfo = ', walletInfo)
 
     // useEffect(()=>{
     //     console.log('Check new walletInfo = ', walletInfo);
@@ -45,7 +45,6 @@ const BuyButton = ({ saleId, price }) => {
 
     const _purchaseSale = async ({
         saleId,
-        price, // some value like '10',
         marketCont,
         tokenCont,
     }) => {
@@ -55,42 +54,22 @@ const BuyButton = ({ saleId, price }) => {
         console.log('Check run _purchaseSale')
         // buy token
         try {
-            const approveAllowance = await tokenCont?.approve(
-                marketCont.address,
-                ethers.utils.parseEther(price)
-            )
-            console.log({ approveAllowance })
+            const unlimitedAllowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+            const allowance = await tokenCont?.allowance(walletInfo.signer.getAddress(), marketCont.address)
+            if (allowance.lt(price)) {
+                const approveAllowance = await tokenCont?.approve(
+                    marketCont.address,
+                    unlimitedAllowance
+                )
+                console.log({ approveAllowance })
+            }
 
-            const purchaseToken = await marketCont.purchaseSale(
-                /*saleId=*/ saleId,
-                /*price=*/ ethers.utils.parseEther(price)
-            )
-            // purchaseToken will like that
-            // accessList: null
-            // blockHash: null
-            // blockNumber: null
-            // chainId: 0
-            // confirmations: 0
-            // creates: null
-            // data: "0x095ea7b30000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa30000000000000000000000000000000000000000000000015af1d78b58c40000"
-            // from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-            // gasLimit: BigNumber {_hex: '0xb75a', _isBigNumber: true}
-            // gasPrice: BigNumber {_hex: '0x4494f197', _isBigNumber: true}
-            // hash: "0x399205fb4a186e6013dd2859f7568e8e9b1faa9f480a9b9abef1d111884752f9"
-            // maxFeePerGas: BigNumber {_hex: '0x4494f197', _isBigNumber: true}
-            // maxPriorityFeePerGas: BigNumber {_hex: '0x4494f197', _isBigNumber: true}
-            // nonce: 14
-            // r: "0x50c5f9461ef67ba75ece51c56fa205c2f8628203ba0099ada50412b3b760e1dd"
-            // s: "0x4fa7ade5e39b0ed9d5eaaec4788dbea5beb5c04243f399d91de7c24994058c1d"
-            // to: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
-            // transactionIndex: null
-            // type: 2
-            // v: 0
-            // value: BigNumber {_hex: '0x00', _isBigNumber: true}
-            // wait: (confirmations) => {…}
+            const purchaseToken = await marketCont.purchaseSale( /*saleId=*/ saleId)
+            await purchaseToken.wait()
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
         } catch (err) {
+            console.log(err)
             toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
             console.log(err?.data?.message)
         }
@@ -123,7 +102,6 @@ const BuyButton = ({ saleId, price }) => {
         console.log({ priceInHwl })
         _purchaseSale({
             saleId,
-            price: priceInt,
             tokenCont: tokenCont,
             marketCont: marketCont,
         })

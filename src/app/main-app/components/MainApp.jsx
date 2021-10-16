@@ -15,6 +15,10 @@ import { useGlobal } from 'reactn'
 import { globalKeys } from 'app/store'
 import { utils } from 'utils'
 
+import { marketAddress, nftAddress } from '../../../../deployed_address.json'
+import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
+import nftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
+
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
     const [loadingState, setLoadingState] = useState('not-loaded')
@@ -27,38 +31,47 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const getData = async () => {
-        const {
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-            signerAddress,
-        } = await connectWalletAndGetContract()
+        //const {
+        //    marketplaceContract,
+        //    gameItemContract,
+        //    signer,
+        //    howlTokenContract,
+        //    signerAddress,
+        //} = await connectWalletAndGetContract()
 
-        setWalletInfo({
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-            signerAddress,
-        })
+        //setWalletInfo({
+        //    marketplaceContract,
+        //    gameItemContract,
+        //    signer,
+        //    howlTokenContract,
+        //    signerAddress,
+        //})
 
-        // const provider = new ethers.providers.JsonRpcProvider()
-        // const market = new ethers.Contract(address, abi, provider)
+        const provider = new ethers.providers.JsonRpcProvider()
+        const marketContract = new ethers.Contract(
+            marketAddress,
+            MarketplaceAbi.abi,
+            provider
+        )
+        const gameItemContract = new ethers.Contract(
+            nftAddress,
+            nftAbi.abi,
+            provider
+        )
 
-        await _createTestActiveSale({
-            marketCont: marketplaceContract,
-            gameItemContract,
-            signerAddress,
-        })
+        //await _createTestActiveSale({
+        //    marketCont: marketplaceContract,
+        //    gameItemContract,
+        //    signerAddress,
+        //})
 
         await _getActiveSales({
-            marketCont: marketplaceContract,
+            marketCont: marketContract,
             gameItemContract,
         })
 
         await _getInactiveSales({
-            marketCont: marketplaceContract,
+            marketCont: marketContract,
         })
     }
 
@@ -113,7 +126,7 @@ const MainApp = ({ pageProps, Component }) => {
             toast.error(`Address not approved, can't create new active sale!`)
             return
         }
-        
+
         const res = await Promise.all(
             tokenIds.map(async tokenId => {
                 const ownerOfTokenAddress = await gameItemContract?.ownerOf(
@@ -138,7 +151,9 @@ const MainApp = ({ pageProps, Component }) => {
                         console.log(err)
                     }
                 } else {
-                    toast.warning(`Not owner of tokenId \n Your address is ${signerAddress} \n Owner of token address is ${ownerOfTokenAddress}`)
+                    toast.warning(
+                        `Not owner of tokenId \n Your address is ${signerAddress} \n Owner of token address is ${ownerOfTokenAddress}`
+                    )
                     console.log(`Not owner of tokenId ${signerAddress}`)
                 }
             })
@@ -167,10 +182,7 @@ const MainApp = ({ pageProps, Component }) => {
         return isApproved
     }
 
-    const _getActiveSales = async ({
-        marketCont,
-        gameItemContract,
-    }) => {
+    const _getActiveSales = async ({ marketCont, gameItemContract }) => {
         const activeSales = await marketCont?.getActiveSales()
         console.log({ activeSales })
 
@@ -211,18 +223,14 @@ const MainApp = ({ pageProps, Component }) => {
     }
 
     const _getInactiveSales = async ({ marketCont }) => {
-        const inactiveSales = await marketCont?.getInactiveSales()
-        // console.log({ inactiveSales })
-
         const userPurchasedSales = await marketCont?.getUserPurchasedSales()
-        // console.log({ userPurchasedSales })
+        console.log({ userPurchasedSales })
 
         const userCreatedSales = await marketCont?.getUserCreatedSales()
-        // console.log({ userCreatedSales })
+        console.log({ userCreatedSales })
 
         dispatch(
             MainAppActions.setState({
-                inactiveSales,
                 userPurchasedSales,
                 userCreatedSales,
             })

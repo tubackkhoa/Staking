@@ -38,7 +38,7 @@ task('mint', 'Mint NFT')
             quantity.map(async _ => {
                 let res = await gameItem.mintNFT(
                     args.address,
-                    'https://gateway.pinata.cloud/ipfs/QmcgTcKV5EC9BNw4rv3iSRPyuzgJ2qQxLnWoo67gk3okUk'
+                    'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
                 )
                 res = await res.wait()
                 return 'done'
@@ -48,6 +48,41 @@ task('mint', 'Mint NFT')
 
         const balance = await gameItem.balanceOf(args.address)
         console.log(`NFT owned: ${balance.toString()}`)
+    })
+
+task('sale', 'create sale')
+    .addOptionalParam('quantity', 'number of sale', 1, types.int)
+    .setAction(async (args, hre) => {
+        const marketAbi = require('../artifacts/contracts/Marketplace.sol/Marketplace.json')
+        const nftAbi = require('../artifacts/contracts/GameItem.sol/GameItem.json')
+        const { marketAddress, nftAddress} = require('../deployed_address.json')
+
+        const signer = await ethers.getSigner()
+
+        const market = new ethers.Contract(
+            marketAddress,
+            marketAbi.abi,
+            signer
+        )
+        const nft = new ethers.Contract(
+            nftAddress,
+            nftAbi.abi,
+            signer
+        )
+
+        const approval = await nft.approveAddress(marketAddress)
+        await approval.wait()
+
+        const quantity = Array.from(Array(args.quantity).keys())
+        const res = await Promise.all(quantity.map(async it => {
+            if (it == 0) return 'done'
+
+            const created = await market.createSale(it, ethers.utils.parseEther((it * 1000) + ''))
+            await created.wait()
+
+            return 'done'
+        }))
+        console.log(res)
     })
 
 module.exports = {}

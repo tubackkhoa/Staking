@@ -41,5 +41,8 @@
     "tailwindcss": "^2.2.15",
     "web3modal": "^1.9.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@openzeppelin/contracts-upgradeable": "^4.3.2",
+    "@openzeppelin/hardhat-upgrades": "^1.10.0"
+  }
 }

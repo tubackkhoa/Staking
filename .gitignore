@@ -34,5 +34,8 @@ yarn-error.log*
 .vercel
 
 # hardhat
-artifacts/
+artifacts/*
+!artifacts/contracts
 cache/
+
+.openzeppelin/
