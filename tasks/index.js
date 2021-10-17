@@ -20,7 +20,8 @@ task('mint', 'Mint NFT')
     .addOptionalParam(
         'address',
         "The account's address",
-        '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        //'0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+        '0xccD6CB5034C15C63761070433cE436F5C4636501',
         types.string
     )
     .setAction(async (args, hre) => {
@@ -33,17 +34,25 @@ task('mint', 'Mint NFT')
             await ethers.getSigner()
         )
 
-        const quantity = Array.from(Array(args.quantity).keys())
-        const res = await Promise.all(
-            quantity.map(async _ => {
-                let res = await gameItem.mintNFT(
-                    args.address,
-                    'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
-                )
-                res = await res.wait()
-                return 'done'
-            })
-        )
+        for (let i = 0; i < args.quantity; i++) {
+            let res = await gameItem.mintNFT(
+                args.address,
+                'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
+            )
+            res = await res.wait()
+        }
+
+        //const quantity = Array.from(Array(args.quantity).keys())
+        //const res = await Promise.all(
+        //    quantity.map(async _ => {
+        //        let res = await gameItem.mintNFT(
+        //            args.address,
+        //            'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
+        //        )
+        //        res = await res.wait()
+        //        return 'done'
+        //    })
+        //)
         console.log('minted')
 
         const balance = await gameItem.balanceOf(args.address)
@@ -70,19 +79,29 @@ task('sale', 'create sale')
             signer
         )
 
-        const approval = await nft.approveAddress(marketAddress)
-        await approval.wait()
+        if (!(await nft.isApprovedForAll(signer.address, marketAddress))) {
+            const approval = await nft.approveAddress(marketAddress)
+            await approval.wait()
+        }
 
-        const quantity = Array.from(Array(args.quantity).keys())
-        const res = await Promise.all(quantity.map(async it => {
-            if (it == 0) return 'done'
 
-            const created = await market.createSale(it, ethers.utils.parseEther((it * 1000) + ''))
+        for (let i = 31; i <= 50; i++) {
+            const created = await market.createSale(i, ethers.utils.parseEther( (i * 1000 ) + ''))
             await created.wait()
+            console.log(`created sale for tokenId ${i}`)
+        }
+        console.log('done')
 
-            return 'done'
-        }))
-        console.log(res)
+        //const quantity = Array.from(Array(args.quantity).keys())
+        //const res = await Promise.all(quantity.map(async it => {
+        //    if (it == 0) return 'done'
+
+        //    const created = await market.createsale(it, ethers.utils.parseether((it * 1000) + ''))
+        //    await created.wait()
+
+        //    return 'done'
+        //}))
+        //console.log(res)
     })
 
 module.exports = {}

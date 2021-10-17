@@ -13,12 +13,13 @@ import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HowlToken.j
 
 const networks = {
     localhost: 'localhost',
+    bsc_testnet: 'https://data-seed-prebsc-1-s1.binance.org:8545' 
 }
 
 const connectWallet = async () => {
     // console.log('Check in connectWallet');
     const web3Modal = new Web3Modal({
-        network: networks.localhost,
+        network: networks.bsc_testnet,
         cacheProvider: false,
     })
     // auto connect metamask wallet

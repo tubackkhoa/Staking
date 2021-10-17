@@ -47,7 +47,7 @@ const MainApp = ({ pageProps, Component }) => {
         //    signerAddress,
         //})
 
-        const provider = new ethers.providers.JsonRpcProvider()
+        const provider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545')
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi.abi,
