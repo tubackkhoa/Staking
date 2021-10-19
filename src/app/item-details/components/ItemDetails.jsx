@@ -5,6 +5,7 @@ import { useGlobal } from 'reactn'
 import { icons } from 'assets'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
+import connectWallet from 'app/main-app/wallet'
 
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
@@ -55,7 +56,7 @@ const BuyButton = ({ saleId, price }) => {
         // buy token
         try {
             const unlimitedAllowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-            const allowance = await tokenCont?.allowance(walletInfo.signer.getAddress(), marketCont.address)
+            const allowance = await tokenCont?.allowance(walletInfo?.signer?.getAddress(), marketCont.address)
             if (allowance.lt(price)) {
                 const approveAllowance = await tokenCont?.approve(
                     marketCont.address,
@@ -70,14 +71,58 @@ const BuyButton = ({ saleId, price }) => {
             toast.success(`Purchase sale NFT successfully!`)
         } catch (err) {
             console.log(err)
+            toast.dismiss()
             toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
             console.log(err?.data?.message)
         }
     }
 
+    const _connectWalletAndSaveGlobal = async () => {
+        const wallet = await connectWallet()
+        toast.dismiss()
+        toast.success('Connect wallet successfully!')
+        console.log('check my-assets _getData', { wallet })
+
+        if (!wallet) {
+            toast.error('Connect wallet failed!')
+            return;
+        }
+
+        const {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+        } = wallet
+
+        const signerAddress = await signer?.getAddress()
+
+        setWalletInfo({
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            signerAddress,
+        })
+
+        return {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            signerAddress,
+        };
+    }
+
     const onClickBuy = async () => {
-        toast.info('Confirm your transaction!')
+        // toast.info('Confirm your transaction!')
         console.log({ walletInfo })
+
+        if(!walletInfo || !walletInfo.signer){
+            toast.info('Please connect your metamask wallet!')
+            await _connectWalletAndSaveGlobal();
+            return
+        }
         // return
         const signerAddress =
             walletInfo?.signerAddress ||
@@ -107,7 +152,7 @@ const BuyButton = ({ saleId, price }) => {
         })
     }
 
-    if (!price) return null
+    if (!price) return null;
 
     // console.log(price)
     const priceInHwl = ethers.utils.formatEther(price)
@@ -201,7 +246,7 @@ const ItemDetails = () => {
                         <p className="flex">{'20 of 25 available'}</p>
                     </div> */}
                     <ItemRating numberStar={4} />
-                    <CreatorView />
+                    {/* <CreatorView /> */}
                     <InfoPages description={itemSelect?.description} />
                     <BuyButton
                         saleId={itemSelect?.saleId}

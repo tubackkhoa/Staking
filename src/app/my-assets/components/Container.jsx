@@ -8,6 +8,7 @@ import { globalKeys } from 'app/store'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 import LeftSideBar from './LeftSideBar'
+import { toast } from 'react-toastify'
 
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
@@ -18,20 +19,32 @@ const Container = props => {
     }, [])
 
     const _getData = async () => {
-        const walletInfo = await connectWallet()
-        console.log('check my-assets _getData', { walletInfo })
+        const { marketplaceContract, howlTokenContract, signerAddress } = await _connectWalletAndSaveGlobal();
+        await _getMyAssets({
+            marketCont: marketplaceContract,
+            tokenCont: howlTokenContract,
+            signerAddress,
+        })
+    }
 
-        if (!walletInfo) {
-            console.log('connectWallet failed!')
-            return
+    const _connectWalletAndSaveGlobal = async () => {
+        // toast.info('Connecting your metamask wallet!')
+        const wallet = await connectWallet()
+        toast.dismiss()
+        // toast.success('Connect wallet successfully!')
+        console.log('check my-assets _getData', { wallet })
+
+        if (!wallet) {
+            toast.error('Connect wallet failed!')
+            return;
         }
-        
+
         const {
             marketplaceContract,
             gameItemContract,
             signer,
             howlTokenContract,
-        } = walletInfo
+        } = wallet
 
         const signerAddress = await signer?.getAddress()
 
@@ -43,23 +56,28 @@ const Container = props => {
             signerAddress,
         })
 
-        await _getMyAssets({
-            marketCont: marketplaceContract,
-            tokenCont: howlTokenContract,
+        return {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
             signerAddress,
-        })
+        };
     }
 
     const _getMyAssets = async ({ marketCont, tokenCont, signerAddress }) => {
-        const fee = await marketCont?.getFee()
-        console.log({ fee })
-        const feeFloat = ethers.utils.formatEther(fee)
-        console.log({ feeFloat })
+        // const fee = await marketCont?.getFee()
+        // console.log({ fee })
+        // const feeFloat = ethers.utils.formatEther(fee)
+        // console.log({ feeFloat })
 
-        const nfts = await marketCont?.getUserNFTs()
-        console.log({ nfts })
-
-        dispatch(MainAppActions.setMyAssetNfts(nfts))
+        try {
+            const nfts = await marketCont?.getUserNFTs()
+            console.log({ nfts })
+            dispatch(MainAppActions.setMyAssetNfts(nfts))
+        } catch (error) {
+            toast.error(error)
+        }
 
         // const activeSales = await marketCont?.getActiveSales()
         // console.log({ activeSales })

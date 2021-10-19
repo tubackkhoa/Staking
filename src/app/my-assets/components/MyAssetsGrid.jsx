@@ -33,7 +33,7 @@ const MyAssetsGrid = () => {
                                 tokenId={tokenId}
                                 index={index}
                                 onClick={({ nft }) => {
-                                    // route.push(routes.itemDetails)
+                                    route.push(routes.createSale)
                                     // setItemSelect(nft)
                                 }}
                             />

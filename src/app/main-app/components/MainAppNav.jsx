@@ -50,12 +50,9 @@ const ConnectWalletButton = () => {
 const SearchBar = () => {
     return (
         <div
+            className="flex flex-row items-center h-10"
             style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
                 backgroundColor: '#1B1A21',
-                height: 40,
                 borderRadius: 10,
                 minWidth: 332,
                 marginLeft: 72,
@@ -111,23 +108,11 @@ const MainAppNav = ({ showSearchBar = false }) => {
     ]
 
     return (
-        <nav
-            className="bg-nav-bar"
-            style={{
-                display: 'flex',
-                width: 'auto',
-                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.16)',
-            }}>
+        <nav className="bg-nav-bar flex w-full shadow-nav">
             <div className="flex flex-1 flex-row mx-8 py-4">
                 <Link href="/">
                     <a
-                        className="flex flex-wrap items-center"
-                        style={{
-                            color: '#F2F2F2',
-                            fontSize: 26,
-                            lineHeight: '32px',
-                            fontWeight: 600,
-                        }}>
+                        className="flex flex-wrap items-center text-white text-3xl font-semibold">
                         <img
                             src="/howl.png"
                             alt="HowlCity"
@@ -148,13 +133,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
                                 onClick={onClick}
                                 className="flex"
                                 style={{ margin: '0px 16px 0px 16px' }}>
-                                <p
-                                    style={{
-                                        color: '#F2F2F2',
-                                        fontSize: 16,
-                                        lineHeight: '24px',
-                                        fontWeight: '600',
-                                    }}>
+                                <p className="flex text-white text-base font-semibold">
                                     {title}
                                 </p>
                             </button>

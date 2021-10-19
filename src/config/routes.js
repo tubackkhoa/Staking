@@ -5,4 +5,5 @@ export const routes = {
     createItem: './create-item',
     lending: './lending',
     borrow: './borrow',
+    createSale: './create-sale',
 }

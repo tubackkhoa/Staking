@@ -55,9 +55,9 @@ const MainApp = ({ pageProps, Component }) => {
         setWalletInfo({
            marketplaceContract: marketContract,
            gameItemContract: gameItemContract,
-           signer: {},
+           signer: null,
            howlTokenContract: null,
-           signerAddress: '',
+           signerAddress: null,
         })
 
         //await _createTestActiveSale({
@@ -66,8 +66,8 @@ const MainApp = ({ pageProps, Component }) => {
         //    signerAddress,
         //})
 
-        console.log({ marketContract })
-        console.log({ gameItemContract })
+        // console.log({ marketContract })
+        // console.log({ gameItemContract })
 
         await _getActiveSales({
             marketCont: marketContract,
@@ -188,7 +188,7 @@ const MainApp = ({ pageProps, Component }) => {
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
         const activeSales = await marketCont?.getActiveSales()
-        console.log({ activeSales })
+        // console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
             activeSales.map(async item => {
