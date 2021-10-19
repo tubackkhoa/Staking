@@ -39,15 +39,8 @@ const MainApp = ({ pageProps, Component }) => {
         //    signerAddress,
         //} = await connectWalletAndGetContract()
 
-        //setWalletInfo({
-        //    marketplaceContract,
-        //    gameItemContract,
-        //    signer,
-        //    howlTokenContract,
-        //    signerAddress,
-        //})
-
-        const provider = new ethers.providers.JsonRpcProvider('https://data-seed-prebsc-1-s1.binance.org:8545')
+        const testnetBSC = 'https://data-seed-prebsc-1-s1.binance.org:8545'
+        const provider = new ethers.providers.JsonRpcProvider(testnetBSC)
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi.abi,
@@ -59,20 +52,31 @@ const MainApp = ({ pageProps, Component }) => {
             provider
         )
 
+        setWalletInfo({
+           marketplaceContract: marketContract,
+           gameItemContract: gameItemContract,
+           signer: {},
+           howlTokenContract: null,
+           signerAddress: '',
+        })
+
         //await _createTestActiveSale({
         //    marketCont: marketplaceContract,
         //    gameItemContract,
         //    signerAddress,
         //})
 
+        console.log({ marketContract })
+        console.log({ gameItemContract })
+
         await _getActiveSales({
             marketCont: marketContract,
             gameItemContract,
         })
 
-        await _getInactiveSales({
-            marketCont: marketContract,
-        })
+        // await _getInactiveSales({
+        //     marketCont: marketContract,
+        // })
     }
 
     const connectWalletAndGetContract = async () => {

@@ -19,7 +19,7 @@ const Container = props => {
 
     const _getData = async () => {
         const walletInfo = await connectWallet()
-        console.log('check main _getData', { walletInfo })
+        console.log('check my-assets _getData', { walletInfo })
 
         if (!walletInfo) {
             console.log('connectWallet failed!')

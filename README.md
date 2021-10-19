@@ -21,9 +21,31 @@ npx hardhat mint --quantity 5 --address 0xf39fd6e51aad88f6f4ce6ab8827279cfffb922
 This is a [Next.js](https://nextjs.org/) project bootstrapped
 with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Getting Started for BSC Testnet
 
-First, run the development server:
+Add private key in .env to your metamask wallet
+Open Metamask => Import account => Paste your private key string here => Import
+
+connect metamask wallet to Binance smart chain testnet
+How to: https://docs.binance.org/smart-chain/wallet/metamask.html
+Get testnet RPC: https://docs.binance.org/smart-chain/developer/rpc.html
+
+example: click metamask icon in extension bar => click avatar => Settings => Networks => scroll to bottom => Add Network
+Network name: BSC Testnet 01
+New RPC URL: https://data-seed-prebsc-2-s3.binance.org:8545/
+Chain ID: 97
+=> Save
+
+open project in terminal
+ONLY run the command: yarn dev to start NextJS webapp
+WARNING: DO NOT yarn hat or yarn net because it will replace deployed_address.json by local network address
+
+Open http://localhost:14001 and check the network is connect (in metamask extension view)
+If connected, is ok
+
+Warning: it only connects if it open in your site http://localhost:14001
+
+## Getting Started for local network
 
 ```bash
 # run hardhat node
@@ -34,31 +56,6 @@ yarn net
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:14001](http://localhost:14001) with your browser to see the result.
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed
-on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited
-in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated
-as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions
-are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
