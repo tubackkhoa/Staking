@@ -11,6 +11,7 @@ module.exports = {
                 'hwl-gray-3': '#363943',
                 'hwl-gray-4': '#535562',
                 'nav-bar': '#1C171D',
+                'Gray-1': '#232128',
                 'blue-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #029CC1 100%)',
                 'yellow-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #E2C656 100%)',
                 'linear-blue-2': 'linear-gradient(101.12deg, #4664F0 27.35%, rgba(70, 100, 240, 0.6) 99.99%, #C81CC5 100%, #4664F0 100%)',

@@ -15,12 +15,7 @@ const ItemRating = ({ numberStar = 0 }) => {
                         <div key={`ItemRating-${index}`}>
                             <img
                                 alt="star-image"
-                                className="flex"
-                                style={{
-                                    width: '18px',
-                                    height: '18px',
-                                    marginRight: '6px',
-                                }}
+                                className="flex mr-2 w-5 h-5"
                                 src={icons.star}
                             />
                         </div>
@@ -89,13 +84,13 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
                     },
                 })
             }
-            className="NftCardContainer flex flex-col items-center w-52 h-80 rounded-lg m-4 p-3">
+            className="transition duration-500 ease-in-out hover:bg-blue-500 transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center w-52 h-80 rounded-lg m-4 bg-Gray-1 overflow-hidden">
             <img
                 alt="itemInfo-image"
-                className="flex rounded-xl w-48 h-48"
+                className="flex w-52 h-52"
                 src={itemInfo?.image}
             />
-            <div className="flex flex-1 flex-col items-left w-full Info">
+            <div className="flex flex-1 flex-col items-left w-full Info p-3">
                 <a className="text-white text-left Title">{itemInfo?.name}</a>
                 <div
                     className="flex flex-row items-center w-full"

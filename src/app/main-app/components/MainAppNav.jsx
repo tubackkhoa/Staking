@@ -80,6 +80,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
         {
             id: 0,
             title: 'Explore',
+            route: routes.mainApp,
             onClick: () => {
                 route.push(routes.mainApp)
             },
@@ -87,6 +88,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
         {
             id: 1,
             title: 'My assets',
+            route: routes.myAssets,
             onClick: () => {
                 route.push(routes.myAssets)
             },
@@ -94,6 +96,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
         {
             id: 2,
             title: 'Lend',
+            route: routes.lending,
             onClick: () => {
                 route.push(routes.lending)
             },
@@ -101,6 +104,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
         {
             id: 3,
             title: 'Borrow',
+            route: routes.borrow,
             onClick: () => {
                 route.push(routes.borrow)
             },
@@ -122,20 +126,19 @@ const MainAppNav = ({ showSearchBar = false }) => {
                     </a>
                 </Link>
                 {!!showSearchBar && <SearchBar />}
-                <div
-                    className="flex flex-1 flex-row justify-center items-center"
-                    style={{ margin: '0px 32px 0px 32px' }}>
+                <div className="flex flex-1 flex-row justify-center items-center mx-8 my-0">
                     {topics.map((item, index) => {
                         const { id, title, onClick } = item
+                        console.log('Check item.route = ' + item.route)
+                        console.log('Check route.pathname = ' + route.pathname)
+                        const isCurrentRoute = item.route === route.pathname
+                        console.log('Check isCurrentRoute = ', isCurrentRoute) 
                         return (
-                            <button
-                                key={`topics-${id}`}
-                                onClick={onClick}
-                                className="flex"
-                                style={{ margin: '0px 16px 0px 16px' }}>
+                            <button key={`topics-${id}`} onClick={onClick} className="flex mx-4 my-0 flex-col">
                                 <p className="flex text-white text-base font-semibold">
                                     {title}
                                 </p>
+                                {!!isCurrentRoute && <div className="flex bg-white w-full mt-2" style={{ height: '2px' }} />}
                             </button>
                         )
                     })}

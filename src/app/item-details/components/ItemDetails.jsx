@@ -6,6 +6,7 @@ import { icons } from 'assets'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
+import { routes } from 'config/routes'
 
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
@@ -35,6 +36,7 @@ const InfoPages = ({ description }) => {
 
 const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
+    const route = useRouter()
     console.log('Check walletInfo = ', walletInfo)
 
     // useEffect(()=>{
@@ -69,6 +71,8 @@ const BuyButton = ({ saleId, price }) => {
             await purchaseToken.wait()
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
+            route.push(routes.myAssets)
+            
         } catch (err) {
             console.log(err)
             toast.dismiss()
