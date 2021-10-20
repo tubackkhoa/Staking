@@ -11,7 +11,7 @@ import { NftCard } from '../../components'
 
 const MyAssetsGrid = () => {
     const route = useRouter()
-    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
+    const [myAssetSelect, setMyAssetSelect] = useGlobal(globalKeys.myAssetSelect)
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
 
@@ -29,12 +29,14 @@ const MyAssetsGrid = () => {
                             <NftCard
                                 key={itemKey}
                                 URI={URI}
+                                showPrice={false}
                                 contractAddress={contractAddress}
                                 tokenId={tokenId}
                                 index={index}
                                 onClick={({ nft }) => {
                                     route.push(routes.createSale)
-                                    // setItemSelect(nft)
+                                    console.log('Check nft = ', nft)
+                                    setMyAssetSelect(nft)
                                 }}
                             />
                         )

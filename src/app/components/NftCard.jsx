@@ -3,7 +3,7 @@ import { icons } from 'assets'
 import { colors } from 'config/colors'
 import axios from 'axios'
 import { ethers } from 'ethers'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 
 const ItemRating = ({ numberStar = 0 }) => {
     return (
@@ -25,8 +25,15 @@ const ItemRating = ({ numberStar = 0 }) => {
     )
 }
 
-const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) => {
-
+const NftCard = ({
+    URI,
+    contractAddress,
+    tokenId,
+    price = 0,
+    index,
+    onClick,
+    showPrice = true,
+}) => {
     const [attributes, setAttributes] = useState({
         id: '',
         title: '',
@@ -64,13 +71,29 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
             })
     }, [URI, contractAddress, tokenId])
 
-    if(price === null || price === undefined) {
+    if (price === null || price === undefined) {
         console.log({ price })
         console.log(`Invalid price, can't show NFT card!`)
         return null
     }
     // console.log('Check price = ', price)
     const priceInHwl = ethers.utils.formatEther(price) || ''
+
+    const renderPrice = () => {
+        if (!showPrice) return null
+        return (
+            <div className="flex flex-row items-center w-full mt-1">
+                <div className="flex text-white Price">{priceInHwl}</div>
+                <div className="flex text-white TokenCode">
+                    {attributes?.tokenCode}
+                </div>
+                <img className="HeartIcon" src={icons.heart} />
+                <div className="flex text-white ml-1 text-xs">
+                    {attributes?.like}
+                </div>
+            </div>
+        )
+    }
 
     return (
         <button
@@ -84,41 +107,21 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
                     },
                 })
             }
-            className="transition duration-500 ease-in-out hover:bg-blue-500 transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center w-52 h-80 rounded-lg m-4 bg-Gray-1 overflow-hidden">
+            className="transition duration-500 ease-in-out hover:bg-blue-700 transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center w-52 rounded-lg m-4 bg-Gray-1 overflow-hidden">
             <img
                 alt="itemInfo-image"
                 className="flex w-52 h-52"
                 src={itemInfo?.image}
             />
-            <div className="flex flex-1 flex-col items-left w-full Info p-3">
-                <a className="text-white text-left Title">{itemInfo?.name}</a>
-                <div
-                    className="flex flex-row items-center w-full"
-                    style={{ marginTop: '4px' }}>
-                    <a className="flex text-white Price">{priceInHwl}</a>
-                    <a className="flex text-white TokenCode">
-                        {attributes?.tokenCode}
-                    </a>
-                    <img className="HeartIcon" src={icons.heart} />
-                    <a
-                        className="flex text-white"
-                        style={{
-                            marginLeft: '3px',
-                            fontSize: '12px',
-                        }}>
-                        {attributes?.like}
-                    </a>
-                </div>
-                <div
-                    className="flex flex-row items-center justify-between"
-                    style={{ marginTop: '8px' }}>
+            <div className="flex flex-1 flex-col items-left w-full Info px-3 py-4">
+                <a className="text-white text-left text-base">{itemInfo?.name}</a>
+                {renderPrice()}
+                <div className="flex flex-row items-center justify-between mt-2">
                     <ItemRating numberStar={attributes?.star} />
                     <div
-                        className="flex justify-center items-center"
+                        className="flex justify-center items-center py-1 px-2 rounded-md"
                         style={{
-                            padding: '4px 6px 4px 6px',
                             backgroundColor: colors.yellowBinance,
-                            borderRadius: '4px',
                         }}>
                         <a
                             className="flex"

@@ -33,7 +33,7 @@ const NameAndEmail = () => {
                         placeholder={'Your Email'}
                     />
                     <button
-                        className="flex bg-hwl-blue-1 justify-center items-center"
+                        className="flex bg-Blue-1 justify-center items-center"
                         style={{
                             width: '120px',
                             height: '40px',

@@ -115,30 +115,26 @@ const MainAppNav = ({ showSearchBar = false }) => {
         <nav className="bg-nav-bar flex w-full shadow-nav">
             <div className="flex flex-1 flex-row mx-8 py-4">
                 <Link href="/">
-                    <a
-                        className="flex flex-wrap items-center text-white text-3xl font-semibold">
+                    <div className="flex flex-wrap items-center text-white text-3xl font-semibold">
                         <img
                             src="/howl.png"
                             alt="HowlCity"
                             className="flex h-12 w-12"
                         />
                         <span className="ml-4">{'HowlCity'}</span>
-                    </a>
+                    </div>
                 </Link>
                 {!!showSearchBar && <SearchBar />}
                 <div className="flex flex-1 flex-row justify-center items-center mx-8 my-0">
                     {topics.map((item, index) => {
                         const { id, title, onClick } = item
-                        console.log('Check item.route = ' + item.route)
-                        console.log('Check route.pathname = ' + route.pathname)
                         const isCurrentRoute = item.route === route.pathname
-                        console.log('Check isCurrentRoute = ', isCurrentRoute) 
                         return (
                             <button key={`topics-${id}`} onClick={onClick} className="flex mx-4 my-0 flex-col">
                                 <p className="flex text-white text-base font-semibold">
                                     {title}
                                 </p>
-                                {!!isCurrentRoute && <div className="flex bg-white w-full mt-2" style={{ height: '2px' }} />}
+                                {!!isCurrentRoute && <div className="flex bg-Blue-1 w-full mt-2" style={{ height: '3px' }} />}
                             </button>
                         )
                     })}

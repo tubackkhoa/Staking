@@ -9,7 +9,35 @@ import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
 import { Loading } from 'app/components'
 
+const ItemRating = ({ numberStar = 5 }) => {
+    return (
+        <div className="flex flex-row">
+            {Array(numberStar).fill(0).map((item, index) => {
+                    return (
+                        <div key={`renderStars${index}`} className="flex w-12 h12 mr-3">
+                            <img style={{ width: '50px', height: '50px' }} src={icons.star} />
+                        </div>
+                    )
+                })}
+        </div>
+    )
+}
 
+const CreatorView = () => {
+    return (
+        <div className="flex flex-row items-center mt-4">
+            <img
+                alt="creator-avatar"
+                className="CreatorAvatar flex"
+                src={icons.instagram}
+            />
+            <div className="flex flex-col text-white ml-4">
+                <h6 className="flex text-sm">{'Creator'}</h6>
+                <h6>{'Manhnd'}</h6>
+            </div>
+        </div>
+    )
+}
 
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
@@ -17,8 +45,7 @@ const InfoPages = ({ description }) => {
     return (
         <div className="InfoPagesContainer flex flex-col w-full">
             <div className="InfoPageHeader flex flex-row text-white w-full">
-                <div
-                    className="InfoPageItem flex flex-col font-semibold">
+                <div className="InfoPageItem flex flex-col font-semibold">
                     <a>{'Details'}</a>
                     <div
                         className="flex mt-0.5"
@@ -37,7 +64,7 @@ const InfoPages = ({ description }) => {
     )
 }
 
-const BuyButton = ({ saleId, price }) => {
+const CreateSaleButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
@@ -50,11 +77,7 @@ const BuyButton = ({ saleId, price }) => {
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
 
-    const _purchaseSale = async ({
-        saleId,
-        marketCont,
-        tokenCont,
-    }) => {
+    const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
         if (!saleId || saleId === -1) {
             return
         }
@@ -62,8 +85,12 @@ const BuyButton = ({ saleId, price }) => {
         console.log('Check run _purchaseSale')
         // buy token
         try {
-            const unlimitedAllowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-            const allowance = await tokenCont?.allowance(walletInfo?.signer?.getAddress(), marketCont.address)
+            const unlimitedAllowance =
+                '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+            const allowance = await tokenCont?.allowance(
+                walletInfo?.signer?.getAddress(),
+                marketCont.address
+            )
             if (allowance.lt(price)) {
                 const approveAllowance = await tokenCont?.approve(
                     marketCont.address,
@@ -72,20 +99,23 @@ const BuyButton = ({ saleId, price }) => {
                 console.log({ approveAllowance })
             }
 
-            const purchaseToken = await marketCont.purchaseSale( /*saleId=*/ saleId)
+            const purchaseToken = await marketCont.purchaseSale(
+                /*saleId=*/ saleId
+            )
             await purchaseToken.wait()
             setLoading(false)
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
-             setTimeout(()=>{
+            setTimeout(() => {
                 route.push(routes.myAssets)
-            },2000)
-            
+            }, 2000)
         } catch (err) {
             console.log(err)
             setLoading(false)
             toast.dismiss()
-            toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
+            toast.error(
+                `Purchase sale failed with error ${err?.data?.message}!`
+            )
             console.log(err?.data?.message)
         }
     }
@@ -98,7 +128,7 @@ const BuyButton = ({ saleId, price }) => {
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
-            return;
+            return
         }
 
         const {
@@ -124,16 +154,16 @@ const BuyButton = ({ saleId, price }) => {
             signer,
             howlTokenContract,
             signerAddress,
-        };
+        }
     }
 
-    const onClickBuy = async () => {
+    const onClickCreateSale = async () => {
         // toast.info('Confirm your transaction!')
         console.log({ walletInfo })
 
-        if(!walletInfo || !walletInfo.signer){
+        if (!walletInfo || !walletInfo.signer) {
             toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal();
+            await _connectWalletAndSaveGlobal()
             return
         }
         // return
@@ -165,106 +195,71 @@ const BuyButton = ({ saleId, price }) => {
         })
     }
 
-    if (!price) return null;
+    // if (!price) return null
 
     // console.log(price)
-    const priceInHwl = ethers.utils.formatEther(price)
+    // const priceInHwl = ethers.utils.formatEther(price)
     // console.log('Check priceInHwl = ' + priceInHwl)
 
     return (
-        <div className="ActionButtonsContainer flex flex-row mt-8">
-            <button onClick={onClickBuy} className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
-                <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
-                    {`Buy for ${priceInHwl} HWL`}
-                </div>
-                {!!loading && <Loading className="ml-4" />}
-            </button>
-        </div>
+        <button onClick={onClickCreateSale} className="flex h-12 max-w-7xl bg-Blue-1 flex-row justify-center items-center rounded-lg mt-4">
+            <div className="flex text-xl text-semibold text-white">
+                {`Create sale`}
+            </div>
+            {!!loading && <Loading className="ml-4" />}
+        </button>
     )
 }
 
-const ItemDetails = () => {
-    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
-
+const CreateSale = () => {
+    const [myAssetSelect, setMyAssetSelect] = useGlobal(globalKeys.myAssetSelect)
+    const [priceInput, setPriceInput] = useState(0)
     const route = useRouter()
+
     useEffect(() => {
-        // console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
-        if (!itemSelect) {
+        console.log('Check new myAssetSelect = ' + JSON.stringify(myAssetSelect))
+        if (!myAssetSelect) {
             route.back()
             return
         }
-        const { id, image, like, price, star, title, tokenCode, saleId } =
-            itemSelect
-    }, [itemSelect])
+    }, [myAssetSelect])
 
-    const ItemRating = ({ numberStar = 5 }) => {
+    const renderInputItemPrice = () => {
         return (
-            <div className="flex flex-row">
-                {Array(numberStar)
-                    .fill(0)
-                    .map((item, index) => {
-                        return (
-                            <div
-                                key={`renderStars${index}`}
-                                style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    marginRight: '10px',
-                                }}>
-                                <img
-                                    style={{ width: '50px', height: '50px' }}
-                                    src={icons.star}
-                                />
-                            </div>
-                        )
-                    })}
-            </div>
-        )
-    }
-
-    const CreatorView = () => {
-        return (
-            <div className="flex flex-row items-center mt-4">
-                <img
-                    alt="creator-avatar"
-                    className="CreatorAvatar flex"
-                    src={icons.instagram}
-                />
-                <div className="flex flex-col text-white ml-4">
-                    <h6 className="flex text-sm">{'Creator'}</h6>
-                    <h6>{'Manhnd'}</h6>
+            <div className="flex flex-col">
+                <div className="flex text-white text-lg font-semibold">
+                    Price
                 </div>
+                <input
+                    // type={"number"}
+                    // defaultValue={priceInput}
+                    className="flex text-white font-semibold text-xl outline-none bg-Gray-2 h-12 w-auto max-w-7xl px-4 rounded-lg mt-6"
+                    placeholder={'Enter Price'}
+                />
             </div>
         )
     }
-
-    // const itemImageSrc = itemSelect?.image || ''
 
     return (
         <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
             <div className="ItemSelected flex flex-row self-center">
                 <img
                     className="flex w-96 h-96 rounded-3xl transition-all"
-                    src={itemSelect?.image}
+                    src={myAssetSelect?.image}
                     alt="main-item-image"
                 />
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="ItemInfoBlock flex flex-col">
-                    <p className="ItemName flex text-white">
-                        {itemSelect?.name}
-                    </p>
-                    {/* <div className="flex flex-row text-white">
-                        <p className="flex">{'From'}</p>
-                        <p className="flex ml-0.5">{'4.5 HOWL'}</p>
-                        <p className="flex">{' . '}</p>
-                        <p className="flex">{'20 of 25 available'}</p>
-                    </div> */}
+                <div className="ItemInfoBlock flex flex-col ml-16">
+                    <div className="ItemName flex text-white">
+                        {myAssetSelect?.name}
+                    </div>
                     <ItemRating numberStar={4} />
-                    {/* <CreatorView /> */}
-                    <InfoPages description={itemSelect?.description} />
-                    <BuyButton
-                        saleId={itemSelect?.saleId}
-                        price={itemSelect?.price}
+                    <InfoPages description={myAssetSelect?.description} />
+                    <div className="flex w-auto h-px bg-Gray-2 my-4" />
+                    {renderInputItemPrice()}
+                    <CreateSaleButton
+                        saleId={myAssetSelect?.saleId}
+                        price={myAssetSelect?.price}
                     />
                 </div>
             </div>
@@ -272,4 +267,4 @@ const ItemDetails = () => {
     )
 }
 
-export default ItemDetails
+export default CreateSale
