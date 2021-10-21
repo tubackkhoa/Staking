@@ -4,6 +4,7 @@ import { colors } from 'config/colors'
 import axios from 'axios'
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
+import classNames from 'classnames'
 
 const ItemRating = ({ numberStar = 0 }) => {
     return (
@@ -95,6 +96,9 @@ const NftCard = ({
         )
     }
 
+    const hoverAnim =
+        'transition duration-500 ease-in-out hover:bg-blue-700 transform hover:-translate-y-1 hover:scale-105'
+
     return (
         <button
             onClick={() =>
@@ -107,30 +111,30 @@ const NftCard = ({
                     },
                 })
             }
-            className="transition duration-500 ease-in-out hover:bg-blue-700 transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center w-52 rounded-lg m-4 bg-Gray-1 overflow-hidden">
+            className={classNames(
+                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden',
+                hoverAnim
+            )}>
             <img
                 alt="itemInfo-image"
-                className="flex w-52 h-52"
+                className="w-52 h-52"
                 src={itemInfo?.image}
             />
-            <div className="flex flex-1 flex-col items-left w-full Info px-3 py-4">
-                <a className="text-white text-left text-base">{itemInfo?.name}</a>
+            <div className="flex flex-col items-left w-full Info px-3 py-4">
+                <div className="text-white text-left text-base">
+                    {itemInfo?.name}
+                </div>
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
                     <ItemRating numberStar={attributes?.star} />
                     <div
                         className="flex justify-center items-center py-1 px-2 rounded-md"
-                        style={{
-                            backgroundColor: colors.yellowBinance,
-                        }}>
-                        <a
+                        style={{ backgroundColor: colors.yellowBinance }}>
+                        <div
                             className="flex"
-                            style={{
-                                fontSize: '11px',
-                                color: colors.black1,
-                            }}>
+                            style={{ fontSize: '11px', color: colors.black1 }}>
                             {'BSC'}
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>

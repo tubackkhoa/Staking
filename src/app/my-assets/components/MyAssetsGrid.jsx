@@ -18,8 +18,8 @@ const MyAssetsGrid = () => {
     // console.log({ nfts })
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 HomePage flex flex-1">
-            <div className="NftCards flex flex-wrap flex-1 p-4">
+        <div className="first-letter:bg-hwl-gray-1 HomePage">
+            <div className="flex flex-wrap flex-1 p-4">
                 {Array.isArray(nfts) &&
                     nfts.map((item, index) => {
                         if (!item) return null

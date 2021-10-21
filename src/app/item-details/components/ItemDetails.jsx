@@ -69,6 +69,7 @@ const BuyButton = ({ saleId, price }) => {
                     marketCont.address,
                     unlimitedAllowance
                 )
+                await approveAllowance.wait()
                 console.log({ approveAllowance })
             }
 
