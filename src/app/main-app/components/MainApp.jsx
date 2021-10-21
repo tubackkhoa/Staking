@@ -18,16 +18,25 @@ import { utils } from 'utils'
 import { marketAddress, nftAddress } from '../../../../deployed_address.json'
 import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import nftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
+import { useRouter } from 'next/dist/client/router'
+import { routes } from 'config/routes'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
     const [loadingState, setLoadingState] = useState('not-loaded')
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
+    const route = useRouter()
     // const [isApproved, setApproved] = useState(false)
     let isApproved = false
 
     useEffect(() => {
         getData()
+    }, [route.pathname])
+
+    useEffect(() => {
+        // if(route.pathname === routes.mainApp){
+        //     getData()
+        // }
     }, [])
 
     const getData = async () => {

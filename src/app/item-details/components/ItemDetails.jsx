@@ -41,7 +41,7 @@ const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
-    console.log('Check walletInfo = ', walletInfo)
+    // console.log('Check walletInfo = ', walletInfo)
 
     // useEffect(()=>{
     //     console.log('Check new walletInfo = ', walletInfo);
@@ -94,7 +94,7 @@ const BuyButton = ({ saleId, price }) => {
         const wallet = await connectWallet()
         toast.dismiss()
         toast.success('Connect wallet successfully!')
-        console.log('check my-assets _getData', { wallet })
+        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
@@ -172,7 +172,7 @@ const BuyButton = ({ saleId, price }) => {
     // console.log('Check priceInHwl = ' + priceInHwl)
 
     return (
-        <div className="ActionButtonsContainer flex flex-row mt-8">
+        <div className="ActionButtonsContainer flex flex-row mt-8 transition duration-300 ease-in-out 0 transform hover:-translate-y-1">
             <button onClick={onClickBuy} className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
                 <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {`Buy for ${priceInHwl} HWL`}

@@ -15,6 +15,8 @@ const MyAssetsGrid = () => {
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
 
+    // console.log({ nfts })
+
     return (
         <div className="first-letter:bg-hwl-gray-1 HomePage flex flex-1">
             <div className="NftCards flex flex-wrap flex-1 p-4">
@@ -36,7 +38,10 @@ const MyAssetsGrid = () => {
                                 onClick={({ nft }) => {
                                     route.push(routes.createSale)
                                     console.log('Check nft = ', nft)
-                                    setMyAssetSelect(nft)
+                                    setMyAssetSelect({
+                                        ...nft,
+                                        ...item
+                                    })
                                 }}
                             />
                         )

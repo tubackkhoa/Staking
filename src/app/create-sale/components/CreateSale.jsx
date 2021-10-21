@@ -12,10 +12,17 @@ import { Loading } from 'app/components'
 const ItemRating = ({ numberStar = 5 }) => {
     return (
         <div className="flex flex-row">
-            {Array(numberStar).fill(0).map((item, index) => {
+            {Array(numberStar)
+                .fill(0)
+                .map((item, index) => {
                     return (
-                        <div key={`renderStars${index}`} className="flex w-12 h12 mr-3">
-                            <img style={{ width: '50px', height: '50px' }} src={icons.star} />
+                        <div
+                            key={`renderStars${index}`}
+                            className="flex w-12 h12 mr-3">
+                            <img
+                                style={{ width: '50px', height: '50px' }}
+                                src={icons.star}
+                            />
                         </div>
                     )
                 })}
@@ -64,11 +71,12 @@ const InfoPages = ({ description }) => {
     )
 }
 
-const CreateSaleButton = ({ saleId, price }) => {
+const CreateSaleButton = ({ tokenId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
-    console.log('Check walletInfo = ', walletInfo)
+    // console.log('Check walletInfo = ', walletInfo)
+    let isApproved = false
 
     // useEffect(()=>{
     //     console.log('Check new walletInfo = ', walletInfo);
@@ -77,58 +85,19 @@ const CreateSaleButton = ({ saleId, price }) => {
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
 
-    const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
-        if (!saleId || saleId === -1) {
-            return
-        }
-        setLoading(true)
-        console.log('Check run _purchaseSale')
-        // buy token
-        try {
-            const unlimitedAllowance =
-                '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-            const allowance = await tokenCont?.allowance(
-                walletInfo?.signer?.getAddress(),
-                marketCont.address
-            )
-            if (allowance.lt(price)) {
-                const approveAllowance = await tokenCont?.approve(
-                    marketCont.address,
-                    unlimitedAllowance
-                )
-                console.log({ approveAllowance })
-            }
-
-            const purchaseToken = await marketCont.purchaseSale(
-                /*saleId=*/ saleId
-            )
-            await purchaseToken.wait()
-            setLoading(false)
-            console.log({ purchaseToken })
-            toast.success(`Purchase sale NFT successfully!`)
-            setTimeout(() => {
-                route.push(routes.myAssets)
-            }, 2000)
-        } catch (err) {
-            console.log(err)
-            setLoading(false)
-            toast.dismiss()
-            toast.error(
-                `Purchase sale failed with error ${err?.data?.message}!`
-            )
-            console.log(err?.data?.message)
-        }
-    }
-
-    const _connectWalletAndSaveGlobal = async () => {
+    const _connectWalletAndSaveGlobal = async ({ autoReCreateSale }) => {
         const wallet = await connectWallet()
         toast.dismiss()
-        toast.success('Connect wallet successfully!')
-        console.log('check my-assets _getData', { wallet })
+        toast.success('Connect wallet successfully, please try your create sale again!')
+        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
             return
+        }
+
+        if (autoReCreateSale) {
+            _onClickCreateSale()
         }
 
         const {
@@ -157,13 +126,12 @@ const CreateSaleButton = ({ saleId, price }) => {
         }
     }
 
-    const onClickCreateSale = async () => {
+    const _onClickCreateSale = async () => {
         // toast.info('Confirm your transaction!')
         console.log({ walletInfo })
-
         if (!walletInfo || !walletInfo.signer) {
             toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal()
+            await _connectWalletAndSaveGlobal({ autoReCreateSale: false })
             return
         }
         // return
@@ -183,16 +151,91 @@ const CreateSaleButton = ({ saleId, price }) => {
         console.log({ howlTokenBalanceWeiInt }) // 500000000
 
         console.log({ price }) // is BigNumber
-        const priceInt = ethers.utils.formatEther(price)
-        console.log({ priceInt })
+        // const priceInt = ethers.utils.formatEther(price)
+        // console.log({ priceInt })
 
-        const priceInHwl = priceInt / howlTokenBalanceWeiInt
-        console.log({ priceInHwl })
-        _purchaseSale({
-            saleId,
-            tokenCont: tokenCont,
-            marketCont: marketCont,
+        // const priceInHwl = priceInt / howlTokenBalanceWeiInt
+        // console.log({ priceInHwl })
+
+        const reqApprove = await _approveAddress({
+            signerAddress,
+            marketCont,
+            gameItemContract: walletInfo?.gameItemContract,
         })
+
+        await _createSale(
+            tokenId,
+            price,
+            signerAddress,
+            marketCont,
+            walletInfo?.gameItemContract
+        )
+    }
+
+    const _approveAddress = async ({
+        signerAddress,
+        marketCont,
+        gameItemContract,
+    }) => {
+        isApproved = await gameItemContract?.isApprovedForAll(
+            signerAddress,
+            marketCont?.address
+        )
+        // console.log({ isApproved })
+
+        if (!isApproved) {
+            const approval = await gameItemContract?.approveAddress(
+                marketCont?.address
+            )
+            isApproved = true
+            // console.log('Check approval = ', approval)
+        }
+        return isApproved
+    }
+
+    const _createSale = async (
+        tokenId,
+        price,
+        signerAddress,
+        marketCont,
+        gameItemContract
+    ) => {
+        setLoading(true)
+        // console.log('Check _createSale tokenId = ' + tokenId)
+        // console.log('Check _createSale price = ' + price)
+        
+        console.log({ gameItemContract })
+        const ownerOfTokenAddress = await gameItemContract?.ownerOf(tokenId)
+        console.log({ ownerOfTokenAddress })
+        // check if the seller is the owner of this token
+        // if true then the seller can sell
+        // else return error
+        if (ownerOfTokenAddress === signerAddress) {
+            try {
+                // const initPrice = `${utils.getRandom(20, 30)}`
+                console.log('Check price = ' + price)
+                console.log({ marketCont })
+                const createdSale = await marketCont?.createSale(
+                    tokenId,
+                    ethers.utils.parseEther(price)
+                )
+                toast.success('Create sale successfully!')
+                console.log({ createdSale })
+                setLoading(false)
+                setTimeout(()=>{
+                    route.push(routes.mainApp)
+                },2000)
+            } catch (err) {
+                setLoading(false)
+                toast.error(`Create sale failed, ${err?.data?.message}`)
+                console.log(err)
+            }
+        } else {
+            toast.warning(
+                `Not owner of tokenId \n Your address is ${signerAddress} \n Owner of token address is ${ownerOfTokenAddress}`
+            )
+            console.log(`Not owner of tokenId ${signerAddress}`)
+        }
     }
 
     // if (!price) return null
@@ -202,7 +245,9 @@ const CreateSaleButton = ({ saleId, price }) => {
     // console.log('Check priceInHwl = ' + priceInHwl)
 
     return (
-        <button onClick={onClickCreateSale} className="flex h-12 max-w-7xl bg-Blue-1 flex-row justify-center items-center rounded-lg mt-4">
+        <button
+            onClick={_onClickCreateSale}
+            className="flex h-12 max-w-7xl bg-Blue-1 flex-row justify-center items-center rounded-lg mt-6 transition duration-300 ease-in-out hover:bg-blue-500 transform hover:-translate-y-1">
             <div className="flex text-xl text-semibold text-white">
                 {`Create sale`}
             </div>
@@ -212,12 +257,16 @@ const CreateSaleButton = ({ saleId, price }) => {
 }
 
 const CreateSale = () => {
-    const [myAssetSelect, setMyAssetSelect] = useGlobal(globalKeys.myAssetSelect)
+    const [myAssetSelect, setMyAssetSelect] = useGlobal(
+        globalKeys.myAssetSelect
+    )
     const [priceInput, setPriceInput] = useState(0)
     const route = useRouter()
 
     useEffect(() => {
-        console.log('Check new myAssetSelect = ' + JSON.stringify(myAssetSelect))
+        console.log(
+            'Check new myAssetSelect = ' + JSON.stringify(myAssetSelect)
+        )
         if (!myAssetSelect) {
             route.back()
             return
@@ -235,14 +284,19 @@ const CreateSale = () => {
                     // defaultValue={priceInput}
                     className="flex text-white font-semibold text-xl outline-none bg-Gray-2 h-12 w-auto max-w-7xl px-4 rounded-lg mt-6"
                     placeholder={'Enter Price'}
+                    onChange={event => {
+                        setPriceInput(event.target.value)
+                    }}
                 />
             </div>
         )
     }
 
+    // console.log({ myAssetSelect })
+
     return (
         <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
-            <div className="ItemSelected flex flex-row self-center">
+            <div className="flex flex-row self-center">
                 <img
                     className="flex w-96 h-96 rounded-3xl transition-all"
                     src={myAssetSelect?.image}
@@ -258,8 +312,8 @@ const CreateSale = () => {
                     <div className="flex w-auto h-px bg-Gray-2 my-4" />
                     {renderInputItemPrice()}
                     <CreateSaleButton
-                        saleId={myAssetSelect?.saleId}
-                        price={myAssetSelect?.price}
+                        tokenId={myAssetSelect?.tokenId}
+                        price={priceInput}
                     />
                 </div>
             </div>

@@ -24,7 +24,7 @@ const LeftSideBar = () => {
     const [optionSelect, setOptionSelect] = useState(options[0])
 
     return (
-        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0 p-8 w-60">
+        <div className="LeftSideBar flex flex-col items-center border-r-0 p-8 w-60">
             <div className="flex flex-row GroupMenu">
                 <a className="flex text-white">Bike type</a>
                 <img className="ToggleBtn" src={icons.arrowDown} />
@@ -42,7 +42,7 @@ const LeftSideBar = () => {
                         <button
                             key={id}
                             className={classNames(
-                                'flex items-center GroupMenuItem',
+                                'flex items-center GroupMenuItem hover:bg-gray-500',
                                 { SelectedItem: isSelect }
                             )}
                             onClick={_onClick}>

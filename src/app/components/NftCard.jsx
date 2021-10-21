@@ -84,10 +84,10 @@ const NftCard = ({
         return (
             <div className="flex flex-row items-center w-full mt-1">
                 <div className="flex text-white Price">{priceInHwl}</div>
-                <div className="flex text-white TokenCode">
+                <div className="flex text-white mx-2 TokenCode">
                     {attributes?.tokenCode}
                 </div>
-                <img className="HeartIcon" src={icons.heart} />
+                <img className="HeartIcon flex ml-auto" src={icons.heart} />
                 <div className="flex text-white ml-1 text-xs">
                     {attributes?.like}
                 </div>
