@@ -15,6 +15,7 @@ task('balance', "Prints an account's balance")
         console.log(hre.ethers.utils.formatEther(balance), 'ETH')
     })
 
+
 task('mint', 'Mint NFT')
     .addOptionalParam('quantity', 'Number of NFT to be minted', 1, types.int)
     .addOptionalParam(
@@ -35,9 +36,10 @@ task('mint', 'Mint NFT')
         )
 
         for (let i = 0; i < args.quantity; i++) {
+            const NFTImageUri = 'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
             let res = await gameItem.mintNFT(
                 args.address,
-                'https://gateway.pinata.cloud/ipfs/QmQvjYme4tR7xm3V9QHhNSRt5JzVzArgEQzdrHEUZko69g'
+                NFTImageUri
             )
             res = await res.wait()
         }

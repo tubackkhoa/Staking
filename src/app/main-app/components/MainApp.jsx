@@ -30,16 +30,16 @@ const MainApp = ({ pageProps, Component }) => {
     let isApproved = false
 
     useEffect(() => {
-        getData()
+        _getData()
     }, [route.pathname])
 
     useEffect(() => {
-        // if(route.pathname === routes.mainApp){
-        //     getData()
-        // }
+        if(route.pathname === routes.mainApp){
+            _getData()
+        }
     }, [])
 
-    const getData = async () => {
+    const _getData = async () => {
         //const {
         //    marketplaceContract,
         //    gameItemContract,
@@ -74,9 +74,6 @@ const MainApp = ({ pageProps, Component }) => {
         //    gameItemContract,
         //    signerAddress,
         //})
-
-        // console.log({ marketContract })
-        // console.log({ gameItemContract })
 
         await _getActiveSales({
             marketCont: marketContract,
@@ -151,7 +148,7 @@ const MainApp = ({ pageProps, Component }) => {
                 // else return error
                 if (ownerOfTokenAddress === signerAddress) {
                     try {
-                        const initPrice = `${utils.getRandom(20, 30)}`
+                        const initPrice = `${utils.getRandom(2000, 3000)}`
                         // console.log('Check initPrice = ' + initPrice)
                         const createdSale = await marketCont?.createSale(
                             tokenId,

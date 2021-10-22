@@ -82,23 +82,18 @@ const CreateSaleButton = ({ tokenId, price }) => {
     //     console.log('Check new walletInfo = ', walletInfo);
     // }, [walletInfo])
 
-    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
-        walletInfo
+    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =  walletInfo
 
-    const _connectWalletAndSaveGlobal = async ({ autoReCreateSale }) => {
+    const _connectWalletAndSaveGlobal = async ({
+        onSuccess = () => {},
+        onError = () => {},
+    }) => {
         const wallet = await connectWallet()
-        toast.dismiss()
-        toast.success('Connect wallet successfully, please try your create sale again!')
-        // console.log('check my-assets _getData', { wallet })
-
         if (!wallet) {
-            toast.error('Connect wallet failed!')
+            onError()
             return
         }
-
-        if (autoReCreateSale) {
-            _onClickCreateSale()
-        }
+        onSuccess()
 
         const {
             marketplaceContract,
@@ -108,7 +103,6 @@ const CreateSaleButton = ({ tokenId, price }) => {
         } = wallet
 
         const signerAddress = await signer?.getAddress()
-
         setWalletInfo({
             marketplaceContract,
             gameItemContract,
@@ -116,7 +110,6 @@ const CreateSaleButton = ({ tokenId, price }) => {
             howlTokenContract,
             signerAddress,
         })
-
         return {
             marketplaceContract,
             gameItemContract,
@@ -127,35 +120,32 @@ const CreateSaleButton = ({ tokenId, price }) => {
     }
 
     const _onClickCreateSale = async () => {
-        // toast.info('Confirm your transaction!')
-        console.log({ walletInfo })
-        if (!walletInfo || !walletInfo.signer) {
-            toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal({ autoReCreateSale: false })
+        if(loading){
+            toast.warning('Please waiting ...')
             return
         }
-        // return
+        console.log({ walletInfo })
+        if (!walletInfo || !walletInfo.signer) {
+            toast.info('Connecting to your metamask!')
+            await _connectWalletAndSaveGlobal({
+                onSuccess: async () => {
+                    // await _approveAndCreateSale()
+                },
+                onError: () => {
+                    toast.error(
+                        'Connect wallet failed, please check your metamask wallet connect the BSC network!'
+                    )
+                },
+            })
+            return
+        }
+        await _approveAndCreateSale()
+    }
+
+    const _approveAndCreateSale = async () => {
         const signerAddress =
             walletInfo?.signerAddress ||
             (await walletInfo?.signer?.getAddress())
-        console.log({ signerAddress })
-        const weiBigNumber = await tokenCont?.balanceOf(signerAddress) // is an BigNumberish
-        console.log({ weiBigNumber }) //
-        // _hex: "0x019d971e4fe8401e74000000"
-        // _isBigNumber: true
-
-        // get balance of HOWL token
-        const howlTokenBalanceWeiInt = parseInt(
-            ethers.utils.formatEther(weiBigNumber)
-        )
-        console.log({ howlTokenBalanceWeiInt }) // 500000000
-
-        console.log({ price }) // is BigNumber
-        // const priceInt = ethers.utils.formatEther(price)
-        // console.log({ priceInt })
-
-        // const priceInHwl = priceInt / howlTokenBalanceWeiInt
-        // console.log({ priceInHwl })
 
         const reqApprove = await _approveAddress({
             signerAddress,
@@ -163,7 +153,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
             gameItemContract: walletInfo?.gameItemContract,
         })
 
-        await _createSale(
+        await _createSaleOnChain(
             tokenId,
             price,
             signerAddress,
@@ -181,19 +171,16 @@ const CreateSaleButton = ({ tokenId, price }) => {
             signerAddress,
             marketCont?.address
         )
-        // console.log({ isApproved })
-
         if (!isApproved) {
             const approval = await gameItemContract?.approveAddress(
                 marketCont?.address
             )
             isApproved = true
-            // console.log('Check approval = ', approval)
         }
         return isApproved
     }
 
-    const _createSale = async (
+    const _createSaleOnChain = async (
         tokenId,
         price,
         signerAddress,
@@ -201,20 +188,12 @@ const CreateSaleButton = ({ tokenId, price }) => {
         gameItemContract
     ) => {
         setLoading(true)
-        // console.log('Check _createSale tokenId = ' + tokenId)
-        // console.log('Check _createSale price = ' + price)
-        
-        console.log({ gameItemContract })
         const ownerOfTokenAddress = await gameItemContract?.ownerOf(tokenId)
-        console.log({ ownerOfTokenAddress })
         // check if the seller is the owner of this token
         // if true then the seller can sell
         // else return error
         if (ownerOfTokenAddress === signerAddress) {
             try {
-                // const initPrice = `${utils.getRandom(20, 30)}`
-                console.log('Check price = ' + price)
-                console.log({ marketCont })
                 const createdSale = await marketCont?.createSale(
                     tokenId,
                     ethers.utils.parseEther(price)
@@ -222,12 +201,15 @@ const CreateSaleButton = ({ tokenId, price }) => {
                 toast.success('Create sale successfully!')
                 console.log({ createdSale })
                 setLoading(false)
-                setTimeout(()=>{
+                setTimeout(() => {
                     route.push(routes.mainApp)
-                },2000)
+                }, 1000)
             } catch (err) {
                 setLoading(false)
-                toast.error(`Create sale failed, ${err?.data?.message}`)
+                const errorMsg = err?.data?.message
+                    ? ` ${err?.data?.message}`
+                    : ''
+                toast.error(`Create sale failed!` + errorMsg)
                 console.log(err)
             }
         } else {
@@ -237,12 +219,6 @@ const CreateSaleButton = ({ tokenId, price }) => {
             console.log(`Not owner of tokenId ${signerAddress}`)
         }
     }
-
-    // if (!price) return null
-
-    // console.log(price)
-    // const priceInHwl = ethers.utils.formatEther(price)
-    // console.log('Check priceInHwl = ' + priceInHwl)
 
     return (
         <button

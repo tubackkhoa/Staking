@@ -9,16 +9,13 @@ import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
 import { Loading } from 'app/components'
 
-
-
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
     const borderBottomColor = 'white'
     return (
         <div className="InfoPagesContainer flex flex-col w-full">
             <div className="InfoPageHeader flex flex-row text-white w-full">
-                <div
-                    className="InfoPageItem flex flex-col font-semibold">
+                <div className="InfoPageItem flex flex-col font-semibold">
                     <a>{'Details'}</a>
                     <div
                         className="flex mt-0.5"
@@ -50,11 +47,7 @@ const BuyButton = ({ saleId, price }) => {
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
 
-    const _purchaseSale = async ({
-        saleId,
-        marketCont,
-        tokenCont,
-    }) => {
+    const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
         if (!saleId || saleId === -1) {
             return
         }
@@ -62,8 +55,12 @@ const BuyButton = ({ saleId, price }) => {
         console.log('Check run _purchaseSale')
         // buy token
         try {
-            const unlimitedAllowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-            const allowance = await tokenCont?.allowance(walletInfo?.signer?.getAddress(), marketCont.address)
+            const unlimitedAllowance =
+                '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+            const allowance = await tokenCont?.allowance(
+                walletInfo?.signer?.getAddress(),
+                marketCont.address
+            )
             if (allowance.lt(price)) {
                 const approveAllowance = await tokenCont?.approve(
                     marketCont.address,
@@ -73,20 +70,23 @@ const BuyButton = ({ saleId, price }) => {
                 console.log({ approveAllowance })
             }
 
-            const purchaseToken = await marketCont.purchaseSale( /*saleId=*/ saleId)
+            const purchaseToken = await marketCont.purchaseSale(
+                /*saleId=*/ saleId
+            )
             await purchaseToken.wait()
             setLoading(false)
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
-             setTimeout(()=>{
+            setTimeout(() => {
                 route.push(routes.myAssets)
-            },2000)
-            
+            }, 2000)
         } catch (err) {
             console.log(err)
             setLoading(false)
             toast.dismiss()
-            toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
+            toast.error(
+                `Purchase sale failed with error ${err?.data?.message}!`
+            )
             console.log(err?.data?.message)
         }
     }
@@ -99,7 +99,7 @@ const BuyButton = ({ saleId, price }) => {
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
-            return;
+            return
         }
 
         const {
@@ -125,16 +125,21 @@ const BuyButton = ({ saleId, price }) => {
             signer,
             howlTokenContract,
             signerAddress,
-        };
+        }
     }
 
-    const onClickBuy = async () => {
+    const _onClickBuy = async () => {
         // toast.info('Confirm your transaction!')
-        console.log({ walletInfo })
+        // console.log({ walletInfo })
 
-        if(!walletInfo || !walletInfo.signer){
+        if (loading) {
+            toast.warning('Please waiting ...')
+            return
+        }
+
+        if (!walletInfo || !walletInfo.signer) {
             toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal();
+            await _connectWalletAndSaveGlobal()
             return
         }
         // return
@@ -166,7 +171,7 @@ const BuyButton = ({ saleId, price }) => {
         })
     }
 
-    if (!price) return null;
+    if (!price) return null
 
     // console.log(price)
     const priceInHwl = ethers.utils.formatEther(price)
@@ -174,7 +179,9 @@ const BuyButton = ({ saleId, price }) => {
 
     return (
         <div className="ActionButtonsContainer flex flex-row mt-8 transition duration-300 ease-in-out 0 transform hover:-translate-y-1">
-            <button onClick={onClickBuy} className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
+            <button
+                onClick={_onClickBuy}
+                className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
                 <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {`Buy for ${priceInHwl} HWL`}
                 </div>
@@ -207,13 +214,9 @@ const ItemDetails = () => {
                         return (
                             <div
                                 key={`renderStars${index}`}
-                                style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    marginRight: '10px',
-                                }}>
+                                className="flex w-12 h-12 mr-2.5">
                                 <img
-                                    style={{ width: '50px', height: '50px' }}
+                                    className="flex w-12 h-12"
                                     src={icons.star}
                                 />
                             </div>
