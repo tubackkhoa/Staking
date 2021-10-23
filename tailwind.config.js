@@ -5,12 +5,12 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'Blue-1': '#4664F0',
                 'hwl-gray-1': '#17141B',  //'#24252D',
                 'hwl-gray-2': '#26272E',
                 'hwl-gray-3': '#363943',
                 'hwl-gray-4': '#535562',
                 'nav-bar': '#1C171D',
+                'Blue-1': '#4664F0',
                 'Gray-1': '#232128',
                 'Gray-2': '#2D2E36',
                 'blue-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #029CC1 100%)',

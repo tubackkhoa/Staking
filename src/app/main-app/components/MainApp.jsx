@@ -20,36 +20,27 @@ import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Mark
 import nftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
+import { configs } from 'config/config'
 
 const MainApp = ({ pageProps, Component }) => {
     const [state, dispatch] = useMainAppContext()
     const [loadingState, setLoadingState] = useState('not-loaded')
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
-    // const [isApproved, setApproved] = useState(false)
     let isApproved = false
-
-    useEffect(() => {
-        _getData()
-    }, [route.pathname])
 
     useEffect(() => {
         if(route.pathname === routes.mainApp){
             _getData()
         }
+    }, [route.pathname])
+
+    useEffect(() => {
+        _getData()
     }, [])
 
     const _getData = async () => {
-        //const {
-        //    marketplaceContract,
-        //    gameItemContract,
-        //    signer,
-        //    howlTokenContract,
-        //    signerAddress,
-        //} = await connectWalletAndGetContract()
-
-        const testnetBSC = 'https://data-seed-prebsc-1-s1.binance.org:8545'
-        const provider = new ethers.providers.JsonRpcProvider(testnetBSC)
+        const provider = new ethers.providers.JsonRpcProvider(configs.testnetBSC)
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi.abi,
@@ -69,20 +60,14 @@ const MainApp = ({ pageProps, Component }) => {
            signerAddress: null,
         })
 
-        //await _createTestActiveSale({
-        //    marketCont: marketplaceContract,
-        //    gameItemContract,
-        //    signerAddress,
-        //})
-
         await _getActiveSales({
             marketCont: marketContract,
             gameItemContract,
         })
 
-        // await _getInactiveSales({
-        //     marketCont: marketContract,
-        // })
+        await _getInactiveSales({
+            marketCont: marketContract,
+        })
     }
 
     const connectWalletAndGetContract = async () => {
@@ -96,105 +81,9 @@ const MainApp = ({ pageProps, Component }) => {
         }
     }
 
-    const _createTestActiveSale = async ({
-        marketCont,
-        gameItemContract,
-        signerAddress,
-    }) => {
-        const reqApprove = await _approveAddress({
-            signerAddress,
-            marketCont,
-            gameItemContract,
-        })
-        console.log({ reqApprove })
-        if (!reqApprove) {
-            toast.error(`Address not approved, can't create test active sales!`)
-            return
-        }
-
-        const tokenIdList = [1, 2, 3]
-        await _createSale({
-            tokenIds: tokenIdList,
-            signerAddress,
-            marketCont,
-            gameItemContract,
-        })
-        return
-    }
-
-    const _createSale = async ({
-        tokenIds = [],
-        signerAddress,
-        marketCont,
-        gameItemContract,
-    }) => {
-        if (!Array.isArray(tokenIds) || tokenIds.length === 0) {
-            console.log('Invalid tokenIds!')
-            return
-        }
-        if (!isApproved) {
-            toast.error(`Address not approved, can't create new active sale!`)
-            return
-        }
-
-        const res = await Promise.all(
-            tokenIds.map(async tokenId => {
-                const ownerOfTokenAddress = await gameItemContract?.ownerOf(
-                    tokenId
-                )
-                // console.log({ ownerOfTokenAddress })
-                // check if the seller is the owner of this token
-                // if true then the seller can sell
-                // else return error
-                if (ownerOfTokenAddress === signerAddress) {
-                    try {
-                        const initPrice = `${utils.getRandom(2000, 3000)}`
-                        // console.log('Check initPrice = ' + initPrice)
-                        const createdSale = await marketCont?.createSale(
-                            tokenId,
-                            ethers.utils.parseEther(initPrice)
-                        )
-                        toast.success('Create sale successfully!')
-                        console.log({ createdSale })
-                    } catch (err) {
-                        toast.error(`Create sale failed, ${err?.data?.message}`)
-                        console.log(err)
-                    }
-                } else {
-                    toast.warning(
-                        `Not owner of tokenId \n Your address is ${signerAddress} \n Owner of token address is ${ownerOfTokenAddress}`
-                    )
-                    console.log(`Not owner of tokenId ${signerAddress}`)
-                }
-            })
-        )
-        // console.log('Check res', res)
-    }
-
-    const _approveAddress = async ({
-        signerAddress,
-        marketCont,
-        gameItemContract,
-    }) => {
-        isApproved = await gameItemContract?.isApprovedForAll(
-            signerAddress,
-            marketCont?.address
-        )
-        // console.log({ isApproved })
-
-        if (!isApproved) {
-            const approval = await gameItemContract?.approveAddress(
-                marketCont?.address
-            )
-            isApproved = true
-            // console.log('Check approval = ', approval)
-        }
-        return isApproved
-    }
-
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
         const activeSales = await marketCont?.getActiveSales()
-        // console.log({ activeSales })
+        console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
             activeSales.map(async item => {

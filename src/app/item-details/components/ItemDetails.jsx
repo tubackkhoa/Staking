@@ -8,6 +8,8 @@ import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
 import { Loading } from 'app/components'
+import classNames from 'classnames'
+import { configs } from 'config/config'
 
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
@@ -38,14 +40,12 @@ const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
-    // console.log('Check walletInfo = ', walletInfo)
-
-    // useEffect(()=>{
-    //     console.log('Check new walletInfo = ', walletInfo);
-    // }, [walletInfo])
-
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
+
+    useEffect(() => {
+        // _connectWalletAndSaveGlobal()
+    })
 
     const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
         if (!saleId || saleId === -1) {
@@ -55,8 +55,6 @@ const BuyButton = ({ saleId, price }) => {
         console.log('Check run _purchaseSale')
         // buy token
         try {
-            const unlimitedAllowance =
-                '115792089237316195423570985008687907853269984665640564039457584007913129639935'
             const allowance = await tokenCont?.allowance(
                 walletInfo?.signer?.getAddress(),
                 marketCont.address
@@ -64,7 +62,7 @@ const BuyButton = ({ saleId, price }) => {
             if (allowance.lt(price)) {
                 const approveAllowance = await tokenCont?.approve(
                     marketCont.address,
-                    unlimitedAllowance
+                    configs.unlimitedAllowance
                 )
                 await approveAllowance.wait()
                 console.log({ approveAllowance })
@@ -177,11 +175,17 @@ const BuyButton = ({ saleId, price }) => {
     const priceInHwl = ethers.utils.formatEther(price)
     // console.log('Check priceInHwl = ' + priceInHwl)
 
+    const hoverAnim =
+        'transition duration-300 ease-in-out 0 transform hover:-translate-y-1'
+
     return (
-        <div className="ActionButtonsContainer flex flex-row mt-8 transition duration-300 ease-in-out 0 transform hover:-translate-y-1">
+        <div className="flex flex-row mt-8">
             <button
                 onClick={_onClickBuy}
-                className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
+                className={classNames(
+                    'flex justify-center items-center w-64 h-16 px-4 py-2 rounded-xl border-Blue-1 border-2 hover:bg-Blue-1',
+                    hoverAnim
+                )}>
                 <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {`Buy for ${priceInHwl} HWL`}
                 </div>
@@ -236,7 +240,7 @@ const ItemDetails = () => {
                 />
                 <div className="flex flex-col text-white ml-4">
                     <h6 className="flex text-sm">{'Creator'}</h6>
-                    <h6>{'Manhnd'}</h6>
+                    <h6>{'Harry'}</h6>
                 </div>
             </div>
         )

@@ -5,6 +5,7 @@ import axios from 'axios'
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
+import Image from 'next/image'
 
 const ItemRating = ({ numberStar = 0 }) => {
     return (
@@ -112,14 +113,14 @@ const NftCard = ({
                 })
             }
             className={classNames(
-                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden',
+                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden w-52',
                 hoverAnim
             )}>
-            <img
+                {itemInfo?.image && <img
                 alt="itemInfo-image"
                 className="w-52 h-52"
                 src={itemInfo?.image}
-            />
+            />}
             <div className="flex flex-col items-left w-full Info px-3 py-4">
                 <div className="text-white text-left text-base">
                     {itemInfo?.name}
