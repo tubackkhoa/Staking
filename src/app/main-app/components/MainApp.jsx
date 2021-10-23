@@ -210,7 +210,9 @@ const MainApp = ({ pageProps, Component }) => {
                     length,
                 } = item
                 // each active sale, get uri by tokenURI func - param: tokenId
-                const uriOfNft = await gameItemContract?.tokenURI(1)
+                const uriOfNft = await gameItemContract?.tokenURI(tokenId) // 1 is tokenId // uri of json file
+                // console.log({ uriOfNft })
+                // show tokenId, seller
                 return {
                     ...item,
                     URI: uriOfNft,
