@@ -43,10 +43,11 @@ task('mint', 'Mint NFT')
             const NFTScrambleHarry = 'https://gateway.pinata.cloud/ipfs/QmR2QbMvt8c4dsN4qSehLRgnQMBoaNxF6XoZNMd1ZxuZX1' // pinata/Scramble_Bike_Green_Pro_113.json 
             const scramble3Json = 'https://gateway.pinata.cloud/ipfs/QmUCGZ3eUGoH3gtyeRjEd6QDphw1K8r2KFCax1BP21E5RY' // pinata/scramble3.json 
             const dirtbike1Json = 'https://gateway.pinata.cloud/ipfs/QmVmZx7V39Kke3fy8qfwz5DLkJwYHxuUoJ9uDahYmJPtRk'
+            const sportbike1Json = 'https://gateway.pinata.cloud/ipfs/QmdiwBqLcurYAyyDJJkTNSMmvSXNGninMeecUfR33xQj1s'
             
             let res = await gameItem.mintNFT(
                 ownerAddress,
-                dirtbike1Json, // have to JSON file
+                sportbike1Json, // have to JSON file
             )
             res = await res.wait()
         }

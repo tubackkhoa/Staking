@@ -55,8 +55,6 @@ const NftCard = ({
         axios
             .get(URI)
             .then(function (response) {
-                // handle success
-                // console.log({ response })
                 if (response.status !== 200) {
                     console.log(`Get NFT's info fail!`)
                     return
@@ -65,7 +63,6 @@ const NftCard = ({
                 setItemInfo({ description, image, name })
             })
             .catch(function (error) {
-                // handle error
                 console.log(error)
             })
             .then(function () {
@@ -89,16 +86,16 @@ const NftCard = ({
                 <div className="flex text-white mx-2 TokenCode">
                     {attributes?.tokenCode}
                 </div>
-                <img className="HeartIcon flex ml-auto" src={icons.heart} />
-                <div className="flex text-white ml-1 text-xs">
+                {/* <img className="HeartIcon flex ml-auto" src={icons.heart} /> */}
+                {/* <div className="flex text-white ml-1 text-xs">
                     {attributes?.like}
-                </div>
+                </div> */}
             </div>
         )
     }
 
     const hoverAnim =
-        'transition duration-500 ease-in-out hover:bg-blue-700 transform hover:-translate-y-1 hover:scale-105'
+        'transition duration-500 ease-in-out hover:bg-Blue-1 transform hover:-translate-y-1 hover:scale-105'
 
     return (
         <button
@@ -113,14 +110,18 @@ const NftCard = ({
                 })
             }
             className={classNames(
-                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden w-52',
+                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden w-52 group',
                 hoverAnim
             )}>
-                {itemInfo?.image && <img
-                alt="itemInfo-image"
-                className="w-52 h-52"
-                src={itemInfo?.image}
-            />}
+            <div className="w-52 h-52 bg-Gray-1">
+                {itemInfo?.image && (
+                    <img
+                        alt="itemInfo-image"
+                        className="w-52 h-52"
+                        src={itemInfo?.image}
+                    />
+                )}
+            </div>
             <div className="flex flex-col items-left w-full Info px-3 py-4">
                 <div className="text-white text-left text-base">
                     {itemInfo?.name}

@@ -44,8 +44,9 @@ const BuyButton = ({ saleId, price }) => {
         walletInfo
 
     useEffect(() => {
-        // _connectWalletAndSaveGlobal()
-    })
+        // console.log({ walletInfo })
+        _connectWalletAndSaveGlobal()
+    }, [])
 
     const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
         if (!saleId || saleId === -1) {
@@ -91,8 +92,8 @@ const BuyButton = ({ saleId, price }) => {
 
     const _connectWalletAndSaveGlobal = async () => {
         const wallet = await connectWallet()
-        toast.dismiss()
-        toast.success('Connect wallet successfully!')
+        // toast.dismiss()
+        // toast.success('Connect wallet successfully!')
         // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
@@ -127,11 +128,7 @@ const BuyButton = ({ saleId, price }) => {
     }
 
     const _onClickBuy = async () => {
-        // toast.info('Confirm your transaction!')
-        // console.log({ walletInfo })
-
         if (loading) {
-            toast.warning('Please waiting ...')
             return
         }
 
@@ -183,7 +180,7 @@ const BuyButton = ({ saleId, price }) => {
             <button
                 onClick={_onClickBuy}
                 className={classNames(
-                    'flex justify-center items-center w-64 h-16 px-4 py-2 rounded-xl border-Blue-1 border-2 hover:bg-Blue-1',
+                    'flex justify-center items-center w-80 h-16 px-4 py-2 rounded-xl border-Blue-1 border-2 hover:bg-Blue-1',
                     hoverAnim
                 )}>
                 <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
@@ -249,16 +246,18 @@ const ItemDetails = () => {
     // const itemImageSrc = itemSelect?.image || ''
 
     return (
-        <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
-            <div className="ItemSelected flex flex-row self-center">
-                <img
-                    className="flex w-96 h-96 rounded-3xl transition-all"
-                    src={itemSelect?.image}
-                    alt="main-item-image"
-                />
+        <div className="flex flex-1 flex-col pt-16">
+            <div className="flex flex-col md:flex-row self-center">
+                <div className="flex w-96 h-96 rounded-3xl transition-all bg-Gray-1">
+                    <img
+                        className="flex w-96 h-96 rounded-3xl"
+                        src={itemSelect?.image}
+                        alt="main-item-image"
+                    />
+                </div>
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="ItemInfoBlock flex flex-col">
-                    <p className="ItemName flex text-white">
+                <div className="flex flex-col mt-16 md:ml-16 md:mt-0">
+                    <p className="flex text-white">
                         {itemSelect?.name}
                     </p>
                     {/* <div className="flex flex-row text-white">

@@ -3,24 +3,21 @@ import { useRouter } from 'next/dist/client/router'
 
 const NameAndEmail = () => {
     return (
-        <div className="flex flex-col">
-            <a
+        <div className="flex flex-col items-center sm:items-start">
+            <div
                 className="flex text-white text-semibold"
                 style={{ fontSize: '26px' }}>
                 {'HowlCity'}
-            </a>
-            <div className="flex flex-col" style={{ marginTop: '40px' }}>
-                <a className="flex text-white" style={{}}>
-                    {'Get the lastes Updates'}
-                </a>
+            </div>
+            <div className="flex flex-col mt-10 items-center sm:items-start">
+                <div className="flex text-white">
+                    {'Get the latest updates'}
+                </div>
                 <div
-                    className="flex flex-row"
+                    className="flex flex-row h-10 rounded-sm mt-6 sm:mt-3"
                     style={{
                         backgroundColor: '#1B1A21',
-                        height: '40px',
                         width: '283px',
-                        borderRadius: '10px',
-                        marginTop: '12px',
                     }}>
                     <input
                         className="flex flex-1 text-white"
@@ -43,11 +40,9 @@ const NameAndEmail = () => {
                     </button>
                 </div>
             </div>
-            <a
-                className="flex text-white font-semibold"
-                style={{ marginTop: '80px', fontSize: '16px' }}>
+            <div className="flex text-white font-semibold mt-4 sm:mt-20 text-base">
                 {'HowlCity, Inc. All Rights Reserved'}
-            </a>
+            </div>
         </div>
     )
 }
@@ -58,9 +53,7 @@ const HowlMarketFeatures = () => {
         {
             id: 'features0',
             title: 'Explore',
-            onClick: () => {
-
-            },
+            onClick: () => {},
         },
         {
             id: 'features1',
@@ -74,20 +67,17 @@ const HowlMarketFeatures = () => {
         },
     ]
     return (
-        <div className="flex flex-col">
-            <a
-                className="flex text-white"
-                style={{ fontSize: '20px', fontWeight: 'bolder' }}>
+        <div className="flex flex-col items-center sm:items-start mt-16 sm:mt-0">
+            <div className="flex text-white text-xl font-bold">
                 {'Howl market'}
-            </a>
-            <div className="flex flex-col" style={{ marginTop: '24px' }}>
+            </div>
+            <div className="flex flex-row sm:flex-col mt-0 sm:mt-6">
                 {features.map((item, index) => {
                     const { id, title, onClick } = item
                     return (
                         <button
                             key={id}
-                            className="flex text-white"
-                            style={{ marginTop: '12px' }}>
+                            className="flex text-white mx-3 sm:mx-0 mt-3">
                             {title}
                         </button>
                     )
@@ -143,26 +133,26 @@ const Supports = () => {
         },
     ]
     return (
-        <div className="flex flex-col">
-            <a
+        <div className="flex flex-col items-center sm:items-start mt-16 sm:mt-0">
+            <div
                 className="flex text-white"
                 style={{ fontSize: '20px', fontWeight: 'bolder' }}>
                 {'Support'}
-            </a>
-            <div className="flex flex-col" style={{ marginTop: '24px' }}>
+            </div>
+            <div className="flex mt-0 sm:mt-6 flex-row sm:flex-col">
                 {features.map((item, index) => {
                     const { id, title, onClick } = item
                     return (
                         <button
                             key={id}
-                            className="flex text-white"
+                            className="flex text-white mx-3 sm:mx-0"
                             style={{ marginTop: '12px' }}>
                             {title}
                         </button>
                     )
                 })}
             </div>
-            <div className="flex flex-row" style={{ marginTop: 'auto' }}>
+            <div className="flex flex-row mt-12 sm:mt-auto">
                 {communities.map((item, index) => {
                     const { id, title, icon } = item
                     return (
@@ -189,7 +179,7 @@ const Supports = () => {
 const MainAppFooter = () => {
     return (
         <div className="flex bg-nav-bar py-8" style={{ boxShadow: '0px -4px 12px rgba(0, 0, 0, 0.08)' }}>
-            <div className="flex flex-row justify-around w-full">
+            <div className="flex flex-col sm:flex-row justify-around w-full">
                 <NameAndEmail />
                 <HowlMarketFeatures />
                 <Supports />
