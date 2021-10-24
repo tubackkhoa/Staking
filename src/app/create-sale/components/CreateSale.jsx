@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
 import { icons } from 'assets'
@@ -8,10 +8,11 @@ import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
 import { Loading } from 'app/components'
+import classNames from 'classnames'
 
 const ItemRating = ({ numberStar = 5 }) => {
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row mt-4 sm:mt-4">
             {Array(numberStar)
                 .fill(0)
                 .map((item, index) => {
@@ -20,7 +21,7 @@ const ItemRating = ({ numberStar = 5 }) => {
                             key={`renderStars${index}`}
                             className="flex w-12 h12 mr-3">
                             <img
-                                style={{ width: '50px', height: '50px' }}
+                                className="flex w-12 h-12"
                                 src={icons.star}
                             />
                         </div>
@@ -50,7 +51,7 @@ const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
     const borderBottomColor = 'white'
     return (
-        <div className="InfoPagesContainer flex flex-col w-full">
+        <div className="InfoPagesContainer flex flex-col w-full max-w-sm">
             <div className="InfoPageHeader flex flex-row text-white w-full">
                 <div className="InfoPageItem flex flex-col font-semibold">
                     <a>{'Details'}</a>
@@ -75,14 +76,32 @@ const CreateSaleButton = ({ tokenId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
-    // console.log('Check walletInfo = ', walletInfo)
     let isApproved = false
 
-    // useEffect(()=>{
-    //     console.log('Check new walletInfo = ', walletInfo);
-    // }, [walletInfo])
+    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
+        walletInfo
 
-    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =  walletInfo
+    useEffect(()=>{
+        _checkConnectWallet()
+    }, [])
+
+    const _checkConnectWallet = async () => {
+        console.log('_checkConnectWallet')
+        if (!walletInfo || !walletInfo.signer) {
+            toast.info('Connecting to your metamask!')
+            await _connectWalletAndSaveGlobal({
+                onSuccess: async () => {
+                    // await _approveAndCreateSale()
+                },
+                onError: () => {
+                    toast.error(
+                        'Connect wallet failed, please check your metamask wallet connect the BSC network!'
+                    )
+                },
+            })
+            return
+        }
+    }
 
     const _connectWalletAndSaveGlobal = async ({
         onSuccess = () => {},
@@ -120,7 +139,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
     }
 
     const _onClickCreateSale = async () => {
-        if(loading){
+        if (loading) {
             toast.warning('Please waiting ...')
             return
         }
@@ -175,6 +194,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
             const approval = await gameItemContract?.approveAddress(
                 marketCont?.address
             )
+            await approval.wait()
             isApproved = true
         }
         return isApproved
@@ -198,6 +218,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
                     tokenId,
                     ethers.utils.parseEther(price)
                 )
+                await createdSale.wait()  // waiting create transaction
                 toast.success('Create sale successfully!')
                 console.log({ createdSale })
                 setLoading(false)
@@ -220,10 +241,15 @@ const CreateSaleButton = ({ tokenId, price }) => {
         }
     }
 
+    const hoverAnim = "transition duration-300 ease-in-out hover:bg-blue-500"
+
     return (
         <button
             onClick={_onClickCreateSale}
-            className="flex h-12 max-w-7xl bg-Blue-1 flex-row justify-center items-center rounded-lg mt-6 transition duration-300 ease-in-out hover:bg-blue-500 transform hover:-translate-y-1">
+            className={classNames(
+                "flex h-12 max-w-7xl border-Blue-1 border-2 flex-row justify-center items-center rounded-lg mt-6",
+                hoverAnim,
+            )}>
             <div className="flex text-xl text-semibold text-white">
                 {`Create sale`}
             </div>
@@ -240,9 +266,9 @@ const CreateSale = () => {
     const route = useRouter()
 
     useEffect(() => {
-        console.log(
-            'Check new myAssetSelect = ' + JSON.stringify(myAssetSelect)
-        )
+        // console.log(
+        //     'Check new myAssetSelect = ' + JSON.stringify(myAssetSelect)
+        // )
         if (!myAssetSelect) {
             route.back()
             return
@@ -271,16 +297,18 @@ const CreateSale = () => {
     // console.log({ myAssetSelect })
 
     return (
-        <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
-            <div className="flex flex-row self-center">
-                <img
-                    className="flex w-96 h-96 rounded-3xl transition-all"
-                    src={myAssetSelect?.image}
-                    alt="main-item-image"
-                />
+        <div className="ItemSelectedContainer flex flex-1 flex-col">
+            <div className="flex flex-col sm:flex-row self-center">
+                <div className="flex w-72 h-72 sm:w-96 sm:h-96 transition-all" >
+                    <img
+                        className="flex flex-1 rounded-3xl"
+                        src={myAssetSelect?.image}
+                        alt="main-item-image"
+                    />
+                </div>
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="ItemInfoBlock flex flex-col ml-16">
-                    <div className="ItemName flex text-white">
+                <div className="flex flex-col ml-0 sm:ml-16">
+                    <div className="flex text-white mt-12 text-3xl font-semibold sm:mt-0">
                         {myAssetSelect?.name}
                     </div>
                     <ItemRating numberStar={4} />

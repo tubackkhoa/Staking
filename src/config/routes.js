@@ -6,4 +6,5 @@ export const routes = {
     lending: '/lending',
     borrow: '/borrow',
     createSale: '/create-sale',
+    storePage: '/store-page',
 }

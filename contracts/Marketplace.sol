@@ -1,28 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-import "hardhat/console.sol";
+import 'hardhat/console.sol';
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
+import '@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol';
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/utils/Counters.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol';
+import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
+import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 
-contract Marketplace is 
+contract Marketplace is
     Initializable,
     UUPSUpgradeable,
     ReentrancyGuardUpgradeable,
     OwnableUpgradeable,
-    IERC721Receiver {
-
+    IERC721Receiver
+{
     using SafeMath for uint256;
     using Counters for Counters.Counter;
 
@@ -45,10 +45,18 @@ contract Marketplace is
         feeReceiver = msg.sender;
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner { }
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyOwner
+    {}
 
-    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data)
-        external pure override returns (bytes4) {
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external pure override returns (bytes4) {
         return 0x150b7a02;
     }
 
@@ -60,7 +68,7 @@ contract Marketplace is
     }
 
     function setFee(uint256 newFee) external onlyOwner {
-        require(newFee <= 100, "Fee percent must be smaller than 10%");
+        require(newFee <= 100, 'Fee percent must be smaller than 10%');
         feePercentX10 = newFee;
     }
 
@@ -69,7 +77,7 @@ contract Marketplace is
     }
 
     function setFeeReceiver(address newFeeReceiver) external onlyOwner {
-        require(newFeeReceiver != address(0), "setFeeReceiver: null address");
+        require(newFeeReceiver != address(0), 'setFeeReceiver: null address');
         feeReceiver = newFeeReceiver;
     }
 
@@ -89,21 +97,58 @@ contract Marketplace is
 
     mapping(uint256 => Sale) private Sales;
 
-    event SaleCreated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, bool isSold, uint256 lastUpdated);
-    event SaleUpdated(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
-    event SaleCanceled(uint indexed saleId, uint256 indexed tokenId, address indexed seller, uint256 price, uint256 lastUpdated);
-    event SaleSold(uint indexed saleId, uint256 indexed tokenId, address seller, uint256 price, bool isSold, uint256 lastUpdated);
-    event FeeTransfered(uint saleId, uint256 tokenId, address seller, address buyer, address feeReceiver, uint256 fee, uint256 lastUpdated);
+    event SaleCreated(
+        uint256 indexed saleId,
+        uint256 indexed tokenId,
+        address indexed seller,
+        uint256 price,
+        bool isSold,
+        uint256 lastUpdated
+    );
+    event SaleUpdated(
+        uint256 indexed saleId,
+        uint256 indexed tokenId,
+        address indexed seller,
+        uint256 price,
+        uint256 lastUpdated
+    );
+    event SaleCanceled(
+        uint256 indexed saleId,
+        uint256 indexed tokenId,
+        address indexed seller,
+        uint256 price,
+        uint256 lastUpdated
+    );
+    event SaleSold(
+        uint256 indexed saleId,
+        uint256 indexed tokenId,
+        address seller,
+        uint256 price,
+        bool isSold,
+        uint256 lastUpdated
+    );
+    event FeeTransfered(
+        uint256 saleId,
+        uint256 tokenId,
+        address seller,
+        address buyer,
+        address feeReceiver,
+        uint256 fee,
+        uint256 lastUpdated
+    );
 
     modifier onlySeller(uint256 saleId) {
-        require(msg.sender == Sales[saleId].seller, "Invalid sale seller");
+        require(msg.sender == Sales[saleId].seller, 'Invalid sale seller');
         _;
     }
 
     /* Places an item for sale on the marketplace */
     function createSale(uint256 tokenId, uint256 price) external nonReentrant {
-        require(price > 0, "Price must be at least 1 wei");
-        require(nft.ownerOf(tokenId) == msg.sender, "You do not own this token");
+        require(price > 0, 'Price must be at least 1 wei');
+        require(
+            nft.ownerOf(tokenId) == msg.sender,
+            'You do not own this token'
+        );
 
         _saleIds.increment();
         uint256 saleId = _saleIds.current();
@@ -138,17 +183,28 @@ contract Marketplace is
         uint256 price = sale.price;
 
         uint256 allowance = howl.allowance(msg.sender, address(this));
-        require(allowance >= price, "Not enough allowance");
-        require((sale.isActive == true) && (sale.isSold == false), "Sale was ended.");
-        require(msg.sender != sale.seller, "Buyer is seller of this item.");
+        require(allowance >= price, 'Not enough allowance');
+        require(
+            (sale.isActive == true) && (sale.isSold == false),
+            'Sale was ended.'
+        );
+        require(msg.sender != sale.seller, 'Buyer is seller of this item.');
 
         // transfer to fee receiver
-        bool feeReceiverTxSuccess = howl.transferFrom(msg.sender, feeReceiver, price.mul(feePercentX10).div(1000));
-        require(feeReceiverTxSuccess, "Failed to transfer fee");
+        bool feeReceiverTxSuccess = howl.transferFrom(
+            msg.sender,
+            feeReceiver,
+            price.mul(feePercentX10).div(1000)
+        );
+        require(feeReceiverTxSuccess, 'Failed to transfer fee');
 
         // transfer to seller
-        bool sellerTxSuccess = howl.transferFrom(msg.sender, sale.seller, price.mul(1000 - feePercentX10).div(1000));
-        require(sellerTxSuccess, "Failed to transfer token");
+        bool sellerTxSuccess = howl.transferFrom(
+            msg.sender,
+            sale.seller,
+            price.mul(1000 - feePercentX10).div(1000)
+        );
+        require(sellerTxSuccess, 'Failed to transfer token');
 
         uint256 tokenId = sale.tokenId;
         nft.transferFrom(address(this), msg.sender, tokenId);
@@ -181,13 +237,16 @@ contract Marketplace is
         );
     }
 
-    function changeSalePrice(uint256 saleId, uint256 newPrice) external onlySeller(saleId) {
+    function changeSalePrice(uint256 saleId, uint256 newPrice)
+        external
+        onlySeller(saleId)
+    {
         Sale storage sale = Sales[saleId];
-        require(sale.isActive && !sale.isSold, "Sale was ended.");
-        require(newPrice > 0, "Price must be at least 1 wei");
+        require(sale.isActive && !sale.isSold, 'Sale was ended.');
+        require(newPrice > 0, 'Price must be at least 1 wei');
 
         sale.price = newPrice;
-        
+
         emit SaleUpdated(
             saleId,
             sale.tokenId,
@@ -197,9 +256,13 @@ contract Marketplace is
         );
     }
 
-    function cancelSale(uint256 saleId) external nonReentrant onlySeller(saleId) {
+    function cancelSale(uint256 saleId)
+        external
+        nonReentrant
+        onlySeller(saleId)
+    {
         Sale storage sale = Sales[saleId];
-        require(sale.isActive, "Sale was ended.");
+        require(sale.isActive, 'Sale was ended.');
 
         nft.transferFrom(address(this), msg.sender, sale.tokenId);
         sale.isActive = false;
@@ -218,7 +281,9 @@ contract Marketplace is
     /* Returns all active sales */
     function getActiveSales() external view returns (Sale[] memory) {
         uint256 saleCount = _saleIds.current();
-        uint256 activeSaleCount = saleCount - _saleInactive.current() - _saleSold.current();
+        uint256 activeSaleCount = saleCount -
+            _saleInactive.current() -
+            _saleSold.current();
 
         uint256 currentIndex = 0;
         Sale[] memory sales = new Sale[](activeSaleCount);
@@ -228,7 +293,40 @@ contract Marketplace is
                 sales[currentIndex++] = sale;
             }
         }
+        return sales;
+    }
 
+    /* Returns all active sales by page and size */
+    function getActiveSalesByPage(uint256 page, uint256 size)
+        external
+        view
+        returns (Sale[] memory)
+    {
+        require(page >= 0 && size > 0, 'Page and size must be greater than 0');
+
+        uint256 saleCount = _saleIds.current();
+        uint256 activeSaleCount = saleCount -
+            _saleInactive.current() -
+            _saleSold.current();
+        if (activeSaleCount < page * size) return new Sale[](0);
+
+        uint256 currentIndex = 0;
+        uint256 count = 0;
+
+        uint256 saleSize = (page + 1) * size > activeSaleCount
+            ? activeSaleCount - page * size
+            : size;
+        Sale[] memory sales = new Sale[](saleSize);
+        for (uint256 i = 1; i <= saleCount; i++) {
+            if (Sales[i].isActive) {
+                count++;
+                if (count > page * size) {
+                    Sale storage sale = Sales[i];
+                    sales[currentIndex] = sale;
+                    if (currentIndex++ == size - 1) break;
+                }
+            }
+        }
         return sales;
     }
 
@@ -289,15 +387,15 @@ contract Marketplace is
 
         TokenInfo[] memory tokens = new TokenInfo[](balance);
         for (uint256 i = 0; i < balance; i++) {
-            uint256 tokenId = ERC721Enumerable(address(nft)).tokenOfOwnerByIndex(msg.sender, i);
-            string memory uri = ERC721URIStorage(address(nft)).tokenURI(tokenId);
-            
-            tokens[i] = TokenInfo(
-                tokenId, address(nft), uri
+            uint256 tokenId = ERC721Enumerable(address(nft))
+                .tokenOfOwnerByIndex(msg.sender, i);
+            string memory uri = ERC721URIStorage(address(nft)).tokenURI(
+                tokenId
             );
+
+            tokens[i] = TokenInfo(tokenId, address(nft), uri);
         }
 
         return tokens;
     }
 }
-

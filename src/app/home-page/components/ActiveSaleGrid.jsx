@@ -3,7 +3,7 @@ import QuickFilterBar from './QuickFilterBar'
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import React, { useGlobal } from 'reactn'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
 import { NftCard } from '../../components'
@@ -15,9 +15,9 @@ const ActiveSaleGrid = () => {
     const { activeSales: dataList = [] } = state
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 flex flex-col flex-1 ActiveSaleGridContainer">
+        <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col">
             {/* <QuickFilterBar /> */}
-            <div className="flex flex-1 flex-wrap p-4">
+            <div className="flex flex-wrap p-4">
                 {Array.isArray(dataList) && dataList.map((item, index) => {
                     if (!item) return null
                     // console.log({ item })

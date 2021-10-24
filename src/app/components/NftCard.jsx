@@ -94,8 +94,11 @@ const NftCard = ({
         )
     }
 
+    const hoverBg = 'hover:bg-Blue-1'
+    const hoverTransition = 'transition ease-in-out'
+    const hoverScale = 'hover:scale-105'
     const hoverAnim =
-        'transition duration-500 ease-in-out hover:bg-Blue-1 transform hover:-translate-y-1 hover:scale-105'
+        'duration-500 transform hover:-translate-y-2'
 
     return (
         <button
@@ -122,7 +125,7 @@ const NftCard = ({
                     />
                 )}
             </div>
-            <div className="flex flex-col items-left w-full Info px-3 py-4">
+            <div className="flex flex-col items-left w-full mt-2 px-3 py-4">
                 <div className="text-white text-left text-base">
                     {itemInfo?.name}
                 </div>

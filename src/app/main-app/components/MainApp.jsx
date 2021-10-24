@@ -12,7 +12,7 @@ import MainAppFooter from './MainAppFooter'
 
 import connectWallet from '../wallet'
 import { useGlobal } from 'reactn'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { utils } from 'utils'
 
 import { marketAddress, nftAddress } from '../../../../deployed_address.json'
@@ -83,6 +83,8 @@ const MainApp = ({ pageProps, Component }) => {
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
         const activeSales = await marketCont?.getActiveSales()
+        
+        // const activeSales = await marketCont?.getActiveSalesByPage(0,3)
         console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
@@ -99,7 +101,9 @@ const MainApp = ({ pageProps, Component }) => {
                     length,
                 } = item
                 // each active sale, get uri by tokenURI func - param: tokenId
-                const uriOfNft = await gameItemContract?.tokenURI(tokenId) // 1 is tokenId // uri of json file
+                console.log('Check tokenId = ' + tokenId?.toNumber());
+                 // get uri of json file
+                const uriOfNft = await gameItemContract?.tokenURI(tokenId)
                 // console.log({ uriOfNft })
                 // show tokenId, seller
                 return {

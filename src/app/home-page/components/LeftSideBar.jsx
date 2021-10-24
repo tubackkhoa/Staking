@@ -2,7 +2,7 @@ import { icons } from 'assets'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { useGlobal } from 'reactn'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 
 const LeftSideBar = () => {
     const filters = [

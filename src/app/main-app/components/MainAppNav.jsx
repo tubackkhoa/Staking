@@ -4,7 +4,7 @@ import { useRouter } from 'next/dist/client/router'
 import connectWallet from '../wallet'
 import Link from 'next/link'
 import { routes } from 'config/routes'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useGlobal } from 'reactn'
 
 const ConnectWalletButton = () => {
@@ -83,7 +83,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
     const route = useRouter()
     const topics = [
         {
-            id: 0,
+            id: 'Explore',
             title: 'Explore',
             route: routes.mainApp,
             onClick: () => {
@@ -91,7 +91,15 @@ const MainAppNav = ({ showSearchBar = false }) => {
             },
         },
         {
-            id: 1,
+            id: 'Store',
+            title: 'Store',
+            route: routes.storePage,
+            onClick: () => {
+                route.push(routes.storePage)
+            },
+        },
+        {
+            id: 'myAssets',
             title: 'My assets',
             route: routes.myAssets,
             onClick: () => {
@@ -99,7 +107,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
             },
         },
         {
-            id: 2,
+            id: 'lending',
             title: 'Lend',
             route: routes.lending,
             onClick: () => {
@@ -107,7 +115,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
             },
         },
         {
-            id: 3,
+            id: 'Borrow',
             title: 'Borrow',
             route: routes.borrow,
             onClick: () => {

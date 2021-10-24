@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
 import { icons } from 'assets'
@@ -15,19 +15,16 @@ const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
     const borderBottomColor = 'white'
     return (
-        <div className="InfoPagesContainer flex flex-col w-full">
-            <div className="InfoPageHeader flex flex-row text-white w-full">
-                <div className="InfoPageItem flex flex-col font-semibold">
-                    <a>{'Details'}</a>
-                    <div
-                        className="flex mt-0.5"
-                        style={{
-                            width: '54px',
-                            marginTop: '10px',
-                            backgroundColor: borderBottomColor,
-                        }}
-                    />
-                </div>
+        <div className="InfoPagesContainer flex flex-col w-full items-center sm:items-start max-w-sm mt-4">
+            <div className="InfoPageItem flex flex-col font-semibold">
+                <div className="text-lg text-white mt-4 sm:mt-0" >{'Details'}</div>
+                <div
+                    className="flex mt-2.5"
+                    style={{
+                        width: '54px',
+                        backgroundColor: borderBottomColor,
+                    }}
+                />
             </div>
             <div className="InfoPageItemContent flex flex-col">
                 <p className="flex text-white">{description}</p>
@@ -72,7 +69,7 @@ const BuyButton = ({ saleId, price }) => {
             const purchaseToken = await marketCont.purchaseSale(
                 /*saleId=*/ saleId
             )
-            await purchaseToken.wait()
+            await purchaseToken.wait() // waiting create transaction
             setLoading(false)
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
@@ -173,7 +170,7 @@ const BuyButton = ({ saleId, price }) => {
     // console.log('Check priceInHwl = ' + priceInHwl)
 
     const hoverAnim =
-        'transition duration-300 ease-in-out 0 transform hover:-translate-y-1'
+        'transition duration-300 ease-in-out 0'
 
     return (
         <div className="flex flex-row mt-8">
@@ -208,7 +205,7 @@ const ItemDetails = () => {
 
     const ItemRating = ({ numberStar = 5 }) => {
         return (
-            <div className="flex flex-row">
+            <div className="flex flex-row mt-4">
                 {Array(numberStar)
                     .fill(0)
                     .map((item, index) => {
@@ -248,18 +245,16 @@ const ItemDetails = () => {
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
-                <div className="flex w-96 h-96 rounded-3xl transition-all bg-Gray-1">
+                <div className="flex w-72 h-72 sm:w-96 sm:h-96 rounded-3xl transition-all bg-Gray-1">
                     <img
-                        className="flex w-96 h-96 rounded-3xl"
+                        className="flex flex-1 rounded-3xl"
                         src={itemSelect?.image}
                         alt="main-item-image"
                     />
                 </div>
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="flex flex-col mt-16 md:ml-16 md:mt-0">
-                    <p className="flex text-white">
-                        {itemSelect?.name}
-                    </p>
+                <div className="flex flex-col items-center sm:items-start mt-16 md:ml-16 md:mt-0">
+                    <p className="flex text-white text-3xl font-semibold">{itemSelect?.name}</p>
                     {/* <div className="flex flex-row text-white">
                         <p className="flex">{'From'}</p>
                         <p className="flex ml-0.5">{'4.5 HOWL'}</p>

@@ -1,0 +1,15 @@
+{
+  "attributes": [
+      {
+          "trait_type": "VehicleType",
+          "value": "SportBike"
+      },
+      {
+          "trait_type": "Color",
+          "value": "Green - Brown"
+      }
+  ],
+  "description": "Sport Bike 2",
+  "image": "https://gateway.pinata.cloud/ipfs/QmdXZAht6HpR1gcaFaKbnZRhBtQFYprMnJGmdA8K8kwnNT",
+  "name": "Sport Bike 02"
+}

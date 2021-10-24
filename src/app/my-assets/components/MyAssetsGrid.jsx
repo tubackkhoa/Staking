@@ -3,7 +3,7 @@ import { useGlobal } from 'reactn'
 
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
 
@@ -37,7 +37,7 @@ const MyAssetsGrid = () => {
                                 index={index}
                                 onClick={({ nft }) => {
                                     route.push(routes.createSale)
-                                    console.log('Check nft = ', nft)
+                                    // console.log('Check nft = ', nft)
                                     setMyAssetSelect({
                                         ...nft,
                                         ...item
