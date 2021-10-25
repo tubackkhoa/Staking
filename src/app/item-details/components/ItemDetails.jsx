@@ -15,19 +15,20 @@ const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
     const borderBottomColor = 'white'
     return (
-        <div className="InfoPagesContainer flex flex-col w-full items-center sm:items-start max-w-sm mt-4">
+        <div className="InfoPagesContainer flex flex-col w-full items-center sm:items-start max-w-sm mt-4 px-6 sm:px-0">
             <div className="InfoPageItem flex flex-col font-semibold">
-                <div className="text-lg text-white mt-4 sm:mt-0" >{'Details'}</div>
+                <div className="text-lg text-white mt-4 sm:mt-0">
+                    {'Details'}
+                </div>
                 <div
-                    className="flex mt-2.5"
+                    className="flex mt-2.5 w-14"
                     style={{
-                        width: '54px',
                         backgroundColor: borderBottomColor,
                     }}
                 />
             </div>
             <div className="InfoPageItemContent flex flex-col">
-                <p className="flex text-white">{description}</p>
+                <p className="flex text-white break-all text-center sm:text-left">{description}</p>
             </div>
         </div>
     )
@@ -169,8 +170,7 @@ const BuyButton = ({ saleId, price }) => {
     const priceInHwl = ethers.utils.formatEther(price)
     // console.log('Check priceInHwl = ' + priceInHwl)
 
-    const hoverAnim =
-        'transition duration-300 ease-in-out 0'
+    const hoverAnim = 'transition duration-300 ease-in-out 0'
 
     return (
         <div className="flex flex-row mt-8">
@@ -201,7 +201,7 @@ const ItemDetails = () => {
         }
         const { id, image, like, price, star, title, tokenCode, saleId } =
             itemSelect
-    }, [itemSelect])
+    }, [itemSelect, route])
 
     const ItemRating = ({ numberStar = 5 }) => {
         return (
@@ -242,25 +242,120 @@ const ItemDetails = () => {
 
     // const itemImageSrc = itemSelect?.image || ''
 
+    const configs = [
+        {
+            id: 0,
+            title: 'Max speed',
+            value: 70,
+            max: 100,
+        },
+        {
+            id: 1,
+            title: 'Acceleration',
+            value: 7,
+            max: 12,
+        },
+        {
+            id: 2,
+            title: 'Steering',
+            value: 70,
+            max: 100,
+        },
+        {
+            id: 3,
+            title: 'Boost speed',
+            value: 70,
+            max: 100,
+        },
+    ]
+
+    const renderConfigs = () => {
+        return (
+            <div className="flex flex-col items-center">
+                <div className="flex text-white font-bold text-2xl text-center mt-12">
+                    Configuration
+                </div>
+                <div className="flex flex-wrap px-12 mt-6">
+                    {configs.map(item => {
+                        const percent = (item.value / item.max) * 100
+                        const percentLength = `${parseInt(percent)}%`
+                        console.log('Check percentLength = ' + percentLength)
+                        return (
+                            <div
+                                key={`config-${item.title}-${item.id}`}
+                                className="flex mx-4 flex-col mt-4 sm:mt-0">
+                                <div className="flex text-white text-base font-semibold">
+                                    {item.title}
+                                </div>
+                                <div className="flex text-white text-xs">
+                                    {`${item.value} / ${item.max}`}
+                                </div>
+                                <div className="flex w-full h-1 bg-Green-2 mt-3">
+                                    <div
+                                        className="flex bg-Green-1"
+                                        style={{ width: percentLength }}
+                                    />
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    }
+
+    const renderTitleTokenIdSeller = () => {
+        return (
+            <div className="flex flex-col px-4">
+                <div className="flex text-2xl text-white font-semibold uppercase break-all">
+                    #sportbike001
+                </div>
+                <div className="flex text-base text-white font-normal break-all">
+                    tokenId: 001
+                </div>
+                <div className="flex text-base text-white font-normal break-all">
+                    seller: 0x9d6835a231473Ee95cF95742b236C1EA40814460
+                </div>
+            </div>
+        )
+    }
+
+    const renderItemImage = () => {
+        return (
+            <div className="flex w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl transition-all mt-12 relative self-center">
+                <img
+                    className="flex flex-1 rounded-3xl"
+                    src={itemSelect?.image}
+                    alt="main-item-image"
+                />
+                <div
+                    className="flex h-10 w-64 sm:w-72 md:w-96 absolute self-center bottom-0"
+                    style={{
+                        background:
+                            'radial-gradient(50% 50% at 50% 50%, #20A4AD 0%, rgba(32, 164, 173, 0) 100%)',
+                    }}
+                />
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
-                <div className="flex w-72 h-72 sm:w-96 sm:h-96 rounded-3xl transition-all bg-Gray-1">
-                    <img
-                        className="flex flex-1 rounded-3xl"
-                        src={itemSelect?.image}
-                        alt="main-item-image"
-                    />
+                <div className="flex flex-col">
+                    {renderTitleTokenIdSeller()}
+                    {renderItemImage()}
+                    {renderConfigs()}
                 </div>
+
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="flex flex-col items-center sm:items-start mt-16 md:ml-16 md:mt-0">
-                    <p className="flex text-white text-3xl font-semibold">{itemSelect?.name}</p>
-                    {/* <div className="flex flex-row text-white">
-                        <p className="flex">{'From'}</p>
-                        <p className="flex ml-0.5">{'4.5 HOWL'}</p>
-                        <p className="flex">{' . '}</p>
+                <div className="flex flex-col justify-center items-center sm:items-start mt-16 md:ml-16 md:mt-0 pb-12 sm:pb-0">
+                    <p className="flex text-white text-3xl font-semibold">
+                        {itemSelect?.name}
+                    </p>
+                    <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
-                    </div> */}
+                    </div>
                     <ItemRating numberStar={4} />
                     {/* <CreatorView /> */}
                     <InfoPages description={itemSelect?.description} />

@@ -13,6 +13,8 @@ module.exports = {
                 'Blue-1': '#4664F0',
                 'Gray-1': '#232128',
                 'Gray-2': '#2D2E36',
+                'Green-1': '#13B9B9',
+                'Green-2': 'rgba(19, 185, 185, 0.3)',
                 'blue-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #029CC1 100%)',
                 'yellow-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #E2C656 100%)',
                 'linear-blue-2': 'linear-gradient(101.12deg, #4664F0 27.35%, rgba(70, 100, 240, 0.6) 99.99%, #C81CC5 100%, #4664F0 100%)',
