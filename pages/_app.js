@@ -12,6 +12,7 @@ setGlobal({
         howlTokenContract: null,
     },
     [globalKeys.filterActiveSale]: null,
+    [globalKeys.isLoadingActiveSale]: false,
 })
 
 export default MainAppContainer

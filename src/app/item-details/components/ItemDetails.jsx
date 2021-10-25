@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
-import { Loading } from 'app/components'
+import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
 import { configs } from 'config/config'
 
@@ -240,112 +240,13 @@ const ItemDetails = () => {
         )
     }
 
-    // const itemImageSrc = itemSelect?.image || ''
-
-    const configs = [
-        {
-            id: 0,
-            title: 'Max speed',
-            value: 70,
-            max: 100,
-        },
-        {
-            id: 1,
-            title: 'Acceleration',
-            value: 7,
-            max: 12,
-        },
-        {
-            id: 2,
-            title: 'Steering',
-            value: 70,
-            max: 100,
-        },
-        {
-            id: 3,
-            title: 'Boost speed',
-            value: 70,
-            max: 100,
-        },
-    ]
-
-    const renderConfigs = () => {
-        return (
-            <div className="flex flex-col items-center">
-                <div className="flex text-white font-bold text-2xl text-center mt-12">
-                    Configuration
-                </div>
-                <div className="flex flex-wrap px-12 mt-6">
-                    {configs.map(item => {
-                        const percent = (item.value / item.max) * 100
-                        const percentLength = `${parseInt(percent)}%`
-                        console.log('Check percentLength = ' + percentLength)
-                        return (
-                            <div
-                                key={`config-${item.title}-${item.id}`}
-                                className="flex mx-4 flex-col mt-4 sm:mt-0">
-                                <div className="flex text-white text-base font-semibold">
-                                    {item.title}
-                                </div>
-                                <div className="flex text-white text-xs">
-                                    {`${item.value} / ${item.max}`}
-                                </div>
-                                <div className="flex w-full h-1 bg-Green-2 mt-3">
-                                    <div
-                                        className="flex bg-Green-1"
-                                        style={{ width: percentLength }}
-                                    />
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            </div>
-        )
-    }
-
-    const renderTitleTokenIdSeller = () => {
-        return (
-            <div className="flex flex-col px-4">
-                <div className="flex text-2xl text-white font-semibold uppercase break-all">
-                    #sportbike001
-                </div>
-                <div className="flex text-base text-white font-normal break-all">
-                    tokenId: 001
-                </div>
-                <div className="flex text-base text-white font-normal break-all">
-                    seller: 0x9d6835a231473Ee95cF95742b236C1EA40814460
-                </div>
-            </div>
-        )
-    }
-
-    const renderItemImage = () => {
-        return (
-            <div className="flex w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl transition-all mt-12 relative self-center">
-                <img
-                    className="flex flex-1 rounded-3xl"
-                    src={itemSelect?.image}
-                    alt="main-item-image"
-                />
-                <div
-                    className="flex h-10 w-64 sm:w-72 md:w-96 absolute self-center bottom-0"
-                    style={{
-                        background:
-                            'radial-gradient(50% 50% at 50% 50%, #20A4AD 0%, rgba(32, 164, 173, 0) 100%)',
-                    }}
-                />
-            </div>
-        )
-    }
-
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
                 <div className="flex flex-col">
-                    {renderTitleTokenIdSeller()}
-                    {renderItemImage()}
-                    {renderConfigs()}
+                    <TitleTokenIdSeller/>
+                    <NftImage imageUri={itemSelect?.image} />
+                    <ItemConfigs/>
                 </div>
 
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}

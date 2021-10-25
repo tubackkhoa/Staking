@@ -3,4 +3,5 @@ export const globalKeys = {
     walletInfo: 'walletInfo',
     myAssetSelect: 'myAssetSelect',
     filterActiveSale: 'filterActiveSale',
+    isLoadingActiveSale: 'isLoadingActiveSale',
 }

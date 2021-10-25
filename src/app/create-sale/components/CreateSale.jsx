@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
-import { Loading } from 'app/components'
+import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
 
 const ItemRating = ({ numberStar = 5 }) => {
@@ -20,10 +20,7 @@ const ItemRating = ({ numberStar = 5 }) => {
                         <div
                             key={`renderStars${index}`}
                             className="flex w-12 h12 mr-3">
-                            <img
-                                className="flex w-12 h-12"
-                                src={icons.star}
-                            />
+                            <img className="flex w-12 h-12" src={icons.star} />
                         </div>
                     )
                 })}
@@ -81,7 +78,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
 
-    useEffect(()=>{
+    useEffect(() => {
         _checkConnectWallet()
     }, [])
 
@@ -218,7 +215,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
                     tokenId,
                     ethers.utils.parseEther(price)
                 )
-                await createdSale.wait()  // waiting create transaction
+                await createdSale.wait() // waiting create transaction
                 toast.success('Create sale successfully!')
                 console.log({ createdSale })
                 setLoading(false)
@@ -241,14 +238,14 @@ const CreateSaleButton = ({ tokenId, price }) => {
         }
     }
 
-    const hoverAnim = "transition duration-300 ease-in-out hover:bg-blue-500"
+    const hoverAnim = 'transition duration-300 ease-in-out hover:bg-blue-500'
 
     return (
         <button
             onClick={_onClickCreateSale}
             className={classNames(
-                "flex h-12 max-w-7xl border-Blue-1 border-2 flex-row justify-center items-center rounded-lg mt-6",
-                hoverAnim,
+                'flex h-12 max-w-7xl border-Blue-1 border-2 flex-row justify-center items-center rounded-lg mt-6',
+                hoverAnim
             )}>
             <div className="flex text-xl text-semibold text-white">
                 {`Create sale`}
@@ -266,9 +263,6 @@ const CreateSale = () => {
     const route = useRouter()
 
     useEffect(() => {
-        // console.log(
-        //     'Check new myAssetSelect = ' + JSON.stringify(myAssetSelect)
-        // )
         if (!myAssetSelect) {
             route.back()
             return
@@ -287,27 +281,42 @@ const CreateSale = () => {
                     className="flex text-white font-semibold text-xl outline-none bg-Gray-2 h-12 w-auto max-w-7xl px-4 rounded-lg mt-6"
                     placeholder={'Enter Price'}
                     onChange={event => {
-                        setPriceInput(event.target.value)
+                        setPriceInput(event?.target?.value)
                     }}
                 />
             </div>
         )
     }
 
-    // console.log({ myAssetSelect })
+    const renderItemImage = ({ uri }) => {
+        return (
+            <div className="flex w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-3xl transition-all mt-12 relative self-center">
+                <img
+                    className="flex flex-1 rounded-3xl"
+                    src={uri}
+                    alt="main-item-image"
+                />
+                <div
+                    className="flex h-10 w-64 sm:w-72 md:w-96 absolute self-center bottom-0"
+                    style={{
+                        background:
+                            'radial-gradient(50% 50% at 50% 50%, #20A4AD 0%, rgba(32, 164, 173, 0) 100%)',
+                    }}
+                />
+            </div>
+        )
+    }
 
     return (
         <div className="ItemSelectedContainer flex flex-1 flex-col">
             <div className="flex flex-col sm:flex-row self-center">
-                <div className="flex w-72 h-72 sm:w-96 sm:h-96 transition-all" >
-                    <img
-                        className="flex flex-1 rounded-3xl"
-                        src={myAssetSelect?.image}
-                        alt="main-item-image"
-                    />
+                <div className="flex flex-col">
+                    <TitleTokenIdSeller/>
+                    <NftImage imageUri={myAssetSelect?.image} />
+                    <ItemConfigs/>
                 </div>
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="flex flex-col ml-0 sm:ml-16">
+                <div className="flex flex-col justify-center ml-0 sm:ml-16">
                     <div className="flex text-white mt-12 text-3xl font-semibold sm:mt-0">
                         {myAssetSelect?.name}
                     </div>

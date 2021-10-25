@@ -81,7 +81,7 @@ const SearchBar = () => {
 
 const MainAppNav = ({ showSearchBar = false }) => {
     const route = useRouter()
-    const topics = [
+    const navRoutes = [
         {
             id: 'Explore',
             title: 'Explore',
@@ -127,22 +127,19 @@ const MainAppNav = ({ showSearchBar = false }) => {
     const renderRoutes = () => {
         return (
             <div className="hidden md:flex flex-1 flex-row justify-center items-center mx-8 my-0">
-                {topics.map((item, index) => {
+                {navRoutes.map((item, index) => {
                     const { id, title, onClick } = item
                     const isCurrentRoute = item.route === route.pathname
                     return (
                         <button
-                            key={`topics-${id}`}
+                            key={`navRoute-${id}`}
                             onClick={onClick}
-                            className="flex mx-4 my-0 flex-col">
-                            <p className="flex text-white text-base font-semibold">
+                            className="flex mx-4 my-0 flex-col transition duration-500 group ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                            <p className="flex text-gray-300 group-hover:text-white text-base font-semibold">
                                 {title}
                             </p>
                             {!!isCurrentRoute && (
-                                <div
-                                    className="flex bg-Blue-1 w-full mt-2"
-                                    style={{ height: '3px' }}
-                                />
+                                <div className="flex bg-Blue-1 w-full mt-2 h-1"/>
                             )}
                         </button>
                     )
