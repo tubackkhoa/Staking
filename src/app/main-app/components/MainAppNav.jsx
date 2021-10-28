@@ -107,6 +107,14 @@ const MainAppNav = ({ showSearchBar = false }) => {
             },
         },
         {
+            id: 'Staking',
+            title: 'Staking',
+            route: routes.staking,
+            onClick: () => {
+                route.push(routes.staking)
+            },
+        },
+        {
             id: 'lending',
             title: 'Lend',
             route: routes.lending,

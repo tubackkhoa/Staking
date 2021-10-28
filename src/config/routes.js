@@ -7,4 +7,5 @@ export const routes = {
     borrow: '/borrow',
     createSale: '/create-sale',
     storePage: '/store-page',
+    staking: '/staking',
 }
