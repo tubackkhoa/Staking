@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "35"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Scramble"
+        },
+        {
+            "trait_type": "Name",
+            "value": "SuperPig Scramble"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmR6CSD2k2EoNEVAdQWfVLRj7pzW9ixSoquFHerXumf5qZ"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/QmPmyzGJqA8iGkMq3faVhVcFt583wtZn1KckqciNindkna",
+    "name": "HowlCity Motorbike NFT"
+}

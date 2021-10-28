@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "54"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Dreamer"
+        },
+        {
+            "trait_type": "Name",
+            "value": "McLaran Dreamer"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmVwpogELXPp6mPb6oTcjvKVrYREt4qWhMUWtHb9h2ttUT"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/QmbAEdWP5xLZqUUdXvR74Sx8yshZiEX74DisGxrn8PMZbw",
+    "name": "HowlCity Motorbike NFT"
+}

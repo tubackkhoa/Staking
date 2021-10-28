@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "34"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Scramble"
+        },
+        {
+            "trait_type": "Name",
+            "value": "McLaran Scramble"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmbhqTvvLqpof3FERmfPzk1d9DMcDCCGczCB5r2PepRHPH"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/QmSTZouxnsCsdwzKmSkxCRPtjRaQiX1LTpMsP7oq4qS1ch",
+    "name": "HowlCity Motorbike NFT"
+}

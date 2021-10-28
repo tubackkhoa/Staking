@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "23"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Sport Bike"
+        },
+        {
+            "trait_type": "Name",
+            "value": "Kawakiki SportBike"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmdtVNuWkt5QHuMLPTSjvQjVH7MF7V2jL4Wrx1N5557kvH"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/QmQpMMZKHfJLBLXg1kXuN1etpHhroEDvc66X2ifGkxKT2m",
+    "name": "HowlCity Motorbike NFT"
+}

@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "24"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Sport Bike"
+        },
+        {
+            "trait_type": "Name",
+            "value": "McLaran SportBike"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmaW1upr86LLS1bKh71hSaBBEwHZCGNDEBetihi2aXJcoi"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/Qmb5ht5YNn25ctPFuUN1UHfAuVq5ZVAhEeZn3FpzxpxphS",
+    "name": "HowlCity Motorbike NFT"
+}

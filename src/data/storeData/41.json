@@ -1,0 +1,27 @@
+{
+    "attributes": [
+        {
+            "trait_type": "ID",
+            "value": "41"
+        },
+        {
+            "trait_type": "Vehicle",
+            "value": "Motorbike"
+        },
+        {
+            "trait_type": "Motorbike Types",
+            "value": "Classic"
+        },
+        {
+            "trait_type": "Name",
+            "value": "Hundi Classic"
+        },
+        {
+            "trait_type": "PNG",
+            "value": "https://gateway.pinata.cloud/ipfs/QmPUmiwPFikJV2YFH145nBLbM5tKQEARZ81TRXkG9QT2kf"
+        }
+    ],
+    "description": "Motorbike in HowlCity game",
+    "image": "https://gateway.pinata.cloud/ipfs/QmPrbKUAnM3vmK5YPyfSMcrnZtywJTLHkGx95a8M7k5oYB",
+    "name": "HowlCity Motorbike NFT"
+}
