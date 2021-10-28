@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import connectWallet from 'app/main-app/wallet'
 import MyAssetsGrid from './MyAssetsGrid'
 import { useGlobal } from 'reactn'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 import LeftSideBar from './LeftSideBar'
@@ -30,9 +30,10 @@ const Container = props => {
     const _connectWalletAndSaveGlobal = async () => {
         // toast.info('Connecting your metamask wallet!')
         const wallet = await connectWallet()
+        console.log({ wallet })
         toast.dismiss()
         // toast.success('Connect wallet successfully!')
-        console.log('check my-assets _getData', { wallet })
+        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')

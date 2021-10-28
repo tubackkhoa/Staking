@@ -4,7 +4,7 @@ const Container = props => {
     return (
         <div className="flex flex-1 justify-center items-center px-12">
             <h1 className="flex text-white font-bold text-4xl text-center">
-                Lending NFT coming soon
+                HOWL Staking Liquidity pool coming soon!
             </h1>
         </div>
     )

@@ -4,7 +4,7 @@ import { useRouter } from 'next/dist/client/router'
 import connectWallet from '../wallet'
 import Link from 'next/link'
 import { routes } from 'config/routes'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useGlobal } from 'reactn'
 
 const ConnectWalletButton = () => {
@@ -13,11 +13,16 @@ const ConnectWalletButton = () => {
     const _onClickConnectWallet = () => {
         const wallet = connectWallet()
         console.log({ wallet })
-        if(!wallet){
+        if (!wallet) {
             console.log('connectWallet failed!')
-            return;
+            return
         }
-        const {  marketplaceContract, gameItemContract, signer, howlTokenContract } = wallet;
+        const {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+        } = wallet
         setWalletInfo({
             marketplaceContract,
             gameItemContract,
@@ -26,7 +31,7 @@ const ConnectWalletButton = () => {
         })
     }
 
-    if(walletInfo?.marketplaceContract) return null;
+    if (walletInfo?.marketplaceContract) return null
 
     return (
         <button
@@ -76,70 +81,102 @@ const SearchBar = () => {
 
 const MainAppNav = ({ showSearchBar = false }) => {
     const route = useRouter()
-    const topics = [
+    const navRoutes = [
         {
-            id: 0,
+            id: 'Explore',
             title: 'Explore',
+            route: routes.mainApp,
             onClick: () => {
                 route.push(routes.mainApp)
             },
         },
         {
-            id: 1,
+            id: 'Store',
+            title: 'Store',
+            route: routes.storePage,
+            onClick: () => {
+                route.push(routes.storePage)
+            },
+        },
+        {
+            id: 'myAssets',
             title: 'My assets',
+            route: routes.myAssets,
             onClick: () => {
                 route.push(routes.myAssets)
             },
         },
         {
-            id: 2,
+            id: 'Staking',
+            title: 'Staking',
+            route: routes.staking,
+            onClick: () => {
+                route.push(routes.staking)
+            },
+        },
+        {
+            id: 'lending',
             title: 'Lend',
+            route: routes.lending,
             onClick: () => {
                 route.push(routes.lending)
             },
         },
         {
-            id: 3,
+            id: 'Borrow',
             title: 'Borrow',
+            route: routes.borrow,
             onClick: () => {
                 route.push(routes.borrow)
             },
         },
     ]
 
-    return (
-        <nav className="bg-nav-bar flex w-full shadow-nav">
-            <div className="flex flex-1 flex-row mx-8 py-4">
-                <Link href="/">
-                    <a
-                        className="flex flex-wrap items-center text-white text-3xl font-semibold">
-                        <img
-                            src="/howl.png"
-                            alt="HowlCity"
-                            className="flex h-12 w-12"
-                        />
-                        <span className="ml-4">{'HowlCity'}</span>
-                    </a>
-                </Link>
-                {!!showSearchBar && <SearchBar />}
-                <div
-                    className="flex flex-1 flex-row justify-center items-center"
-                    style={{ margin: '0px 32px 0px 32px' }}>
-                    {topics.map((item, index) => {
-                        const { id, title, onClick } = item
-                        return (
-                            <button
-                                key={`topics-${id}`}
-                                onClick={onClick}
-                                className="flex"
-                                style={{ margin: '0px 16px 0px 16px' }}>
-                                <p className="flex text-white text-base font-semibold">
-                                    {title}
-                                </p>
-                            </button>
-                        )
-                    })}
+    const renderRoutes = () => {
+        return (
+            <div className="hidden md:flex flex-1 flex-row justify-center items-center mx-8 my-0">
+                {navRoutes.map((item, index) => {
+                    const { id, title, onClick } = item
+                    const isCurrentRoute = item.route === route.pathname
+                    return (
+                        <button
+                            key={`navRoute-${id}`}
+                            onClick={onClick}
+                            className="flex mx-4 my-0 flex-col transition duration-500 group ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                            <p className="flex text-gray-300 group-hover:text-white text-base font-semibold">
+                                {title}
+                            </p>
+                            {!!isCurrentRoute && (
+                                <div className="flex bg-Blue-1 w-full mt-2 h-1"/>
+                            )}
+                        </button>
+                    )
+                })}
+            </div>
+        )
+    }
+
+    const renderLogoAndName = () => {
+        return (
+            <Link href="/">
+                <div className="flex flex-wrap items-center text-white text-3xl font-semibold">
+                    <img
+                        src="/howl.png"
+                        alt="HowlCity"
+                        className="flex h-12 w-12"
+                    />
+                    <span className="ml-4">{'HowlCity'}</span>
                 </div>
+            </Link>
+        )
+    }
+
+    return (
+        <nav className="bg-nav-bar w-full shadow-nav">
+            <div className="flex flex-1 flex-row mx-8 py-4">
+                {renderLogoAndName()}
+                {!!showSearchBar && <SearchBar />}
+                {renderRoutes()}
                 <ConnectWalletButton />
             </div>
         </nav>

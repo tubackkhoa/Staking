@@ -1,48 +1,59 @@
 import { icons } from 'assets'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import classNames from 'classnames'
+import { useGlobal } from 'reactn'
+import { globalKeys } from 'config/globalKeys'
 
 const LeftSideBar = () => {
-    const options = [
+    const filters = [
         {
             id: 0,
             title: 'Dirt Bike',
+            vehicleType: 'DirtBike',
             onClick: () => undefined,
         },
         {
             id: 1,
             title: 'Sport Bike',
+            vehicleType: 'SportBike',
             onClick: () => undefined,
         },
         {
             id: 2,
             title: 'Scramble',
+            vehicleType: 'Scramble',
             onClick: () => undefined,
         },
     ]
 
-    const [optionSelect, setOptionSelect] = useState(options[0])
+    const [filterActiveSale, setFilterActiveSale] = useGlobal(
+        globalKeys.filterActiveSale
+    )
+
+    useEffect(() => {
+        setFilterActiveSale(filters[0])
+    }, [])
 
     return (
-        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0 p-8 w-60">
+        <div className="LeftSideBar flex-col items-center border-r-0 p-8 w-60 hidden xl:flex xl:col-span-3">
             <div className="flex flex-row GroupMenu">
                 <a className="flex text-white">Bike type</a>
                 <img className="ToggleBtn" src={icons.arrowDown} />
             </div>
             <div className="flex-col GroupMenuItems">
-                {options.map(item => {
+                {filters.map(item => {
                     const { id, title } = item
-                    const isSelect = id === optionSelect?.id
+                    const isSelect = id === filterActiveSale?.id
 
                     const _onClick = () => {
-                        setOptionSelect(item)
+                        setFilterActiveSale(item)
                     }
 
                     return (
                         <button
                             key={id}
                             className={classNames(
-                                'flex items-center GroupMenuItem',
+                                'flex items-center GroupMenuItem hover:bg-gray-500',
                                 { SelectedItem: isSelect }
                             )}
                             onClick={_onClick}>

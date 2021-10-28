@@ -1,33 +1,34 @@
 import { useEffect, useState } from 'react'
-import { globalKeys } from 'app/store'
+import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
 import { icons } from 'assets'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
+import { routes } from 'config/routes'
+import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
+import classNames from 'classnames'
+import { configs } from 'config/config'
 
 const InfoPages = ({ description }) => {
     // console.log('Check description = ' + description)
     const borderBottomColor = 'white'
     return (
-        <div className="InfoPagesContainer flex flex-col w-full">
-            <div className="InfoPageHeader flex flex-row text-white w-full">
-                <div
-                    className="InfoPageItem flex flex-col font-semibold">
-                    <a>{'Details'}</a>
-                    <div
-                        className="flex mt-0.5"
-                        style={{
-                            width: '54px',
-                            marginTop: '10px',
-                            backgroundColor: borderBottomColor,
-                        }}
-                    />
+        <div className="InfoPagesContainer flex flex-col w-full items-center sm:items-start max-w-sm mt-4 px-6 sm:px-0">
+            <div className="InfoPageItem flex flex-col font-semibold">
+                <div className="text-lg text-white mt-4 sm:mt-0">
+                    {'Details'}
                 </div>
+                <div
+                    className="flex mt-2.5 w-14"
+                    style={{
+                        backgroundColor: borderBottomColor,
+                    }}
+                />
             </div>
             <div className="InfoPageItemContent flex flex-col">
-                <p className="flex text-white">{description}</p>
+                <p className="flex text-white break-all text-center sm:text-left">{description}</p>
             </div>
         </div>
     )
@@ -35,57 +36,67 @@ const InfoPages = ({ description }) => {
 
 const BuyButton = ({ saleId, price }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
-    console.log('Check walletInfo = ', walletInfo)
-
-    // useEffect(()=>{
-    //     console.log('Check new walletInfo = ', walletInfo);
-    // }, [walletInfo])
-
+    const route = useRouter()
+    const [loading, setLoading] = useState(false)
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
 
-    const _purchaseSale = async ({
-        saleId,
-        marketCont,
-        tokenCont,
-    }) => {
+    useEffect(() => {
+        // console.log({ walletInfo })
+        _connectWalletAndSaveGlobal()
+    }, [])
+
+    const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
         if (!saleId || saleId === -1) {
             return
         }
+        setLoading(true)
         console.log('Check run _purchaseSale')
         // buy token
         try {
-            const unlimitedAllowance = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-            const allowance = await tokenCont?.allowance(walletInfo?.signer?.getAddress(), marketCont.address)
+            const allowance = await tokenCont?.allowance(
+                walletInfo?.signer?.getAddress(),
+                marketCont.address
+            )
             if (allowance.lt(price)) {
                 const approveAllowance = await tokenCont?.approve(
                     marketCont.address,
-                    unlimitedAllowance
+                    configs.unlimitedAllowance
                 )
+                await approveAllowance.wait()
                 console.log({ approveAllowance })
             }
 
-            const purchaseToken = await marketCont.purchaseSale( /*saleId=*/ saleId)
-            await purchaseToken.wait()
+            const purchaseToken = await marketCont.purchaseSale(
+                /*saleId=*/ saleId
+            )
+            await purchaseToken.wait() // waiting create transaction
+            setLoading(false)
             console.log({ purchaseToken })
             toast.success(`Purchase sale NFT successfully!`)
+            setTimeout(() => {
+                route.push(routes.myAssets)
+            }, 2000)
         } catch (err) {
             console.log(err)
+            setLoading(false)
             toast.dismiss()
-            toast.error(`Purchase sale failed with error ${err?.data?.message}!`)
+            toast.error(
+                `Purchase sale failed with error ${err?.data?.message}!`
+            )
             console.log(err?.data?.message)
         }
     }
 
     const _connectWalletAndSaveGlobal = async () => {
         const wallet = await connectWallet()
-        toast.dismiss()
-        toast.success('Connect wallet successfully!')
-        console.log('check my-assets _getData', { wallet })
+        // toast.dismiss()
+        // toast.success('Connect wallet successfully!')
+        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
-            return;
+            return
         }
 
         const {
@@ -111,16 +122,17 @@ const BuyButton = ({ saleId, price }) => {
             signer,
             howlTokenContract,
             signerAddress,
-        };
+        }
     }
 
-    const onClickBuy = async () => {
-        // toast.info('Confirm your transaction!')
-        console.log({ walletInfo })
+    const _onClickBuy = async () => {
+        if (loading) {
+            return
+        }
 
-        if(!walletInfo || !walletInfo.signer){
+        if (!walletInfo || !walletInfo.signer) {
             toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal();
+            await _connectWalletAndSaveGlobal()
             return
         }
         // return
@@ -152,18 +164,26 @@ const BuyButton = ({ saleId, price }) => {
         })
     }
 
-    if (!price) return null;
+    if (!price) return null
 
     // console.log(price)
     const priceInHwl = ethers.utils.formatEther(price)
     // console.log('Check priceInHwl = ' + priceInHwl)
 
+    const hoverAnim = 'transition duration-300 ease-in-out 0'
+
     return (
-        <div className="ActionButtonsContainer flex flex-row mt-8">
-            <button onClick={onClickBuy} className="ActionButtonItem flex justify-center items-center bg-linear-blue-2">
-                <a className="ActionButtonsTitle flex text-xl text-semibold text-white">
+        <div className="flex flex-row mt-8">
+            <button
+                onClick={_onClickBuy}
+                className={classNames(
+                    'flex justify-center items-center w-80 h-16 px-4 py-2 rounded-xl border-Blue-1 border-2 hover:bg-Blue-1',
+                    hoverAnim
+                )}>
+                <div className="ActionButtonsTitle flex text-xl text-semibold text-white">
                     {`Buy for ${priceInHwl} HWL`}
-                </a>
+                </div>
+                {!!loading && <Loading className="ml-4" />}
             </button>
         </div>
     )
@@ -181,24 +201,20 @@ const ItemDetails = () => {
         }
         const { id, image, like, price, star, title, tokenCode, saleId } =
             itemSelect
-    }, [itemSelect])
+    }, [itemSelect, route])
 
     const ItemRating = ({ numberStar = 5 }) => {
         return (
-            <div className="flex flex-row">
+            <div className="flex flex-row mt-4">
                 {Array(numberStar)
                     .fill(0)
                     .map((item, index) => {
                         return (
                             <div
                                 key={`renderStars${index}`}
-                                style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    marginRight: '10px',
-                                }}>
+                                className="flex w-12 h-12 mr-2.5">
                                 <img
-                                    style={{ width: '50px', height: '50px' }}
+                                    className="flex w-12 h-12"
                                     src={icons.star}
                                 />
                             </div>
@@ -218,33 +234,29 @@ const ItemDetails = () => {
                 />
                 <div className="flex flex-col text-white ml-4">
                     <h6 className="flex text-sm">{'Creator'}</h6>
-                    <h6>{'Manhnd'}</h6>
+                    <h6>{'Harry'}</h6>
                 </div>
             </div>
         )
     }
 
-    // const itemImageSrc = itemSelect?.image || ''
-
     return (
-        <div className="ItemSelectedContainer flex flex-1 flex-col pt-16">
-            <div className="ItemSelected flex flex-row self-center">
-                <img
-                    className="flex w-96 h-96 rounded-3xl transition-all"
-                    src={itemSelect?.image}
-                    alt="main-item-image"
-                />
+        <div className="flex flex-1 flex-col pt-16">
+            <div className="flex flex-col md:flex-row self-center">
+                <div className="flex flex-col">
+                    <TitleTokenIdSeller/>
+                    <NftImage imageUri={itemSelect?.image} />
+                    <ItemConfigs/>
+                </div>
+
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
-                <div className="ItemInfoBlock flex flex-col">
-                    <p className="ItemName flex text-white">
+                <div className="flex flex-col justify-center items-center sm:items-start mt-16 md:ml-16 md:mt-0 pb-12 sm:pb-0">
+                    <p className="flex text-white text-3xl font-semibold">
                         {itemSelect?.name}
                     </p>
-                    {/* <div className="flex flex-row text-white">
-                        <p className="flex">{'From'}</p>
-                        <p className="flex ml-0.5">{'4.5 HOWL'}</p>
-                        <p className="flex">{' . '}</p>
+                    <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
-                    </div> */}
+                    </div>
                     <ItemRating numberStar={4} />
                     {/* <CreatorView /> */}
                     <InfoPages description={itemSelect?.description} />

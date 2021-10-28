@@ -3,7 +3,9 @@ import { icons } from 'assets'
 import { colors } from 'config/colors'
 import axios from 'axios'
 import { ethers } from 'ethers'
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
+import classNames from 'classnames'
+import Image from 'next/image'
 
 const ItemRating = ({ numberStar = 0 }) => {
     return (
@@ -15,12 +17,7 @@ const ItemRating = ({ numberStar = 0 }) => {
                         <div key={`ItemRating-${index}`}>
                             <img
                                 alt="star-image"
-                                className="flex"
-                                style={{
-                                    width: '18px',
-                                    height: '18px',
-                                    marginRight: '6px',
-                                }}
+                                className="flex mr-2 w-5 h-5"
                                 src={icons.star}
                             />
                         </div>
@@ -30,8 +27,15 @@ const ItemRating = ({ numberStar = 0 }) => {
     )
 }
 
-const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) => {
-
+const NftCard = ({
+    URI,
+    contractAddress,
+    tokenId,
+    price = 0,
+    index,
+    onClick,
+    showPrice = true,
+}) => {
     const [attributes, setAttributes] = useState({
         id: '',
         title: '',
@@ -51,8 +55,6 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
         axios
             .get(URI)
             .then(function (response) {
-                // handle success
-                // console.log({ response })
                 if (response.status !== 200) {
                     console.log(`Get NFT's info fail!`)
                     return
@@ -61,7 +63,6 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
                 setItemInfo({ description, image, name })
             })
             .catch(function (error) {
-                // handle error
                 console.log(error)
             })
             .then(function () {
@@ -69,13 +70,35 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
             })
     }, [URI, contractAddress, tokenId])
 
-    if(price === null || price === undefined) {
+    if (price === null || price === undefined) {
         console.log({ price })
         console.log(`Invalid price, can't show NFT card!`)
         return null
     }
     // console.log('Check price = ', price)
     const priceInHwl = ethers.utils.formatEther(price) || ''
+
+    const renderPrice = () => {
+        if (!showPrice) return null
+        return (
+            <div className="flex flex-row items-center w-full mt-1">
+                <div className="flex text-white Price">{priceInHwl}</div>
+                <div className="flex text-white mx-2 TokenCode">
+                    {attributes?.tokenCode}
+                </div>
+                {/* <img className="HeartIcon flex ml-auto" src={icons.heart} /> */}
+                {/* <div className="flex text-white ml-1 text-xs">
+                    {attributes?.like}
+                </div> */}
+            </div>
+        )
+    }
+
+    const hoverBg = 'hover:bg-Blue-1'
+    const hoverTransition = 'transition ease-in-out'
+    const hoverScale = 'hover:scale-105'
+    const hoverAnim =
+        'duration-500 transform hover:-translate-y-2'
 
     return (
         <button
@@ -89,50 +112,34 @@ const NftCard = ({ URI, contractAddress, tokenId, price = 0, index, onClick }) =
                     },
                 })
             }
-            className="NftCardContainer flex flex-col items-center w-52 h-80 rounded-lg m-4 p-3">
-            <img
-                alt="itemInfo-image"
-                className="flex rounded-xl w-48 h-48"
-                src={itemInfo?.image}
-            />
-            <div className="flex flex-1 flex-col items-left w-full Info">
-                <a className="text-white text-left Title">{itemInfo?.name}</a>
-                <div
-                    className="flex flex-row items-center w-full"
-                    style={{ marginTop: '4px' }}>
-                    <a className="flex text-white Price">{priceInHwl}</a>
-                    <a className="flex text-white TokenCode">
-                        {attributes?.tokenCode}
-                    </a>
-                    <img className="HeartIcon" src={icons.heart} />
-                    <a
-                        className="flex text-white"
-                        style={{
-                            marginLeft: '3px',
-                            fontSize: '12px',
-                        }}>
-                        {attributes?.like}
-                    </a>
+            className={classNames(
+                'flex-col rounded-lg m-4 bg-Gray-1 overflow-hidden w-52 group',
+                hoverAnim
+            )}>
+            <div className="w-52 h-52 bg-Gray-1">
+                {itemInfo?.image && (
+                    <img
+                        alt="itemInfo-image"
+                        className="w-52 h-52"
+                        src={itemInfo?.image}
+                    />
+                )}
+            </div>
+            <div className="flex flex-col items-left w-full mt-2 px-3 py-4">
+                <div className="text-white text-left text-base">
+                    {itemInfo?.name}
                 </div>
-                <div
-                    className="flex flex-row items-center justify-between"
-                    style={{ marginTop: '8px' }}>
+                {renderPrice()}
+                <div className="flex flex-row items-center justify-between mt-2">
                     <ItemRating numberStar={attributes?.star} />
                     <div
-                        className="flex justify-center items-center"
-                        style={{
-                            padding: '4px 6px 4px 6px',
-                            backgroundColor: colors.yellowBinance,
-                            borderRadius: '4px',
-                        }}>
-                        <a
+                        className="flex justify-center items-center py-1 px-2 rounded-md"
+                        style={{ backgroundColor: colors.yellowBinance }}>
+                        <div
                             className="flex"
-                            style={{
-                                fontSize: '11px',
-                                color: colors.black1,
-                            }}>
+                            style={{ fontSize: '11px', color: colors.black1 }}>
                             {'BSC'}
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>

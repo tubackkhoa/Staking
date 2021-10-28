@@ -1,6 +1,5 @@
 import Web3 from "web3";
 
-
 export const getRandom = (min = 0, max) => Math.floor(Math.random() * (max - min)) + min;
 
 export const detectEthereumNetwork = async () => {
@@ -74,64 +73,73 @@ const getWeb3 = () => {
 export const setupNetwork = async () => {
     const provider = window.ethereum;
     if (provider) {
-      const chainId = parseInt(process.env.SUPPORTED_CHAIN_ID, 10);
-      try {
-        await provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [
-            {
-              chainId: `0x${chainId.toString(16)}`,
-            },
-          ],
-        });
-        return true;
-      } catch (error) {
-        console.error("Failed to setup the network in Metamask:", error);
-        if (error.code === -32002) {
-          toast({
-            title:
-              "Permissions request already pending please wait. Please check you wallet",
-            status: "warning",
-          });
-        } else if (error.code === 4902) {
-          try {
+        const chainId = parseInt(process.env.SUPPORTED_CHAIN_ID, 10);
+        try {
             await provider.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: `0x${chainId.toString(16)}`,
-                  chainName: process.env.CHAIN_NAME,
-                  nativeCurrency: {
-                    name: "ETH",
-                    symbol: "eth",
-                    decimals: 18,
-                  },
-                  rpcUrls: RPC_URLS,
-                  blockExplorerUrls: [process.env.BLOCK_EXPLORER_URL],
-                },
-              ],
+                method: "wallet_switchEthereumChain",
+                params: [
+                    {
+                        chainId: `0x${chainId.toString(16)}`,
+                    },
+                ],
             });
             return true;
-          } catch (error) {
-            toast({
-              title: error?.message,
-              status: "error",
-            });
+        } catch (error) {
+            console.error("Failed to setup the network in Metamask:", error);
+            if (error.code === -32002) {
+                toast({
+                    title:
+                        "Permissions request already pending please wait. Please check you wallet",
+                    status: "warning",
+                });
+            } else if (error.code === 4902) {
+                try {
+                    await provider.request({
+                        method: "wallet_addEthereumChain",
+                        params: [
+                            {
+                                chainId: `0x${chainId.toString(16)}`,
+                                chainName: process.env.CHAIN_NAME,
+                                nativeCurrency: {
+                                    name: "ETH",
+                                    symbol: "eth",
+                                    decimals: 18,
+                                },
+                                rpcUrls: RPC_URLS,
+                                blockExplorerUrls: [process.env.BLOCK_EXPLORER_URL],
+                            },
+                        ],
+                    });
+                    return true;
+                } catch (error) {
+                    toast({
+                        title: error?.message,
+                        status: "error",
+                    });
+                    return false;
+                }
+            }
             return false;
-          }
         }
-        return false;
-      }
     } else {
-      console.error(
-        "Can't setup the BSC network on metamask because window.ethereum is undefined"
-      );
-      return false;
+        console.error(
+            "Can't setup the BSC network on metamask because window.ethereum is undefined"
+        );
+        return false;
     }
-  };
-  
+};
+
+
+export const parseMoneyInput = (value, currency = '') => {
+    return `${currency}${value
+        .replace(/(?!\.)\D/g, '')
+        .replace(/(?<=\..*)\./g, '')
+        .replace(/(?<=\.\d\d).*/g, '')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+};
 
 export const utils = {
     getRandom,
+    parseMoneyInput,
     detectEthereumNetwork,
 }

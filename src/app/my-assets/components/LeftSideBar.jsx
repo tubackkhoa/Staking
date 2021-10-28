@@ -24,8 +24,8 @@ const LeftSideBar = () => {
     const [optionSelect, setOptionSelect] = useState(options[0])
 
     return (
-        <div className="LeftSideBar flex w-1/6 flex-col items-center border-r-0 p-8 w-60">
-            <div className="flex-col GroupMenuItems">
+        <div className="flex-col items-center border-r-0 p-8 hidden xl:flex w-96">
+            <div className="flex-col">
                 {options.map(item => {
                     const { id, title } = item
                     const isSelect = id === optionSelect?.id
@@ -34,12 +34,14 @@ const LeftSideBar = () => {
                         setOptionSelect(item)
                     }
 
+                    const selectedStyle = isSelect ? "bg-Blue-1" : ""
+
                     return (
                         <button
                             key={id}
                             className={classNames(
-                                'flex items-center GroupMenuItem',
-                                { SelectedItem: isSelect }
+                                'flex items-center mt-4 rounded-lg w-52 h-12 px-4 py-2 hover:bg-gray-500',
+                                selectedStyle
                             )}
                             onClick={_onClick}>
                             <a className="text-white">{title}</a>
