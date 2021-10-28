@@ -9,7 +9,7 @@ import {
 
 import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
-import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HowlToken.json'
+import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HOWL.json'
 
 const networks = {
     localhost: 'localhost',
