@@ -8,4 +8,5 @@ export const routes = {
     createSale: '/create-sale',
     storePage: '/store-page',
     staking: '/staking',
+    storeItemDetails: '/store-item-details'
 }

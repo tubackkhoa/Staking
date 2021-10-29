@@ -4,4 +4,5 @@ export const globalKeys = {
     myAssetSelect: 'myAssetSelect',
     filterActiveSale: 'filterActiveSale',
     isLoadingActiveSale: 'isLoadingActiveSale',
+    storeItemSelect: 'storeItemSelect'
 }

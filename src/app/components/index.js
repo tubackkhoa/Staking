@@ -3,6 +3,7 @@ import Loading from './Loading'
 import ItemConfigs from './ItemConfigs'
 import TitleTokenIdSeller from './TitleTokenIdSeller'
 import NftImage from './NftImage'
+import NftStoreCard from './NftStoreCard'
 
 export {
     NftCard,
@@ -10,4 +11,5 @@ export {
     ItemConfigs,
     TitleTokenIdSeller,
     NftImage,
+    NftStoreCard,
 }

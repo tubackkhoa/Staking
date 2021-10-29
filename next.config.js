@@ -1,6 +1,7 @@
 module.exports = {
     reactStrictMode: true,
     images: {
-        // domains: ['assets.example.com'],
+        domains: ['gateway.pinata.cloud'],
     },
+    // images: { domains: ['*'] }
 }

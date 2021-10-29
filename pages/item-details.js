@@ -1,3 +1,3 @@
-import ItemDetailsContainer from 'app/item-details'
+import PageContainer from 'app/item-details'
 
-export default ItemDetailsContainer
+export default PageContainer

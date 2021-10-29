@@ -52,7 +52,7 @@ const HowlMarketFeatures = () => {
     const features = [
         {
             id: 'features0',
-            title: 'Explore',
+            title: 'Marketplace',
             onClick: () => {},
         },
         {

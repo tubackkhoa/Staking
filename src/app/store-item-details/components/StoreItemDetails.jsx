@@ -34,65 +34,40 @@ const InfoPages = ({ description }) => {
     )
 }
 
-const BuyButton = ({ saleId, price }) => {
+
+// gameItemContract.createGameItem()
+// marketCont.buyGameItem(uri, itemId)
+const BuyStoreItemButton = ({ uri = '', itemId = '' }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
     const [loading, setLoading] = useState(false)
-    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
-        walletInfo
+    const [price, setPrice] = useState('')
+    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } = walletInfo
+
+        // .availableQuantity(itemId)
 
     useEffect(() => {
-        // console.log({ walletInfo })
         _connectWalletAndSaveGlobal()
     }, [])
 
-    const _purchaseSale = async ({ saleId, marketCont, tokenCont }) => {
-        if (!saleId || saleId === -1) {
-            return
-        }
-        setLoading(true)
-        console.log('Check run _purchaseSale')
-        // buy token
-        try {
-            const allowance = await tokenCont?.allowance(
-                walletInfo?.signer?.getAddress(),
-                marketCont.address
-            )
-            if (allowance.lt(price)) {
-                const approveAllowance = await tokenCont?.approve(
-                    marketCont.address,
-                    configs.unlimitedAllowance
-                )
-                await approveAllowance.wait()
-                console.log({ approveAllowance })
-            }
+    // marketCont.storePrice()
+    const _getItemPrice = async ({ marketCont }) => {
+        const itemPrice = await marketCont?.storePrice(); // BigNumber
+        const priceInHwl = ethers?.utils?.formatEther(itemPrice) || 0
+        setPrice(priceInHwl)
+    }
 
-            const purchaseToken = await marketCont.purchaseSale(
-                /*saleId=*/ saleId
-            )
-            await purchaseToken.wait() // waiting create transaction
-            setLoading(false)
-            console.log({ purchaseToken })
-            toast.success(`Purchase sale NFT successfully!`)
-            setTimeout(() => {
-                route.push(routes.myAssets)
-            }, 2000)
-        } catch (err) {
-            console.log(err)
-            setLoading(false)
-            toast.dismiss()
-            toast.error(
-                `Purchase sale failed with error ${err?.data?.message}!`
-            )
-            console.log(err?.data?.message)
-        }
+    // use function buyGameItem(string memory uri, uint256 itemId) 
+    const _onClickBuy = async () => {
+        const marketCont = walletInfo?.marketplaceContract
+        await marketCont?.buyGameItem()
     }
 
     const _connectWalletAndSaveGlobal = async () => {
         const wallet = await connectWallet()
         // toast.dismiss()
         // toast.success('Connect wallet successfully!')
-        // console.log('check my-assets _getData', { wallet })
+        console.log('check wallet = ', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
@@ -116,6 +91,8 @@ const BuyButton = ({ saleId, price }) => {
             signerAddress,
         })
 
+        await _getItemPrice({ marketCont: marketplaceContract })
+
         return {
             marketplaceContract,
             gameItemContract,
@@ -125,49 +102,9 @@ const BuyButton = ({ saleId, price }) => {
         }
     }
 
-    const _onClickBuy = async () => {
-        if (loading) {
-            return
-        }
-
-        if (!walletInfo || !walletInfo.signer) {
-            toast.info('Please connect your metamask wallet!')
-            await _connectWalletAndSaveGlobal()
-            return
-        }
-        // return
-        const signerAddress =
-            walletInfo?.signerAddress ||
-            (await walletInfo?.signer?.getAddress())
-        console.log({ signerAddress })
-        const weiBigNumber = await tokenCont?.balanceOf(signerAddress) // is an BigNumberish
-        console.log({ weiBigNumber }) //
-        // _hex: "0x019d971e4fe8401e74000000"
-        // _isBigNumber: true
-
-        // get balance of HOWL token
-        const howlTokenBalanceWeiInt = parseInt(
-            ethers.utils.formatEther(weiBigNumber)
-        )
-        console.log({ howlTokenBalanceWeiInt }) // 500000000
-
-        console.log({ price }) // is BigNumber
-        const priceInt = ethers.utils.formatEther(price)
-        console.log({ priceInt })
-
-        const priceInHwl = priceInt / howlTokenBalanceWeiInt
-        console.log({ priceInHwl })
-        _purchaseSale({
-            saleId,
-            tokenCont: tokenCont,
-            marketCont: marketCont,
-        })
-    }
-
-    if (!price) return null
-
     // console.log(price)
-    const priceInHwl = ethers.utils.formatEther(price)
+
+    // .availableQuantity(itemId)
     // console.log('Check priceInHwl = ' + priceInHwl)
 
     const hoverAnim = 'transition duration-300 ease-in-out 0'
@@ -181,7 +118,7 @@ const BuyButton = ({ saleId, price }) => {
                     hoverAnim
                 )}>
                 <div className="flex text-xl text-semibold text-white">
-                    {`Buy for ${priceInHwl} HWL`}
+                    {`Buy for ${price} HWL`}
                 </div>
                 {!!loading && <Loading className="ml-4" />}
             </button>
@@ -190,17 +127,18 @@ const BuyButton = ({ saleId, price }) => {
 }
 
 const ItemDetails = () => {
-    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
+    const [itemSelect, setItemSelect] = useGlobal(globalKeys.storeItemSelect)
+    const [itemId, setItemId] = useGlobal(null)
 
     const route = useRouter()
     useEffect(() => {
-        // console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
+        console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
         if (!itemSelect) {
             route.back()
             return
         }
-        const { id, image, like, price, star, title, tokenCode, saleId } =
-            itemSelect
+        const itemIdFromJson = itemSelect?.attributes[0].value
+        setItemId(itemIdFromJson)
     }, [itemSelect, route])
 
     const ItemRating = ({ numberStar = 5 }) => {
@@ -243,7 +181,7 @@ const ItemDetails = () => {
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
-                <div className="flex flex-col">
+                <div className="flex flex-col pb-24">
                     <TitleTokenIdSeller/>
                     <NftImage imageUri={itemSelect?.image} />
                     <ItemConfigs/>
@@ -260,9 +198,9 @@ const ItemDetails = () => {
                     <ItemRating numberStar={4} />
                     {/* <CreatorView /> */}
                     <InfoPages description={itemSelect?.description} />
-                    <BuyButton
-                        saleId={itemSelect?.saleId}
-                        price={itemSelect?.price}
+                    <BuyStoreItemButton
+                        uri={''}
+                        itemId={itemId}
                     />
                 </div>
             </div>

@@ -21,15 +21,15 @@ const Container = props => {
 
     React.useEffect(() => {
         if(route.pathname === routes.mainApp){
-            _getData()
+            _getContractFromProvider()
         }
     }, [route.pathname])
 
     React.useEffect(() => {
-        _getData()
+        _getContractFromProvider()
     }, [])
 
-    const _getData = async () => {
+    const _getContractFromProvider = async () => {
         const provider = new ethers.providers.JsonRpcProvider(configs.testnetBSC)
         const marketContract = new ethers.Contract(
             marketAddress,

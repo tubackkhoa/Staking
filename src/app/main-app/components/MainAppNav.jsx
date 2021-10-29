@@ -83,8 +83,8 @@ const MainAppNav = ({ showSearchBar = false }) => {
     const route = useRouter()
     const navRoutes = [
         {
-            id: 'Explore',
-            title: 'Explore',
+            id: 'Marketplace',
+            title: 'Marketplace',
             route: routes.mainApp,
             onClick: () => {
                 route.push(routes.mainApp)
