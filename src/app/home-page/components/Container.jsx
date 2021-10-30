@@ -36,6 +36,7 @@ const Container = props => {
             MarketplaceAbi.abi,
             provider
         )
+        
         const gameItemContract = new ethers.Contract(
             nftAddress,
             nftAbi.abi,
@@ -72,7 +73,12 @@ const Container = props => {
     }
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
-        const activeSales = await marketCont?.getActiveSales()
+        if(!marketCont || typeof marketCont?.getActiveSalesByPage !== 'function') {
+            console.log({ marketCont })
+            return;
+        }
+        console.log({ marketCont })
+        const activeSales = await marketCont?.getActiveSalesByPage(0,12)
         
         // const activeSales = await marketCont?.getActiveSalesByPage(0,3)
         console.log({ activeSales })

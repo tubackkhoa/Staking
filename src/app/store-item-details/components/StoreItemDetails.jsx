@@ -52,6 +52,11 @@ const BuyStoreItemButton = ({ uri = '', itemId = '' }) => {
 
     // marketCont.storePrice()
     const _getItemPrice = async ({ marketCont }) => {
+        if(!marketCont || typeof marketCont?.storePrice !== 'function'){
+            console.log('Check _getItemPrice failed!')
+            console.log({ marketCont })
+            return
+        }
         const itemPrice = await marketCont?.storePrice(); // BigNumber
         const priceInHwl = ethers?.utils?.formatEther(itemPrice) || 0
         setPrice(priceInHwl)
