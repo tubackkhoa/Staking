@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useGlobal } from 'reactn'
+import PropTypes from 'prop-types'
 
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
@@ -7,18 +8,28 @@ import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
 
-import { NftCard } from '../../components'
+import { Loading, NftCard } from '../../components'
 
-const MyAssetsGrid = () => {
+const MyAssetsGrid = ({ isLoading }) => {
     const route = useRouter()
-    const [myAssetSelect, setMyAssetSelect] = useGlobal(globalKeys.myAssetSelect)
+    const [myAssetSelect, setMyAssetSelect] = useGlobal(
+        globalKeys.myAssetSelect
+    )
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
 
-    // console.log({ nfts })
+    console.log({ isLoading })
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-1 bg-hwl-gray-1">
+                <Loading size={8} />
+            </div>
+        )
+    }
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 HomePage">
+        <div className="first-letter:bg-hwl-gray-1">
             <div className="flex flex-wrap flex-1 p-4">
                 {Array.isArray(nfts) &&
                     nfts.map((item, index) => {
@@ -40,7 +51,7 @@ const MyAssetsGrid = () => {
                                     // console.log('Check nft = ', nft)
                                     setMyAssetSelect({
                                         ...nft,
-                                        ...item
+                                        ...item,
                                     })
                                 }}
                             />
@@ -49,6 +60,14 @@ const MyAssetsGrid = () => {
             </div>
         </div>
     )
+}
+
+MyAssetsGrid.propTypes = {
+    isLoading: PropTypes.bool,
+}
+
+MyAssetsGrid.defaultProps = {
+    isLoading: false,
 }
 
 export default MyAssetsGrid

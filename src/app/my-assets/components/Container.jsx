@@ -1,17 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
+import { toast } from 'react-toastify'
+import { useGlobal } from 'reactn'
 
 import connectWallet from 'app/main-app/wallet'
+
+import LeftSideBar from './LeftSideBar'
 import MyAssetsGrid from './MyAssetsGrid'
-import { useGlobal } from 'reactn'
+
 import { globalKeys } from 'config/globalKeys'
+
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
-import LeftSideBar from './LeftSideBar'
-import { toast } from 'react-toastify'
+import { Loading } from 'app/components'
+
 
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
+    const [isGetMyNfts, setGetMyNfts] = useState(false)
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
 
     useEffect(() => {
@@ -19,6 +25,7 @@ const Container = props => {
     }, [])
 
     const _getData = async () => {
+        setGetMyNfts(true)
         const { marketplaceContract, howlTokenContract, signerAddress } = await _connectWalletAndSaveGlobal();
         await _getMyAssets({
             marketCont: marketplaceContract,
@@ -28,12 +35,9 @@ const Container = props => {
     }
 
     const _connectWalletAndSaveGlobal = async () => {
-        // toast.info('Connecting your metamask wallet!')
         const wallet = await connectWallet()
         console.log({ wallet })
         toast.dismiss()
-        // toast.success('Connect wallet successfully!')
-        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
@@ -74,9 +78,11 @@ const Container = props => {
 
         try {
             const nfts = await marketCont?.getUserNFTs()
+            setGetMyNfts(false)
             console.log({ nfts })
             dispatch(MainAppActions.setMyAssetNfts(nfts))
         } catch (error) {
+            setGetMyNfts(false)
             toast.error(error)
         }
 
@@ -104,10 +110,14 @@ const Container = props => {
         // console.log({ userCreatedSales })
     }
 
+    return(
+        <Loading size={8} />
+    )
+
     return (
         <>
             <LeftSideBar />
-            <MyAssetsGrid />
+            <MyAssetsGrid isLoading={true} />
         </>
     )
 }
