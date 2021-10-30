@@ -7,33 +7,9 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
-import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
+import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller, InfoPages, RatingView } from 'app/components'
 import classNames from 'classnames'
 import { configs } from 'config/config'
-
-const InfoPages = ({ description }) => {
-    // console.log('Check description = ' + description)
-    const borderBottomColor = 'white'
-    return (
-        <div className="InfoPagesContainer flex flex-col w-full items-center sm:items-start max-w-sm mt-4 px-6 sm:px-0">
-            <div className="InfoPageItem flex flex-col font-semibold">
-                <div className="text-lg text-white mt-4 sm:mt-0">
-                    {'Details'}
-                </div>
-                <div
-                    className="flex mt-2.5 w-14"
-                    style={{
-                        backgroundColor: borderBottomColor,
-                    }}
-                />
-            </div>
-            <div className="InfoPageItemContent flex flex-col">
-                <p className="flex text-white break-all text-center sm:text-left">{description}</p>
-            </div>
-        </div>
-    )
-}
-
 
 // gameItemContract.createGameItem()
 // marketCont.buyGameItem(uri, itemId)
@@ -146,43 +122,6 @@ const ItemDetails = () => {
         setItemId(itemIdFromJson)
     }, [itemSelect, route])
 
-    const ItemRating = ({ numberStar = 5 }) => {
-        return (
-            <div className="flex flex-row mt-4">
-                {Array(numberStar)
-                    .fill(0)
-                    .map((item, index) => {
-                        return (
-                            <div
-                                key={`renderStars${index}`}
-                                className="flex w-12 h-12 mr-2.5">
-                                <img
-                                    className="flex w-12 h-12"
-                                    src={icons.star}
-                                />
-                            </div>
-                        )
-                    })}
-            </div>
-        )
-    }
-
-    const CreatorView = () => {
-        return (
-            <div className="flex flex-row items-center mt-4">
-                <img
-                    alt="creator-avatar"
-                    className="CreatorAvatar flex"
-                    src={icons.instagram}
-                />
-                <div className="flex flex-col text-white ml-4">
-                    <h6 className="flex text-sm">{'Creator'}</h6>
-                    <h6>{'Harry'}</h6>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
@@ -191,7 +130,6 @@ const ItemDetails = () => {
                     <NftImage imageUri={itemSelect?.image} />
                     <ItemConfigs/>
                 </div>
-
                 {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
                 <div className="flex flex-col justify-center items-center sm:items-start mt-16 md:ml-16 md:mt-0 pb-12 sm:pb-0">
                     <p className="flex text-white text-3xl font-semibold">
@@ -200,8 +138,7 @@ const ItemDetails = () => {
                     <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
                     </div>
-                    <ItemRating numberStar={4} />
-                    {/* <CreatorView /> */}
+                    <RatingView numberStar={4} size={50} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyStoreItemButton
                         uri={''}

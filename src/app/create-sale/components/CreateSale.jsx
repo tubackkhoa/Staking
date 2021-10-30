@@ -7,27 +7,9 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
-import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
+import { ItemConfigs, Loading, NftImage, RatingView, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
 import { parseMoneyInput } from 'utils'
-
-const ItemRating = ({ numberStar = 5 }) => {
-    return (
-        <div className="flex flex-row mt-4 sm:mt-4">
-            {Array(numberStar)
-                .fill(0)
-                .map((item, index) => {
-                    return (
-                        <div
-                            key={`renderStars${index}`}
-                            className="flex w-12 h12 mr-3">
-                            <img className="flex w-12 h-12" src={icons.star} />
-                        </div>
-                    )
-                })}
-        </div>
-    )
-}
 
 const CreatorView = () => {
     return (
@@ -324,7 +306,7 @@ const CreateSale = () => {
                     <div className="flex text-white mt-12 text-3xl font-semibold sm:mt-0">
                         {myAssetSelect?.name}
                     </div>
-                    <ItemRating numberStar={4} />
+                    <RatingView numberStar={4} />
                     <InfoPages description={myAssetSelect?.description} />
                     <div className="flex w-auto h-px bg-Gray-2 my-4" />
                     {renderInputItemPrice()}

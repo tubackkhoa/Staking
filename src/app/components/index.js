@@ -4,6 +4,9 @@ import ItemConfigs from './ItemConfigs'
 import TitleTokenIdSeller from './TitleTokenIdSeller'
 import NftImage from './NftImage'
 import NftStoreCard from './NftStoreCard'
+import InfoPages from './InfoPages'
+import RatingView from './RatingView'
+import CreatorView from './CreatorView'
 
 export {
     NftCard,
@@ -12,4 +15,7 @@ export {
     TitleTokenIdSeller,
     NftImage,
     NftStoreCard,
+    InfoPages,
+    RatingView,
+    CreatorView,
 }

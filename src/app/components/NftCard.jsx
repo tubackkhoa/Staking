@@ -1,31 +1,12 @@
 import { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { icons } from 'assets'
 import { colors } from 'config/colors'
 import axios from 'axios'
 import { ethers } from 'ethers'
-import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
 import Image from 'next/image'
-
-const ItemRating = ({ numberStar = 0 }) => {
-    return (
-        <div className="flex flex-row">
-            {Array(numberStar)
-                .fill(0)
-                .map((item, index) => {
-                    return (
-                        <div key={`ItemRating-${index}`}>
-                            <img
-                                alt="star-image"
-                                className="flex mr-2 w-5 h-5"
-                                src={icons.star}
-                            />
-                        </div>
-                    )
-                })}
-        </div>
-    )
-}
+import { RatingView } from '.'
 
 const NftCard = ({
     URI,
@@ -131,7 +112,7 @@ const NftCard = ({
                 </div>
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
-                    <ItemRating numberStar={attributes?.star} />
+                    <RatingView numberStar={attributes?.star} />
                     <div
                         className="flex justify-center items-center py-1 px-2 rounded-md"
                         style={{ backgroundColor: colors.yellowBinance }}>
@@ -145,6 +126,26 @@ const NftCard = ({
             </div>
         </button>
     )
+}
+
+NftCard.propTypes = {
+    URI: PropTypes.string,
+    contractAddress: PropTypes.string,
+    tokenId: PropTypes.string,
+    price: PropTypes.number,
+    index: PropTypes.number,
+    onClick: PropTypes.func,
+    showPrice: PropTypes.bool,
+}
+
+NftCard.defaultProps = {
+    URI: '',
+    contractAddress: '',
+    tokenId: '',
+    price: 0,
+    index: 0,
+    onClick: () => undefined,
+    showPrice: true,
 }
 
 export default NftCard

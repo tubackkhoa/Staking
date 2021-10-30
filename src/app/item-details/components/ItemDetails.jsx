@@ -7,7 +7,7 @@ import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
-import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller } from 'app/components'
+import { ItemConfigs, Loading, NftImage, RatingView, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
 import { configs } from 'config/config'
 
@@ -203,43 +203,6 @@ const ItemDetails = () => {
             itemSelect
     }, [itemSelect, route])
 
-    const ItemRating = ({ numberStar = 5 }) => {
-        return (
-            <div className="flex flex-row mt-4">
-                {Array(numberStar)
-                    .fill(0)
-                    .map((item, index) => {
-                        return (
-                            <div
-                                key={`renderStars${index}`}
-                                className="flex w-12 h-12 mr-2.5">
-                                <img
-                                    className="flex w-12 h-12"
-                                    src={icons.star}
-                                />
-                            </div>
-                        )
-                    })}
-            </div>
-        )
-    }
-
-    const CreatorView = () => {
-        return (
-            <div className="flex flex-row items-center mt-4">
-                <img
-                    alt="creator-avatar"
-                    className="CreatorAvatar flex"
-                    src={icons.instagram}
-                />
-                <div className="flex flex-col text-white ml-4">
-                    <h6 className="flex text-sm">{'Creator'}</h6>
-                    <h6>{'Harry'}</h6>
-                </div>
-            </div>
-        )
-    }
-
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
@@ -257,8 +220,7 @@ const ItemDetails = () => {
                     <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
                     </div>
-                    <ItemRating numberStar={4} />
-                    {/* <CreatorView /> */}
+                    <RatingView numberStar={4} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyButton
                         saleId={itemSelect?.saleId}

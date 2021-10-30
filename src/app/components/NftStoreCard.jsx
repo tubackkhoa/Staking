@@ -4,30 +4,10 @@ import { icons } from 'assets'
 import { colors } from 'config/colors'
 import axios from 'axios'
 import { ethers } from 'ethers'
-import BigNumber from 'bignumber.js'
 import classNames from 'classnames'
 import Image from 'next/image'
 import { isURL } from 'utils'
-
-const ItemRating = ({ numberStar = 0 }) => {
-    return (
-        <div className="flex flex-row">
-            {Array(numberStar)
-                .fill(0)
-                .map((item, index) => {
-                    return (
-                        <div key={`ItemRating-${index}`}>
-                            <img
-                                alt="star-image"
-                                className="flex mr-2 w-5 h-5"
-                                src={icons.star}
-                            />
-                        </div>
-                    )
-                })}
-        </div>
-    )
-}
+import RatingView from './RatingView'
 
 const NftStoreCard = ({
     URI,
@@ -120,7 +100,7 @@ const NftStoreCard = ({
                 </div>
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
-                    <ItemRating numberStar={attributes?.star} />
+                    <RatingView numberStar={attributes?.star} />
                     <div
                         className="flex justify-center items-center py-1 px-2 rounded-md"
                         style={{ backgroundColor: colors.yellowBinance }}>
