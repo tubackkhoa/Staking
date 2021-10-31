@@ -187,6 +187,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
         marketCont,
         gameItemContract
     ) => {
+        price = `${price}`.replaceAll('.','')
         setLoading(true)
         const ownerOfTokenAddress = await gameItemContract?.ownerOf(tokenId)
         // check if the seller is the owner of this token

@@ -135,7 +135,7 @@ export const parseMoneyInput = (value, currency = '') => {
         .replace(/(?!\.)\D/g, '')
         .replace(/(?<=\..*)\./g, '')
         .replace(/(?<=\.\d\d).*/g, '')
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
 };
 
 export function isURL(str) {
