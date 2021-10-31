@@ -19,13 +19,15 @@ import { marketAddress, nftAddress } from '../../../../deployed_address.json'
 const MainApp = ({ pageProps, Component }) => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         _getContractFromProvider()
     }, [])
 
     const _getContractFromProvider = async () => {
         console.log('Check _getContractFromProvider')
-        const provider = new ethers.providers.JsonRpcProvider(configs.testnetBSC)
+        const provider = new ethers.providers.JsonRpcProvider(
+            configs.testnetBSC
+        )
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi?.abi,
@@ -38,11 +40,9 @@ const MainApp = ({ pageProps, Component }) => {
         )
 
         setWalletInfo({
-           marketplaceContract: marketContract,
-           gameItemContract: gameItemContract,
-           signer: null,
-           howlTokenContract: null,
-           signerAddress: null,
+            ...walletInfo,
+            marketplaceContract: marketContract,
+            gameItemContract: gameItemContract,
         })
     }
 

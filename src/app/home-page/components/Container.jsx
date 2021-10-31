@@ -18,12 +18,14 @@ const Container = props => {
     const [state, dispatch] = useMainAppContext()
     const route = useRouter()
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
+    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
+    const { activeSales = [] } = state
 
     React.useEffect(() => {
         if(route.pathname === routes.mainApp){
             _getContractFromProvider()
         }
-    }, [route.pathname])
+    }, [route?.pathname])
 
     React.useEffect(() => {
         _getContractFromProvider()
@@ -39,7 +41,7 @@ const Container = props => {
         
         const gameItemContract = new ethers.Contract(
             nftAddress,
-            nftAbi.abi,
+            nftAbi?.abi,
             provider
         )
 
@@ -59,17 +61,6 @@ const Container = props => {
         await _getInactiveSales({
             marketCont: marketContract,
         })
-    }
-
-    const connectWalletAndGetContract = async () => {
-        let walletInfo = await connectWallet()
-        // console.log({ walletInfo })
-        const signerAddress = await walletInfo.signer.getAddress()
-        // console.log({ signerAddress })
-        return {
-            ...walletInfo,
-            signerAddress,
-        }
     }
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
@@ -114,15 +105,6 @@ const Container = props => {
         dispatch(MainAppActions.setState({ activeSales: activeSalesFull }))
     }
 
-    const _getBalanceOfToken = async () => {
-        // get balance of HOWL token
-        const balance = ethers.utils.formatEther(
-            await tokenCont?.balanceOf(signerAddress)
-        )
-        const balanceFloat = parseFloat(howlTokenBalance)
-        // console.log('Check balanceFloat = ' + balanceFloat)
-    }
-
     const _getInactiveSales = async ({ marketCont }) => {
         const userPurchasedSales = await marketCont?.getUserPurchasedSales()
         console.log({ userPurchasedSales })
@@ -141,7 +123,13 @@ const Container = props => {
     return (
         <>
             <LeftSideBar />
-            <ActiveSaleGrid />
+            <ActiveSaleGrid 
+                date={activeSales}
+                onClickItem={(item)=> {
+                    route.push(routes.itemDetails)
+                    setItemSelect(item)
+                }}
+            />
         </>
     )
 }

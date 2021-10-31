@@ -90,9 +90,6 @@ const BuyButton = ({ saleId, price }) => {
 
     const _connectWalletAndSaveGlobal = async () => {
         const wallet = await connectWallet()
-        // toast.dismiss()
-        // toast.success('Connect wallet successfully!')
-        // console.log('check my-assets _getData', { wallet })
 
         if (!wallet) {
             toast.error('Connect wallet failed!')

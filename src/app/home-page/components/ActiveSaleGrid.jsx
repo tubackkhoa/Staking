@@ -11,20 +11,14 @@ import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import { NftCard } from '../../components'
 import QuickFilterBar from './QuickFilterBar'
 
-const ActiveSaleGrid = ({ isLoading, data }) => {
+const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
     const route = useRouter()
-    const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
-    const [state, dispatch] = useMainAppContext()
-    const { activeSales: dataList = [] } = state
 
-    console.log({ isLoading })
-    console.log({ dataList })
-
-    if (!Array.isArray(dataList) || (!isLoading && dataList.length === 0)) {
+    if (!Array.isArray(data) || (!isLoading && data.length === 0)) {
         return (
             <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
-                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-10">
-                    All bikes are sold out 🎉🎉🎉 <br /> see you next time!
+                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
+                    All bikes on market are sold out 🎉🎉🎉 <br /> See you next time!
                 </p>
             </div>
         )
@@ -32,10 +26,8 @@ const ActiveSaleGrid = ({ isLoading, data }) => {
 
     return (
         <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col">
-            {/* <QuickFilterBar /> */}
             <div className="flex flex-wrap p-4">
-                {Array.isArray(dataList) &&
-                    dataList.map((item, index) => {
+                {data.map((item, index) => {
                         if (!item) return null
                         // console.log({ item })
                         const {
@@ -63,8 +55,7 @@ const ActiveSaleGrid = ({ isLoading, data }) => {
                                 price={price}
                                 index={index}
                                 onClick={({ nft }) => {
-                                    route.push(routes.itemDetails)
-                                    setItemSelect({
+                                    onClickItem({
                                         ...nft,
                                         saleId,
                                         buyer,
@@ -85,11 +76,13 @@ const ActiveSaleGrid = ({ isLoading, data }) => {
 ActiveSaleGrid.propTypes = {
     isLoading: PropTypes.bool,
     data: PropTypes.array,
+    onClickItem: PropTypes.func,
 }
 
 ActiveSaleGrid.defaultProps = {
     isLoading: false,
     data: [],
+    onClickItem: () => undefined,
 }
 
 export default ActiveSaleGrid

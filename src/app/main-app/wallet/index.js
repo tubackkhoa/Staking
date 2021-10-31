@@ -5,11 +5,13 @@ import {
     marketAddress,
     nftAddress,
     tokenAddress,
+    storeAddress,
 } from '../../../../deployed_address.json'
 
 import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HOWL.json'
+import Store from '../../../../artifacts/contracts/Store.sol/Store.json'
 
 const networks = {
     localhost: 'localhost',
@@ -48,9 +50,15 @@ const connectWallet = async () => {
         HowlToken.abi,
         signer
     )
-    // console.log({ howlTokenContract })
 
-    return { marketplaceContract, gameItemContract, signer, howlTokenContract }
+    const storeContract = new ethers.Contract(
+        storeAddress,
+        Store.abi,
+        signer
+    )
+    // console.log({ storeContract })
+
+    return { marketplaceContract, gameItemContract, signer, howlTokenContract, storeContract }
 }
 
 export default connectWallet

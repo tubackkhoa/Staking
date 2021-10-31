@@ -1,99 +1,42 @@
 import { useEffect, useState } from 'react'
-import { globalKeys } from 'config/globalKeys'
-import { useRouter } from 'next/dist/client/router'
 import { useGlobal } from 'reactn'
-import { icons } from 'assets'
 import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
-import connectWallet from 'app/main-app/wallet'
-import { routes } from 'config/routes'
-import { ItemConfigs, Loading, NftImage, TitleTokenIdSeller, InfoPages, RatingView } from 'app/components'
 import classNames from 'classnames'
+
+import { globalKeys } from 'config/globalKeys'
+import { useRouter } from 'next/dist/client/router'
+import { icons } from 'assets'
+import { routes } from 'config/routes'
 import { configs } from 'config/config'
+
+import {
+    ItemConfigs,
+    Loading,
+    NftImage,
+    TitleTokenIdSeller,
+    InfoPages,
+    RatingView,
+} from 'app/components'
+import connectWallet from 'app/main-app/wallet'
+
+import {
+    marketAddress,
+    nftAddress,
+    storeAddress,
+} from '../../../../deployed_address.json'
+import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
+import StoreAbi from '../../../../artifacts/contracts/Store.sol/Store.json'
 
 // gameItemContract.createGameItem()
 // marketCont.buyGameItem(uri, itemId)
-const BuyStoreItemButton = ({ uri = '', itemId = '' }) => {
-    const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
-    const route = useRouter()
-    const [loading, setLoading] = useState(false)
-    const [price, setPrice] = useState('')
-    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } = walletInfo
-
-        // .availableQuantity(itemId)
-
-    useEffect(() => {
-        _connectWalletAndSaveGlobal()
-    }, [])
-
-    // marketCont.storePrice()
-    const _getItemPrice = async ({ marketCont }) => {
-        if(!marketCont || typeof marketCont?.storePrice !== 'function'){
-            console.log('Check _getItemPrice failed!')
-            console.log({ marketCont })
-            return
-        }
-        const itemPrice = await marketCont?.storePrice(); // BigNumber
-        const priceInHwl = ethers?.utils?.formatEther(itemPrice) || 0
-        setPrice(priceInHwl)
-    }
-
-    // use function buyGameItem(string memory uri, uint256 itemId) 
-    const _onClickBuy = async () => {
-        const marketCont = walletInfo?.marketplaceContract
-        await marketCont?.buyGameItem()
-    }
-
-    const _connectWalletAndSaveGlobal = async () => {
-        const wallet = await connectWallet()
-        // toast.dismiss()
-        // toast.success('Connect wallet successfully!')
-        console.log('check wallet = ', { wallet })
-
-        if (!wallet) {
-            toast.error('Connect wallet failed!')
-            return
-        }
-
-        const {
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-        } = wallet
-
-        const signerAddress = await signer?.getAddress()
-
-        setWalletInfo({
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-            signerAddress,
-        })
-
-        await _getItemPrice({ marketCont: marketplaceContract })
-
-        return {
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-            signerAddress,
-        }
-    }
-
-    // console.log(price)
-
-    // .availableQuantity(itemId)
-    // console.log('Check priceInHwl = ' + priceInHwl)
-
+const BuyStoreItemButton = ({ onClickBuy, price, loading }) => {
     const hoverAnim = 'transition duration-300 ease-in-out 0'
 
     return (
         <div className="flex flex-row mt-8">
             <button
-                onClick={_onClickBuy}
+                onClick={onClickBuy}
                 className={classNames(
                     'flex justify-center items-center w-80 h-16 px-4 py-2 rounded-xl border-Blue-1 border-2 hover:bg-Blue-1',
                     hoverAnim
@@ -107,42 +50,177 @@ const BuyStoreItemButton = ({ uri = '', itemId = '' }) => {
     )
 }
 
-const ItemDetails = () => {
+const StoreItemDetails = () => {
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.storeItemSelect)
     const [itemId, setItemId] = useGlobal(null)
-
+    const [available, setAvailable] = useState(0)
+    const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const route = useRouter()
+    const [loading, setLoading] = useState(false)
+    const [price, setPrice] = useState('')
+    const [storeContract, setStore] = useState()
+    const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
+        walletInfo
+
     useEffect(() => {
-        console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
+        _connectWalletAndSaveGlobal()
+        _getContract()
+    }, [])
+
+    useEffect(() => {
         if (!itemSelect) {
             route.back()
             return
         }
         const itemIdFromJson = itemSelect?.attributes[0].value
+        console.log({ itemIdFromJson })
         setItemId(itemIdFromJson)
     }, [itemSelect, route])
+
+    const _connectWalletAndSaveGlobal = async () => {
+        const wallet = await connectWallet()
+        if (!wallet) {
+            toast.error('Connect wallet failed!')
+            return
+        }
+        const {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            storeContract,
+        } = wallet
+
+        const signerAddress = await signer?.getAddress()
+
+        setStore(storeContract)
+
+        setWalletInfo({
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            signerAddress,
+            storeContract,
+        })
+
+        return {
+            marketplaceContract,
+            gameItemContract,
+            signer,
+            howlTokenContract,
+            signerAddress,
+            storeContract,
+        }
+    }
+
+    const _getItemPrice = async ({ storeContract }) => {
+        if (!storeContract || typeof storeContract?.storePrice !== 'function') {
+            console.log('Check _getItemPrice failed!')
+            console.log({ storeContract })
+            return
+        }
+        setLoading(true)
+        const itemPrice = await storeContract?.storePrice(itemId) // BigNumber
+        setLoading(false)
+        const priceInHwl = ethers?.utils?.formatEther(itemPrice || '0') || 0
+        setPrice(priceInHwl)
+    }
+
+    const _getItemAvailable = async ({ storeContract }) => {
+        if (
+            !storeContract ||
+            typeof storeContract?.availableQuantity !== 'function'
+        ) {
+            console.log('Check _getItemAvailable failed!')
+            console.log({ storeContract })
+            return
+        }
+        setLoading(true)
+        const available = await storeContract?.availableQuantity(itemId) // BigNumber
+        setLoading(false)
+        setAvailable(available.toNumber())
+    }
+
+    const _onClickBuy = async () => {
+        if (!tokenCont) {
+            _connectWalletAndSaveGlobal()
+            return
+        }
+
+        try {
+            console.log('Check ' + (await walletInfo?.signer?.getAddress()))
+            const allowance = await tokenCont?.allowance(
+                walletInfo?.signer?.getAddress(),
+                storeContract.address
+            )
+            console.log({ allowance })
+            const priceInt = parseInt(price)
+            console.log({ priceInt })
+            if (allowance.lt(ethers.BigNumber.from(`${priceInt}`))) {
+                const approveAllowance = await tokenCont?.approve(
+                    storeContract.address,
+                    configs.unlimitedAllowance
+                )
+                await approveAllowance.wait()
+                console.log({ approveAllowance })
+            }
+
+            const buyStoreItem = await storeContract?.buyGameItem(
+                itemSelect?.uri,
+                itemId
+            )
+            await buyStoreItem.wait() // waiting create transaction
+            setLoading(false)
+            console.log({ buyStoreItem })
+            toast.success(`Buy bike successfully!`)
+            setTimeout(() => {
+                route.push(routes.myAssets)
+            }, 2000)
+        } catch (err) {
+            console.log(err)
+            setLoading(false)
+            toast.dismiss()
+            toast.error(`Buy bike failed with error ${err?.data?.message}!`)
+            console.log(err?.data?.message)
+        }
+    }
+
+    const _getContract = async () => {
+        const provider = new ethers.providers.JsonRpcProvider(
+            configs.testnetBSC
+        )
+        const storeContract = new ethers.Contract(
+            storeAddress,
+            StoreAbi?.abi,
+            provider
+        )
+        setStore(storeContract)
+        _getItemPrice({ storeContract })
+        _getItemAvailable({ storeContract })
+    }
 
     return (
         <div className="flex flex-1 flex-col pt-16">
             <div className="flex flex-col md:flex-row self-center">
                 <div className="flex flex-col pb-24">
-                    <TitleTokenIdSeller/>
+                    {/* <TitleTokenIdSeller/> */}
                     <NftImage imageUri={itemSelect?.image} />
-                    <ItemConfigs/>
+                    <ItemConfigs />
                 </div>
-                {/* <Image src={itemImageSrc} alt="Picture of the author" className="ItemImage flex" /> */}
                 <div className="flex flex-col justify-center items-center sm:items-start mt-16 md:ml-16 md:mt-0 pb-12 sm:pb-0">
                     <p className="flex text-white text-3xl font-semibold">
                         {itemSelect?.name}
                     </p>
                     <div className="flex flex-row text-white mt-2 sm:mt-0">
-                        <p className="flex">{'20 of 25 available'}</p>
+                        <p className="flex">{`${available} items available`}</p>
                     </div>
                     <RatingView numberStar={4} size={50} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyStoreItemButton
-                        uri={''}
-                        itemId={itemId}
+                        onClickBuy={_onClickBuy}
+                        price={price}
+                        loading={loading}
                     />
                 </div>
             </div>
@@ -150,4 +228,8 @@ const ItemDetails = () => {
     )
 }
 
-export default ItemDetails
+StoreItemDetails.propTypes = {}
+
+StoreItemDetails.defaultProps = {}
+
+export default StoreItemDetails

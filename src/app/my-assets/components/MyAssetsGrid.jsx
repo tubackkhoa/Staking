@@ -18,6 +18,10 @@ const MyAssetsGrid = ({ isLoading }) => {
     const [state, dispatch] = useMainAppContext()
     const { nfts = [] } = state
 
+    useEffect(()=>{
+        console.log('Check new nfts = ' + JSON.stringify(nfts))
+    },[nfts])
+
     console.log({ isLoading })
 
     if (isLoading) {
@@ -34,6 +38,7 @@ const MyAssetsGrid = ({ isLoading }) => {
                 {Array.isArray(nfts) &&
                     nfts.map((item, index) => {
                         if (!item) return null
+                        console.log('Check new item = ' + JSON.stringify(item))
                         const tokenIdString = item.tokenId.toString()
                         const itemKey = `NftCard-${tokenIdString}`
                         const { URI, contractAddress, tokenId } = item

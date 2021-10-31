@@ -110,14 +110,10 @@ const Container = props => {
         // console.log({ userCreatedSales })
     }
 
-    return(
-        <Loading size={8} />
-    )
-
     return (
         <>
-            <LeftSideBar />
-            <MyAssetsGrid isLoading={true} />
+            {/* <LeftSideBar /> */}
+            <MyAssetsGrid isLoading={isGetMyNfts} />
         </>
     )
 }
