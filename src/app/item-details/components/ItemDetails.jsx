@@ -214,9 +214,9 @@ const ItemDetails = () => {
                     <p className="flex text-white text-3xl font-semibold">
                         {itemSelect?.name}
                     </p>
-                    <div className="flex flex-row text-white mt-2 sm:mt-0">
+                    {/* <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
-                    </div>
+                    </div> */}
                     <RatingView numberStar={4} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyButton

@@ -55,6 +55,7 @@ const StorePagerBar = ({ data = []}) => {
 const Container = props => {
     const [items, setItems] = React.useState([])
     const [storeItemSelect, setStoreItem] = useGlobal(globalKeys.storeItemSelect)
+    const [loading, setLoading] = React.useState(false)
     const route = useRouter()
 
     React.useEffect(() => {
@@ -63,11 +64,23 @@ const Container = props => {
         setItems(storeItems)
     }, [])
 
-    const renderComingSoon = () => {
+    if (loading) {
         return (
-            <h1 className="flex text-white font-bold text-4xl text-center">
-                HOWL Store coming soon!
-            </h1>
+            <div className="flex flex-1 bg-black justify-center items-center">
+                <div className="flex items-center justify-center ">
+                    <div className="w-40 h-40 border-t-4 border-b-4 border-green-900 rounded-full animate-spin"></div>
+                </div>
+            </div>
+        )
+    }
+
+    if (!Array.isArray(items) || (items.length === 0)) {
+        return (
+            <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
+                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
+                    All bikes on Howl Store are sold out 🎉🎉🎉 <br /> See you next time!
+                </p>
+            </div>
         )
     }
 
@@ -105,6 +118,7 @@ const Container = props => {
                                     contractAddress={''}
                                     tokenId={''}
                                     index={index}
+                                    name={name}
                                     onClick={({ nft }) => {
                                         route.push(routes.storeItemDetails)
                                         setStoreItem({

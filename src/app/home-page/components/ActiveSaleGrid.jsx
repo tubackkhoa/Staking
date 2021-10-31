@@ -14,6 +14,16 @@ import QuickFilterBar from './QuickFilterBar'
 const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
     const route = useRouter()
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-1 bg-black justify-center items-center">
+                <div className="flex items-center justify-center ">
+                    <div className="w-40 h-40 border-t-4 border-b-4 border-green-900 rounded-full animate-spin"></div>
+                </div>
+            </div>
+        )
+    }
+
     if (!Array.isArray(data) || (!isLoading && data.length === 0)) {
         return (
             <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
@@ -25,7 +35,7 @@ const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
     }
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col">
+        <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col px-24">
             <div className="flex flex-wrap p-4">
                 {data.map((item, index) => {
                         if (!item) return null

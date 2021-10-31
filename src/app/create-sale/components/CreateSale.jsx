@@ -196,7 +196,7 @@ const CreateSaleButton = ({ tokenId, price }) => {
             try {
                 const createdSale = await marketCont?.createSale(
                     tokenId,
-                    ethers.utils.parseEther(price)
+                    ethers.utils.parseEther(`${parseFloat(price)}`)
                 )
                 await createdSale.wait() // waiting create transaction
                 toast.success('Create sale successfully!')

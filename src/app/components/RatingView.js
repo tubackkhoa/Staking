@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 const RatingView = ({ numberStar, size, className, starClass }) => {
   return (
-    <div className={classNames("flex flex-row mt-4", className)}>
+    <div className={classNames("flex flex-row", className)}>
       {Array(numberStar)
         .fill(0)
         .map((item, index) => {
@@ -34,7 +34,7 @@ RatingView.propTypes = {
 }
 
 RatingView.defaultProps = {
-  numberStar: 5,
+  numberStar: 3,
   size: 20,
   className: '',
   starClass: '',

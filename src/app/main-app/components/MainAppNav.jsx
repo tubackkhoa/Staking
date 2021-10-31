@@ -114,22 +114,22 @@ const MainAppNav = ({ showSearchBar = false }) => {
                 route.push(routes.staking)
             },
         },
-        {
-            id: 'lending',
-            title: 'Lend',
-            route: routes.lending,
-            onClick: () => {
-                route.push(routes.lending)
-            },
-        },
-        {
-            id: 'Borrow',
-            title: 'Borrow',
-            route: routes.borrow,
-            onClick: () => {
-                route.push(routes.borrow)
-            },
-        },
+        // {
+        //     id: 'lending',
+        //     title: 'Lend',
+        //     route: routes.lending,
+        //     onClick: () => {
+        //         route.push(routes.lending)
+        //     },
+        // },
+        // {
+        //     id: 'Borrow',
+        //     title: 'Borrow',
+        //     route: routes.borrow,
+        //     onClick: () => {
+        //         route.push(routes.borrow)
+        //     },
+        // },
     ]
 
     const renderRoutes = () => {

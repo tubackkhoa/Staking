@@ -115,7 +115,7 @@ const StoreItemDetails = () => {
     }
 
     const _getItemPrice = async ({ storeContract }) => {
-        if (!storeContract || typeof storeContract?.storePrice !== 'function') {
+        if (!storeContract || typeof storeContract?.storePrice !== 'function' || itemId === null || itemId === undefined) {
             console.log('Check _getItemPrice failed!')
             console.log({ storeContract })
             return
@@ -123,6 +123,10 @@ const StoreItemDetails = () => {
         setLoading(true)
         const itemPrice = await storeContract?.storePrice(itemId) // BigNumber
         setLoading(false)
+        if(!itemPrice) {
+            console.log('Check invalid itemPrice!')
+            return
+        }
         const priceInHwl = ethers?.utils?.formatEther(itemPrice || '0') || 0
         setPrice(priceInHwl)
     }
@@ -131,6 +135,7 @@ const StoreItemDetails = () => {
         if (
             !storeContract ||
             typeof storeContract?.availableQuantity !== 'function'
+            || itemId === null || itemId === undefined
         ) {
             console.log('Check _getItemAvailable failed!')
             console.log({ storeContract })
@@ -139,12 +144,26 @@ const StoreItemDetails = () => {
         setLoading(true)
         const available = await storeContract?.availableQuantity(itemId) // BigNumber
         setLoading(false)
-        setAvailable(available.toNumber())
+        if(!available) {
+            console.log('Check invalid itemPrice!')
+            return
+        }
+        setAvailable(available?.toNumber())
     }
 
     const _onClickBuy = async () => {
         if (!tokenCont) {
             _connectWalletAndSaveGlobal()
+            return
+        }
+
+        if(!price){
+            _getItemPrice({ storeContract })
+            return
+        }
+
+        if(available === 0) {
+            toast.warn('This model is sold out, please try another model or wait for our next release!')
             return
         }
 

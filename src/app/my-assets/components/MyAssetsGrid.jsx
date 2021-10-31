@@ -10,24 +10,35 @@ import { routes } from 'config/routes'
 
 import { Loading, NftCard } from '../../components'
 
-const MyAssetsGrid = ({ isLoading }) => {
+const MyAssetsGrid = ({ isLoading, data }) => {
     const route = useRouter()
     const [myAssetSelect, setMyAssetSelect] = useGlobal(
         globalKeys.myAssetSelect
     )
-    const [state, dispatch] = useMainAppContext()
-    const { nfts = [] } = state
+    // const [state, dispatch] = useMainAppContext()
 
-    useEffect(()=>{
-        console.log('Check new nfts = ' + JSON.stringify(nfts))
-    },[nfts])
+    useEffect(() => {
+        console.log('Check new data = ' + JSON.stringify(data))
+    }, [data])
 
     console.log({ isLoading })
 
     if (isLoading) {
         return (
-            <div className="flex flex-1 bg-hwl-gray-1">
-                <Loading size={8} />
+            <div className="flex flex-1 bg-black justify-center items-center">
+                <div className="flex items-center justify-center ">
+                    <div className="w-40 h-40 border-t-4 border-b-4 border-green-900 rounded-full animate-spin"></div>
+                </div>
+            </div>
+        )
+    }
+
+    if (!Array.isArray(data) || (data.length === 0)) {
+        return (
+            <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
+                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
+                    You do not have a motorbike yet 🏍️ <br /> Buy one at the Store page!
+                </p>
             </div>
         )
     }
@@ -35,8 +46,8 @@ const MyAssetsGrid = ({ isLoading }) => {
     return (
         <div className="first-letter:bg-hwl-gray-1">
             <div className="flex flex-wrap flex-1 p-4">
-                {Array.isArray(nfts) &&
-                    nfts.map((item, index) => {
+                {Array.isArray(data) &&
+                    data.map((item, index) => {
                         if (!item) return null
                         console.log('Check new item = ' + JSON.stringify(item))
                         const tokenIdString = item.tokenId.toString()
@@ -69,10 +80,12 @@ const MyAssetsGrid = ({ isLoading }) => {
 
 MyAssetsGrid.propTypes = {
     isLoading: PropTypes.bool,
+    data: PropTypes.array,
 }
 
 MyAssetsGrid.defaultProps = {
     isLoading: false,
+    data: [],
 }
 
 export default MyAssetsGrid

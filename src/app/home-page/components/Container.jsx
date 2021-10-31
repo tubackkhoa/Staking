@@ -1,6 +1,6 @@
 import { useRouter } from 'next/dist/client/router'
 import { ethers } from 'ethers'
-import React from 'react'
+import React, { useState } from 'react'
 import ActiveSaleGrid from './ActiveSaleGrid'
 import LeftSideBar from './LeftSideBar'
 import { useGlobal } from 'reactn'
@@ -17,6 +17,7 @@ import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
     const route = useRouter()
+    const [loading, setLoading] = useState()
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const [itemSelect, setItemSelect] = useGlobal(globalKeys.itemSelect)
     const { activeSales = [] } = state
@@ -53,6 +54,7 @@ const Container = props => {
            signerAddress: null,
         })
 
+        setLoading(true)
         await _getActiveSales({
             marketCont: marketContract,
             gameItemContract,
@@ -61,6 +63,7 @@ const Container = props => {
         await _getInactiveSales({
             marketCont: marketContract,
         })
+        setLoading(false)
     }
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
@@ -88,7 +91,6 @@ const Container = props => {
                     length,
                 } = item
                 // each active sale, get uri by tokenURI func - param: tokenId
-                console.log('Check tokenId = ' + tokenId?.toNumber());
                  // get uri of json file
                 const uriOfNft = await gameItemContract?.tokenURI(tokenId)
                 // console.log({ uriOfNft })
@@ -122,13 +124,14 @@ const Container = props => {
 
     return (
         <>
-            <LeftSideBar />
+            {/* <LeftSideBar /> */}
             <ActiveSaleGrid 
-                date={activeSales}
+                data={activeSales}
                 onClickItem={(item)=> {
                     route.push(routes.itemDetails)
                     setItemSelect(item)
                 }}
+                isLoading={loading}
             />
         </>
     )

@@ -17,15 +17,17 @@ const NftStoreCard = ({
     onClick,
     showPrice = true,
     nftImageUri = '',
+    name,
 }) => {
     const [attributes, setAttributes] = useState({
         id: '',
         title: '',
         image: '',
-        like: 99,
         tokenCode: 'HWL',
-        star: 5,
+        star: 3,
     })
+
+    console.log({ name })
 
     const [itemInfo, setItemInfo] = useState({
         description: '',
@@ -49,10 +51,6 @@ const NftStoreCard = ({
                 <div className="flex text-white mx-2 TokenCode">
                     {attributes?.tokenCode}
                 </div>
-                {/* <img className="HeartIcon flex ml-auto" src={icons.heart} /> */}
-                {/* <div className="flex text-white ml-1 text-xs">
-                    {attributes?.like}
-                </div> */}
             </div>
         )
     }
@@ -96,7 +94,7 @@ const NftStoreCard = ({
             </div>
             <div className="flex flex-col items-left w-full mt-2 px-3 py-4">
                 <div className="text-white text-left text-base">
-                    {itemInfo?.name}
+                    {name}
                 </div>
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
@@ -124,6 +122,7 @@ NftStoreCard.propTypes = {
     onClick: PropTypes.func,
     showPrice: PropTypes.bool,
     nftImageUri: PropTypes.string,
+    name: PropTypes.string,
 }
 
 NftStoreCard.defaultProps = {
@@ -134,6 +133,7 @@ NftStoreCard.defaultProps = {
     onClick: () => undefined,
     showPrice: true,
     nftImageUri: '',
+    name: 'Howlcity motorbike xxx'
 }
 
 export default NftStoreCard
