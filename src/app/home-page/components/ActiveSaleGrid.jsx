@@ -8,7 +8,7 @@ import { routes } from 'config/routes'
 
 import MainAppContext from 'app/_shared/main-app-context'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
-import { NftCard } from '../../components'
+import { NftCard, ActivityIndicator } from '../../components'
 import QuickFilterBar from './QuickFilterBar'
 
 const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
@@ -25,18 +25,12 @@ const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
     }
 
     if (!Array.isArray(data) || (!isLoading && data.length === 0)) {
-        return (
-            <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
-                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
-                    All bikes on market are sold out 🎉🎉🎉 <br /> See you next time!
-                </p>
-            </div>
-        )
+        return <ActivityIndicator />
     }
 
     return (
         <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col px-24">
-            <div className="flex flex-wrap p-4">
+            <div className="flex flex-wrap p-4 mt-4">
                 {data.map((item, index) => {
                         if (!item) return null
                         // console.log({ item })

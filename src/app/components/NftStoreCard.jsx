@@ -27,7 +27,7 @@ const NftStoreCard = ({
         star: 3,
     })
 
-    console.log({ name })
+    // console.log({ name })
 
     const [itemInfo, setItemInfo] = useState({
         description: '',

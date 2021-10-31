@@ -24,7 +24,6 @@ const MainApp = ({ pageProps, Component }) => {
     }, [])
 
     const _getContractFromProvider = async () => {
-        console.log('Check _getContractFromProvider')
         const provider = new ethers.providers.JsonRpcProvider(
             configs.testnetBSC
         )

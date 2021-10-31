@@ -191,7 +191,6 @@ const ItemDetails = () => {
 
     const route = useRouter()
     useEffect(() => {
-        // console.log('Check new itemSelect = ' + JSON.stringify(itemSelect))
         if (!itemSelect) {
             route.back()
             return

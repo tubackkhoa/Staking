@@ -68,14 +68,14 @@ const Container = props => {
 
     const _getActiveSales = async ({ marketCont, gameItemContract }) => {
         if(!marketCont || typeof marketCont?.getActiveSalesByPage !== 'function') {
-            console.log({ marketCont })
+            // console.log({ marketCont })
             return;
         }
-        console.log({ marketCont })
+        // console.log({ marketCont })
         const activeSales = await marketCont?.getActiveSalesByPage(0,12)
         
         // const activeSales = await marketCont?.getActiveSalesByPage(0,3)
-        console.log({ activeSales })
+        // console.log({ activeSales })
 
         const activeSalesFull = await Promise.all(
             activeSales.map(async item => {
@@ -109,10 +109,10 @@ const Container = props => {
 
     const _getInactiveSales = async ({ marketCont }) => {
         const userPurchasedSales = await marketCont?.getUserPurchasedSales()
-        console.log({ userPurchasedSales })
+        // console.log({ userPurchasedSales })
 
         const userCreatedSales = await marketCont?.getUserCreatedSales()
-        console.log({ userCreatedSales })
+        // console.log({ userCreatedSales })
 
         dispatch(
             MainAppActions.setState({

@@ -74,7 +74,7 @@ const Container = props => {
         try {
             const nfts = await marketCont?.getUserNFTs()
             setGetMyNfts(false)
-            console.log({ nfts })
+            // console.log({ nfts })
             setUserNfts(nfts)
             dispatch(MainAppActions.setMyAssetNfts(nfts))
         } catch (error) {
