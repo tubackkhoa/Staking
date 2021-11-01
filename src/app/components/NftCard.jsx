@@ -23,7 +23,7 @@ const NftCard = ({
         image: '',
         like: 99,
         tokenCode: 'HWL',
-        star: 5,
+        star: 3,
     })
 
     const [itemInfo, setItemInfo] = useState({

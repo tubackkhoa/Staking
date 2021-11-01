@@ -234,7 +234,7 @@ const StoreItemDetails = () => {
                     <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{`${available} items available`}</p>
                     </div>
-                    <RatingView numberStar={4} size={50} />
+                    <RatingView numberStar={3} size={50} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyStoreItemButton
                         onClickBuy={_onClickBuy}
