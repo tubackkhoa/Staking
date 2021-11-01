@@ -307,7 +307,7 @@ const CreateSale = () => {
                     <div className="flex text-white mt-12 text-3xl font-semibold sm:mt-0">
                         {myAssetSelect?.name}
                     </div>
-                    <RatingView numberStar={4} />
+                    <RatingView numberStar={3} />
                     <InfoPages description={myAssetSelect?.description} />
                     <div className="flex w-auto h-px bg-Gray-2 my-4" />
                     {renderInputItemPrice()}

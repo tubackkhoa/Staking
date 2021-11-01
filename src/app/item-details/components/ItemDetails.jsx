@@ -216,7 +216,7 @@ const ItemDetails = () => {
                     {/* <div className="flex flex-row text-white mt-2 sm:mt-0">
                         <p className="flex">{'20 of 25 available'}</p>
                     </div> */}
-                    <RatingView numberStar={4} />
+                    <RatingView numberStar={3} />
                     <InfoPages description={itemSelect?.description} />
                     <BuyButton
                         saleId={itemSelect?.saleId}
