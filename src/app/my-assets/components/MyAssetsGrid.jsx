@@ -36,7 +36,7 @@ const MyAssetsGrid = ({ isLoading, data }) => {
 
     return (
         <div className="first-letter:bg-hwl-gray-1">
-            <div className="flex flex-wrap flex-1 p-4 px-24 mt-8">
+            <div className="block sm:flex w-screen sm:w-full overflow-scroll flex-nowrap sm:flex-wrap p-4 px-4 sm:px-24 mt-8">
                 {Array.isArray(data) &&
                     data.map((item, index) => {
                         if (!item) return null
