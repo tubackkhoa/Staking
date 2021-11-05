@@ -12,16 +12,16 @@ import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketp
 import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HOWL.json'
 import Store from '../../../../artifacts/contracts/Store.sol/Store.json'
+import { configs } from 'config/config'
 
 const networks = {
     localhost: 'localhost',
-    bsc_testnet: 'https://data-seed-prebsc-1-s1.binance.org:8545' 
 }
 
 const connectWallet = async () => {
     // console.log('Check in connectWallet');
     const web3Modal = new Web3Modal({
-        network: networks.bsc_testnet,
+        network: configs.Networks.BscTestnet.RPCEndpoints,
         cacheProvider: false,
     })
     // auto connect metamask wallet

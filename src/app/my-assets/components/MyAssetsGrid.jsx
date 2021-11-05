@@ -27,7 +27,7 @@ const MyAssetsGrid = ({ isLoading, data }) => {
     if (!Array.isArray(data) || (data.length === 0)) {
         return (
             <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
-                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
+                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug mx-1">
                     You do not have a motorbike yet 🏍️ <br /> Buy one at the Store page!
                 </p>
             </div>

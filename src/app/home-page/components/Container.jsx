@@ -33,7 +33,7 @@ const Container = props => {
     }, [])
 
     const _getContractFromProvider = async () => {
-        const provider = new ethers.providers.JsonRpcProvider(configs.testnetBSC)
+        const provider = new ethers.providers.JsonRpcProvider(configs.Networks.BscTestnet.RPCEndpoints)
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi.abi,

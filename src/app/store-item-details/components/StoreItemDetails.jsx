@@ -207,7 +207,7 @@ const StoreItemDetails = () => {
 
     const _getContract = async () => {
         const provider = new ethers.providers.JsonRpcProvider(
-            configs.testnetBSC
+            configs.Networks.BscTestnet.RPCEndpoints
         )
         const storeContract = new ethers.Contract(
             storeAddress,
