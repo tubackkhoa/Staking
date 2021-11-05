@@ -16,9 +16,9 @@ const MyAssetsGrid = ({ isLoading, data }) => {
         globalKeys.myAssetSelect
     )
 
-    useEffect(() => {
-        console.log('Check new data = ' + JSON.stringify(data))
-    }, [data])
+    // useEffect(() => {
+    //     console.log('Check new data = ' + JSON.stringify(data))
+    // }, [data])
 
     if (isLoading) {
         return <ActivityIndicator/>
