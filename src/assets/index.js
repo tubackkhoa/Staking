@@ -7,6 +7,9 @@ const twitter = '/assets/icons/twitter.svg'
 const telegram = '/assets/icons/telegram.svg'
 const discord = '/assets/icons/discord.svg'
 
+const metamask = '/assets/wallets/meta-mask.svg'
+const walletconnect = '/assets/wallets/walletconnect.svg'
+
 export const icons = {
     search,
     arrowDown,
@@ -16,4 +19,6 @@ export const icons = {
     twitter,
     telegram,
     discord,
+    metamask,
+    walletconnect,
 }

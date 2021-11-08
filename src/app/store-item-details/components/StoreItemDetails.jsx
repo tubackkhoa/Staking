@@ -116,7 +116,7 @@ const StoreItemDetails = () => {
 
     const _getItemPrice = async ({ storeContract }) => {
         if (!storeContract || typeof storeContract?.storePrice !== 'function' || itemId === null || itemId === undefined) {
-            console.log('Check _getItemPrice failed!')
+            console.log('Check _getItemPrice failed storeContract = ' + JSON.stringify(storeContract))
             console.log({ storeContract })
             return
         }
