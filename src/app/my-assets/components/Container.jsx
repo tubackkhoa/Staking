@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import { useGlobal } from 'reactn'
 
@@ -9,9 +8,9 @@ import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 import { checkNetworkAndRequest } from 'services'
 
-import LeftSideBar from './LeftSideBar'
 import MyAssetsGrid from './MyAssetsGrid'
 import { Loading } from 'app/components'
+import { configs } from 'config/config'
 
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
@@ -21,7 +20,7 @@ const Container = props => {
 
     const onSuccessSwitchNetwork = () => {
         // after switch network successfully, get data again
-        _getData()
+        getDataNft()
     }
 
     const onFailedSwitchNetwork = () => {
@@ -29,17 +28,20 @@ const Container = props => {
     }
 
     useEffect(() => {
-        _getData()
+        getDataNft()
         checkNetworkAndRequest({
             onSuccess: onSuccessSwitchNetwork,
             onFailed: onFailedSwitchNetwork,
         })
     }, [])
 
-    const _getData = async () => {
+    const getDataNft = async () => {
         setGetMyNfts(true)
         const { marketplaceContract, howlTokenContract, signerAddress } =
             await _connectWalletAndSaveGlobal()
+
+        configs.tokenContract = howlTokenContract
+
         await _getMyAssets({
             marketCont: marketplaceContract,
             tokenCont: howlTokenContract,
@@ -97,7 +99,6 @@ const Container = props => {
 
     return (
         <>
-            {/* <LeftSideBar /> */}
             <MyAssetsGrid isLoading={isGetMyNfts} data={userNfts} />
         </>
     )

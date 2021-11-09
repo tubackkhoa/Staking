@@ -64,7 +64,7 @@ const StoreItemDetails = () => {
 
     useEffect(() => {
         _connectWalletAndSaveGlobal()
-        _getContract()
+        getContract()
     }, [])
 
     useEffect(() => {
@@ -205,7 +205,7 @@ const StoreItemDetails = () => {
         }
     }
 
-    const _getContract = async () => {
+    const getContract = async () => {
         const provider = new ethers.providers.JsonRpcProvider(
             configs.Networks.BscTestnet.RPCEndpoints
         )

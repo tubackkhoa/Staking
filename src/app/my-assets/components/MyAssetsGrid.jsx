@@ -7,7 +7,6 @@ import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
-
 import { Loading, NftCard, ActivityIndicator } from '../../components'
 
 const MyAssetsGrid = ({ isLoading, data }) => {

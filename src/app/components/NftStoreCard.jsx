@@ -99,12 +99,8 @@ const NftStoreCard = ({
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
                     <RatingView numberStar={attributes?.star} />
-                    <div
-                        className="flex justify-center items-center py-1 px-2 rounded-md"
-                        style={{ backgroundColor: colors.yellowBinance }}>
-                        <div
-                            className="flex"
-                            style={{ fontSize: '11px', color: colors.black1 }}>
+                    <div className="flex justify-center items-center py-1 px-2 rounded-md bg-Yellow-1">
+                        <div className="flex text-xs text-hwl-gray-1">
                             {'BSC'}
                         </div>
                     </div>
@@ -118,7 +114,7 @@ NftStoreCard.propTypes = {
     URI: PropTypes.string,
     contractAddress: PropTypes.string,
     tokenId: PropTypes.string,
-    price: PropTypes.number,
+    price: PropTypes.any,
     onClick: PropTypes.func,
     showPrice: PropTypes.bool,
     nftImageUri: PropTypes.string,

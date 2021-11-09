@@ -20,6 +20,8 @@ module.exports = {
                 'blue-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #029CC1 100%)',
                 'yellow-linear': 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #E2C656 100%)',
                 'linear-blue-2': 'linear-gradient(101.12deg, #4664F0 27.35%, rgba(70, 100, 240, 0.6) 99.99%, #C81CC5 100%, #4664F0 100%)',
+                'Yellow-1': '#F0B90B',
+                'Purple-1': '#DA18A3',
             },
             boxShadow: {
                 sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',

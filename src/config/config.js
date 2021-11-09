@@ -12,8 +12,17 @@ const Networks = {
   },
 }
 
+let tokenContract = null
+let marketContract = null
+let gameItemContract = null
+let storeContract = null
+
 export const configs = {
   unlimitedAllowance,
   Networks,
+  tokenContract,
+  marketContract,
+  gameItemContract,
+  storeContract,
 }
 

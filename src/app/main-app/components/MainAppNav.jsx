@@ -46,18 +46,8 @@ const ConnectWalletButton = () => {
         <>
             <button
                 onClick={onClickConnectWalletButton}
-                className="flex h-10 w-40 rounded-lg justify-center items-center ml-auto"
-                style={{
-                    borderWidth: 1,
-                    borderColor: colors.redViolet,
-                }}>
-                <p
-                    className="flex text-sm"
-                    style={{
-                        color: colors.redViolet,
-                    }}>
-                    {'Connect wallet'}
-                </p>
+                className="flex h-10 w-40 rounded-lg justify-center items-center ml-auto border-Purple-1 border">
+                <p className="flex text-sm text-Purple-1">{'Connect wallet'}</p>
             </button>
             <SelectWalletModal
                 open={openWallets}

@@ -10,7 +10,7 @@ import { marketAddress, nftAddress } from '../../../../deployed_address.json'
 import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import nftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import { routes } from 'config/routes'
-import { configs } from 'config/config'
+import { configs, tokenContract } from 'config/config'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 
@@ -45,6 +45,8 @@ const Container = props => {
             nftAbi?.abi,
             provider
         )
+
+        // tokenContract = 
 
         setWalletInfo({
            marketplaceContract: marketContract,
