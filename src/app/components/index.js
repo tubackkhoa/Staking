@@ -8,6 +8,7 @@ import InfoPages from './InfoPages'
 import RatingView from './RatingView'
 import CreatorView from './CreatorView'
 import ActivityIndicator from './ActivityIndicator'
+import SelectWalletModal from './SelectWalletModal'
 
 export {
     NftCard,
@@ -20,4 +21,5 @@ export {
     RatingView,
     CreatorView,
     ActivityIndicator,
+    SelectWalletModal,
 }

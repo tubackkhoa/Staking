@@ -29,7 +29,7 @@ const ActiveSaleGrid = ({ isLoading, data, onClickItem }) => {
     }
 
     return (
-        <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col px-24">
+        <div className="first-letter:bg-hwl-gray-1 flex flex-1 flex-col px-4 sm:px-24">
             <div className="flex flex-wrap p-4 mt-4">
                 {data.map((item, index) => {
                         if (!item) return null

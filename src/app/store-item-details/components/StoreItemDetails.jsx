@@ -64,7 +64,7 @@ const StoreItemDetails = () => {
 
     useEffect(() => {
         _connectWalletAndSaveGlobal()
-        _getContract()
+        getContract()
     }, [])
 
     useEffect(() => {
@@ -116,7 +116,7 @@ const StoreItemDetails = () => {
 
     const _getItemPrice = async ({ storeContract }) => {
         if (!storeContract || typeof storeContract?.storePrice !== 'function' || itemId === null || itemId === undefined) {
-            console.log('Check _getItemPrice failed!')
+            console.log('Check _getItemPrice failed storeContract = ' + JSON.stringify(storeContract))
             console.log({ storeContract })
             return
         }
@@ -205,9 +205,9 @@ const StoreItemDetails = () => {
         }
     }
 
-    const _getContract = async () => {
+    const getContract = async () => {
         const provider = new ethers.providers.JsonRpcProvider(
-            configs.testnetBSC
+            configs.Networks.BscTestnet.RPCEndpoints
         )
         const storeContract = new ethers.Contract(
             storeAddress,

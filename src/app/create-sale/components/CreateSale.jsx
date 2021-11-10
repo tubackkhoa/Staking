@@ -9,7 +9,8 @@ import connectWallet from 'app/main-app/wallet'
 import { routes } from 'config/routes'
 import { ItemConfigs, Loading, NftImage, RatingView, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
-import { parseMoneyInput } from 'utils'
+import { formatToCurrency } from 'utils'
+import { configs } from 'config/config'
 
 const CreatorView = () => {
     return (
@@ -60,6 +61,8 @@ const CreateSaleButton = ({ tokenId, price }) => {
 
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
+
+    configs.tokenContract = tokenCont
 
     useEffect(() => {
         _checkConnectWallet()
@@ -152,9 +155,11 @@ const CreateSaleButton = ({ tokenId, price }) => {
             gameItemContract: walletInfo?.gameItemContract,
         })
 
+        const priceFloat = parseFloat(`${price}`.replaceAll(',', ''))
+        
         await _createSaleOnChain(
             tokenId,
-            price,
+            priceFloat,
             signerAddress,
             marketCont,
             walletInfo?.gameItemContract
@@ -262,13 +267,11 @@ const CreateSale = () => {
                 <input
                     // type={"number"}
                     // defaultValue={priceInput}
-                    value={priceInput}
+                    value={formatToCurrency(priceInput, '')}
                     className="flex text-white font-semibold text-xl outline-none bg-Gray-2 h-12 w-auto max-w-7xl px-4 rounded-lg mt-6"
                     placeholder={'Enter Price'}
                     onChange={event => {
-                        const inputParsed = parseMoneyInput(event?.target?.value)
-                        console.log('Check inputParsed = ' + inputParsed)
-                        setPriceInput(inputParsed)
+                        setPriceInput(event?.target?.value)
                     }}
                 />
             </div>

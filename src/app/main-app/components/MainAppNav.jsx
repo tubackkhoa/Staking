@@ -1,16 +1,25 @@
+/* eslint-disable @next/next/no-img-element */
+import React from 'react'
+import { useGlobal } from 'reactn'
+import { useRouter } from 'next/dist/client/router'
+import Link from 'next/link'
+
 import { icons } from 'assets'
 import { colors } from 'config/colors'
-import { useRouter } from 'next/dist/client/router'
 import connectWallet from '../wallet'
-import Link from 'next/link'
 import { routes } from 'config/routes'
 import { globalKeys } from 'config/globalKeys'
-import { useGlobal } from 'reactn'
+import { SelectWalletModal } from './../../components'
 
 const ConnectWalletButton = () => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
+    const [openWallets, setOpenWallets] = React.useState(false)
 
-    const _onClickConnectWallet = () => {
+    const onClickConnectWalletButton = () => {
+        setOpenWallets(true)
+    }
+
+    const onConnectMetamask = () => {
         const wallet = connectWallet()
         console.log({ wallet })
         if (!wallet) {
@@ -23,6 +32,7 @@ const ConnectWalletButton = () => {
             signer,
             howlTokenContract,
         } = wallet
+
         setWalletInfo({
             marketplaceContract,
             gameItemContract,
@@ -31,24 +41,20 @@ const ConnectWalletButton = () => {
         })
     }
 
-    if (walletInfo?.marketplaceContract) return null
+    // if (walletInfo?.marketplaceContract) return null
 
     return (
-        <button
-            onClick={_onClickConnectWallet}
-            className="flex h-10 w-40 rounded-lg justify-center items-center ml-auto"
-            style={{
-                borderWidth: 1,
-                borderColor: colors.redViolet,
-            }}>
-            <p
-                className="flex text-sm"
-                style={{
-                    color: colors.redViolet,
-                }}>
-                {'Connect wallet'}
-            </p>
-        </button>
+        <>
+            <button
+                onClick={onClickConnectWalletButton}
+                className="flex h-16 sm:h-10 w-24 sm:w-40 rounded-lg justify-center items-center ml-auto border-Purple-1 border">
+                <p className="flex text-sm text-Purple-1">{'Connect wallet'}</p>
+            </button>
+            <SelectWalletModal
+                open={openWallets}
+                onClose={() => setOpenWallets(false)}
+            />
+        </>
     )
 }
 
@@ -147,7 +153,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
                                 {title}
                             </p>
                             {!!isCurrentRoute && (
-                                <div className="flex bg-Blue-1 w-full mt-2 h-1"/>
+                                <div className="flex bg-Blue-1 w-full mt-2 h-1" />
                             )}
                         </button>
                     )
@@ -158,8 +164,8 @@ const MainAppNav = ({ showSearchBar = false }) => {
 
     const renderLogoAndName = () => {
         return (
-            <Link href="/">
-                <div className="flex flex-wrap items-center text-white text-3xl font-semibold">
+            <Link href="/" passHref={true}>
+                <div className="flex flex-wrap items-center text-white text-xl sm:text-3xl font-semibold">
                     <img
                         src="/howl.png"
                         alt="HowlCity"

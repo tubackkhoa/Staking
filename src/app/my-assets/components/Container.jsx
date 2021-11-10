@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import { useGlobal } from 'reactn'
 
 import connectWallet from 'app/main-app/wallet'
-
-import LeftSideBar from './LeftSideBar'
-import MyAssetsGrid from './MyAssetsGrid'
-
 import { globalKeys } from 'config/globalKeys'
-
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
-import { Loading } from 'app/components'
+import { checkNetworkAndRequest } from 'services'
 
+import MyAssetsGrid from './MyAssetsGrid'
+import { Loading } from 'app/components'
+import { configs } from 'config/config'
 
 const Container = props => {
     const [state, dispatch] = useMainAppContext()
@@ -21,13 +18,30 @@ const Container = props => {
     const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
     const [userNfts, setUserNfts] = useState([])
 
+    const onSuccessSwitchNetwork = () => {
+        // after switch network successfully, get data again
+        getDataNft()
+    }
+
+    const onFailedSwitchNetwork = () => {
+        console.log('Check switch network failed!')
+    }
+
     useEffect(() => {
-        _getData()
+        getDataNft()
+        checkNetworkAndRequest({
+            onSuccess: onSuccessSwitchNetwork,
+            onFailed: onFailedSwitchNetwork,
+        })
     }, [])
 
-    const _getData = async () => {
+    const getDataNft = async () => {
         setGetMyNfts(true)
-        const { marketplaceContract, howlTokenContract, signerAddress } = await _connectWalletAndSaveGlobal();
+        const { marketplaceContract, howlTokenContract, signerAddress } =
+            await _connectWalletAndSaveGlobal()
+
+        configs.tokenContract = howlTokenContract
+
         await _getMyAssets({
             marketCont: marketplaceContract,
             tokenCont: howlTokenContract,
@@ -41,7 +55,7 @@ const Container = props => {
 
         if (!wallet) {
             toast.error('Connect wallet failed!')
-            return;
+            return
         }
 
         const {
@@ -67,7 +81,7 @@ const Container = props => {
             signer,
             howlTokenContract,
             signerAddress,
-        };
+        }
     }
 
     const _getMyAssets = async ({ marketCont, tokenCont, signerAddress }) => {
@@ -85,7 +99,6 @@ const Container = props => {
 
     return (
         <>
-            {/* <LeftSideBar /> */}
             <MyAssetsGrid isLoading={isGetMyNfts} data={userNfts} />
         </>
     )

@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { getAvailableItemsInStore } from './getStoreItem'
+import { checkNetworkAndRequest } from './checkNetwork'
 
 const getBalanceOfToken = async ({ tokenCont }) => {
   const tokenBalance = ethers.utils.formatEther(
@@ -12,4 +13,5 @@ const getBalanceOfToken = async ({ tokenCont }) => {
 export {
   getBalanceOfToken,
   getAvailableItemsInStore,
+  checkNetworkAndRequest,
 }

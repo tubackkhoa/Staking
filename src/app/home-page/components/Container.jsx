@@ -10,7 +10,7 @@ import { marketAddress, nftAddress } from '../../../../deployed_address.json'
 import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import nftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import { routes } from 'config/routes'
-import { configs } from 'config/config'
+import { configs, tokenContract } from 'config/config'
 import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import MainAppActions from 'app/_shared/main-app-context/MainAppActions'
 
@@ -33,7 +33,7 @@ const Container = props => {
     }, [])
 
     const _getContractFromProvider = async () => {
-        const provider = new ethers.providers.JsonRpcProvider(configs.testnetBSC)
+        const provider = new ethers.providers.JsonRpcProvider(configs.Networks.BscTestnet.RPCEndpoints)
         const marketContract = new ethers.Contract(
             marketAddress,
             MarketplaceAbi.abi,
@@ -46,12 +46,11 @@ const Container = props => {
             provider
         )
 
+        // tokenContract = 
+
         setWalletInfo({
            marketplaceContract: marketContract,
            gameItemContract: gameItemContract,
-           signer: null,
-           howlTokenContract: null,
-           signerAddress: null,
         })
 
         setLoading(true)

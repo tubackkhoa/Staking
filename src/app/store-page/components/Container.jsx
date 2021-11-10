@@ -4,7 +4,7 @@ import { routes } from 'config/routes'
 import { useRouter } from 'next/dist/client/router'
 import React from 'react'
 import { useGlobal } from 'reactn'
-import { getAvailableItemsInStore } from 'services'
+import { checkNetworkAndRequest, getAvailableItemsInStore } from 'services'
 import { NftStoreCard } from '../../components'
 
 const pages = [
@@ -59,6 +59,7 @@ const Container = props => {
     const route = useRouter()
 
     React.useEffect(() => {
+        checkNetworkAndRequest()
         const storeItems = getAvailableItemsInStore()
         // console.log({ storeItems })
         setItems(storeItems)

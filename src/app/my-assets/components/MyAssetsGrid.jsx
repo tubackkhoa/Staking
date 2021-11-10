@@ -7,7 +7,6 @@ import { useMainAppContext } from 'app/_shared/main-app-context/MainAppContext'
 import { globalKeys } from 'config/globalKeys'
 import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
-
 import { Loading, NftCard, ActivityIndicator } from '../../components'
 
 const MyAssetsGrid = ({ isLoading, data }) => {
@@ -16,9 +15,9 @@ const MyAssetsGrid = ({ isLoading, data }) => {
         globalKeys.myAssetSelect
     )
 
-    useEffect(() => {
-        console.log('Check new data = ' + JSON.stringify(data))
-    }, [data])
+    // useEffect(() => {
+    //     console.log('Check new data = ' + JSON.stringify(data))
+    // }, [data])
 
     if (isLoading) {
         return <ActivityIndicator/>
@@ -27,7 +26,7 @@ const MyAssetsGrid = ({ isLoading, data }) => {
     if (!Array.isArray(data) || (data.length === 0)) {
         return (
             <div className="flex flex-1 bg-hwl-gray-2 justify-center items-center">
-                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug">
+                <p className="flex text-3xl sm:text-5xl text-white font-bold text-center leading-snug mx-1">
                     You do not have a motorbike yet 🏍️ <br /> Buy one at the Store page!
                 </p>
             </div>
@@ -36,7 +35,7 @@ const MyAssetsGrid = ({ isLoading, data }) => {
 
     return (
         <div className="first-letter:bg-hwl-gray-1">
-            <div className="flex flex-wrap flex-1 p-4 px-24 mt-8">
+            <div className="block sm:flex w-screen sm:w-full overflow-scroll flex-nowrap sm:flex-wrap p-4 px-4 sm:px-24 mt-8">
                 {Array.isArray(data) &&
                     data.map((item, index) => {
                         if (!item) return null
