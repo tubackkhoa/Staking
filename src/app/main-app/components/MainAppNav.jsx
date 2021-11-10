@@ -41,7 +41,7 @@ const ConnectWalletButton = () => {
         })
     }
 
-    // if (walletInfo?.marketplaceContract) return null
+    if (walletInfo?.marketplaceContract) return null
 
     return (
         <>

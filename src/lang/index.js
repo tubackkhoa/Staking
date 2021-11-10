@@ -5,12 +5,12 @@ const vi = {
 }
 
 const en = {
-  notInstallMetamask: 'Bạn chưa cài MetaMask, cài đặt ví tại: https://metamask.io/download.html',
+  notInstallMetamask: 'You have not installed MetaMask, install the wallet at: https://metamask.io/download.html',
   transactionFailed: 'Transaction failed!',
   pleaseWaiting: 'Please wait, you can only make 1 transaction at a time!'
 }
 
-export const lang = (langCode = 'vi') => {
+export const lang = (langCode = 'en') => {
   switch (langCode) {
     case 'vi':
       return vi;

@@ -12,7 +12,12 @@ const defaultProps = {
     onFailed: () => null,
 }
 
-export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultProps) => {
+export const checkNetworkAndRequest = async ({ 
+        chainId = configs.Networks.BscTestnet.ChainId.hex,
+        rpcUrl = configs.Networks.BscTestnet.RPCEndpoints,
+        onSuccess, 
+        onFailed 
+    } = defaultProps) => {
     // Check if MetaMask is installed
     // MetaMask injects the global API into window.ethereum
     if (window && window?.ethereum) {
@@ -20,7 +25,7 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
             // check if the chain to connect to is installed
             const resSwitch = await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: configs.Networks.BscTestnet.ChainId.hex }], // // chainId must be in hexadecimal numbers
+                params: [{ chainId }], // chainId must be in hexadecimal numbers
             })
             // switched
             if (onSuccess) onSuccess()
@@ -34,8 +39,8 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
                         method: 'wallet_addEthereumChain',
                         params: [
                             {
-                                chainId: configs.Networks.BscTestnet.ChainId.hex,
-                                rpcUrl: configs.Networks.BscTestnet.RPCEndpoints,
+                                chainId,
+                                rpcUrl,
                             },
                         ],
                     }).then((success) => {

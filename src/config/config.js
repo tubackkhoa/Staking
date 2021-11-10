@@ -10,12 +10,12 @@ const Networks = {
     },
     RPCEndpoints: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   },
-  BscMainet: {
+  BscMainnet: {
     ChainId: {
-      decimal: 97,
-      hex: '0x61',
+      decimal: 56,
+      hex: '0x38',
     },
-    RPCEndpoints: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    RPCEndpoints: 'https://bsc-dataseed.binance.org/',
   },
 }
 
