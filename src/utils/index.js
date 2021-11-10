@@ -129,15 +129,6 @@ export const setupNetwork = async () => {
     }
 };
 
-
-export const parseMoneyInput = (value, currency = '') => {
-    return `${currency}${value
-        .replace(/(?!\.)\D/g, '')
-        .replace(/(?<=\..*)\./g, '')
-        .replace(/(?<=\.\d\d).*/g, '')
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-};
-
 export function isURL(str) {
     var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -154,14 +145,13 @@ export const replaceAll = (str, find, replace) => {
 
   
 export const formatToCurrency = (value, currency = '$') => {
-    const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
+    const result = replaceAll(`${value}`, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
     return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
 };
   
 
 export const utils = {
     getRandom,
-    parseMoneyInput,
     detectEthereumNetwork,
     isURL,
     formatToCurrency,

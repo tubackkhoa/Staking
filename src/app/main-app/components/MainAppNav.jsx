@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react'
 import { useGlobal } from 'reactn'
 import { useRouter } from 'next/dist/client/router'
@@ -46,7 +47,7 @@ const ConnectWalletButton = () => {
         <>
             <button
                 onClick={onClickConnectWalletButton}
-                className="flex h-10 w-40 rounded-lg justify-center items-center ml-auto border-Purple-1 border">
+                className="flex h-16 sm:h-10 w-24 sm:w-40 rounded-lg justify-center items-center ml-auto border-Purple-1 border">
                 <p className="flex text-sm text-Purple-1">{'Connect wallet'}</p>
             </button>
             <SelectWalletModal
@@ -163,8 +164,8 @@ const MainAppNav = ({ showSearchBar = false }) => {
 
     const renderLogoAndName = () => {
         return (
-            <Link href="/">
-                <div className="flex flex-wrap items-center text-white text-3xl font-semibold">
+            <Link href="/" passHref={true}>
+                <div className="flex flex-wrap items-center text-white text-xl sm:text-3xl font-semibold">
                     <img
                         src="/howl.png"
                         alt="HowlCity"

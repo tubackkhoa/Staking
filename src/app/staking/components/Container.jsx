@@ -14,10 +14,27 @@ import { icons } from 'assets'
 import connectWallet from 'app/main-app/wallet'
 import classNames from 'classnames'
 import { formatToCurrency } from 'utils'
+import { ActivityIndicator, Loading } from 'app/components'
+import { toast } from 'react-toastify'
+import { lang } from 'lang'
+import { checkNetworkAndRequest } from 'services'
 
-// # MasterChef
-// hien tai co 1 pool → poolId = 0
-const POOL_ID = 0
+const Pools = {
+    pool1: {
+        poodId: 0,
+        name: 'HOWL/HOWL',
+        icons: [icons.howl, icons.howl],
+        tokenStakedName: 'HWL',
+        tokenRewardedName: 'HWL',
+    },
+    pool2: {
+        poodId: 1,
+        name: 'BUSD/HOWL',
+        icons: [icons.busd, icons.howl],
+        tokenStakedName: 'Cake LPs',
+        tokenRewardedName: 'Cake LPs',
+    },
+}
 
 const stakeCouple = [
     {
@@ -46,70 +63,99 @@ const ActionTypes = {
     Unstake: 'Unstake',
 }
 
-const Container = props => {
+const Container = () => {
     React.useEffect(() => {
-        connectWallet()
-        // setTimeout(async ()=>{
-        //     // const userAddress = await configs.signer.getAddress()
-        //     const userAddress = configs.userAddress
-        //     console.log({ userAddress })
-        //     testStakeContract(userAddress)
-        // }, 5000)
-        console.log({ storeContact: configs.storeContract })
+        checkNetworkAndRequest({
+            onSuccess: () => {
+                getData()
+            },
+            onFailed: () => {
+                setSigner(false)
+            },
+        })
     }, [])
-    const [poolSelect, setPoolSelect] = React.useState()
+
+    const getData = () => {
+        connectWallet()
+        if (!configs.masterChefContract || !configs.userAddress) {
+            connectWallet(({ masterChefContract, userAddress }) => {
+                getUserTokenStaked(
+                    masterChefContract,
+                    userAddress,
+                    poolSelect?.poodId
+                )
+            })
+        } else {
+            getUserTokenStaked(
+                configs.masterChefContract,
+                configs.userAddress,
+                poolSelect?.poodId
+            )
+        }
+    }
+
+    const [poolSelect, setPoolSelect] = React.useState(Pools.pool1)
     const [actionType, setAction] = React.useState(ActionTypes.Stake)
     const [amount, setAmount] = React.useState(0)
+    const [loading, setLoading] = React.useState(false)
+    const [isSigner, setSigner] = React.useState(true)
+    const [userAmount, setUserAmount] = React.useState('0')
+    const [userPendingAmount, setUserPendingAmount] = React.useState('0')
 
-    const testStakeContract = async userAddress => {
-        // const userAddress = '0x9d6835a231473Ee95cF95742b236C1EA40814460' // harry acc 4
-        getUserTokenStaked(configs.masterChefContract, userAddress)
-        stakeTokenToPool(
-            configs.masterChefContract,
-            configs.tokenContract,
-            POOL_ID,
-            100
-        )
-        // getTokenFromPool(configs.masterChefContract, POOL_ID, 50)
-    }
-
-    // test ok
-    // ## userInfo: lay so luong token da stake // testing: WIP
-    const getUserTokenStaked = async (masterChefContract, userAddress) => {
-        const info = await masterChefContract?.userInfo(POOL_ID, userAddress)
-        console.log({ info })
-
-        if (!info) {
-            console.error('info undefined!')
+    const getUserTokenStaked = async (
+        masterChefContract,
+        userAddress,
+        poolId
+    ) => {
+        if (!userAddress || isNaN(poolId) || !masterChefContract) {
+            setSigner(false)
             return
         }
-        // info = { amount: BigNumber, lastDepositTimestamp: BigNumber, rewardDebt: BigNumber, staked: boolean}
-        const amount = ethers.utils.formatEther(info?.amount)
-        console.log({ amount }) // '0.0'
-        const lastDepositTimestamp = ethers.utils.formatEther(
-            info?.lastDepositTimestamp
-        )
-        console.log({ lastDepositTimestamp }) // '0.0'
-        const rewardDebt = ethers.utils.formatEther(info?.rewardDebt)
-        console.log({ rewardDebt }) // '0.0'
-        console.log({ staked: info?.staked }) // false
+
+        // get amount token user staked
+        try {
+            const info = await masterChefContract?.userInfo(poolId, userAddress)
+            console.log({ info })
+            if (!info) {
+                console.error('info undefined!')
+                setSigner(false)
+                return
+            }
+            // info = { amount: BigNumber, lastDepositTimestamp: BigNumber, rewardDebt: BigNumber, staked: boolean}
+            const amountNumber = ethers.utils.formatEther(info?.amount)
+            setUserAmount(amountNumber)
+        } catch (error) {
+            console.error(error)
+        }
+
+        // get amount token user rewarded
+        try {
+            const pending = await masterChefContract?.pendingHowl(
+                poolSelect?.poodId,
+                userAddress
+            )
+            console.log({ pending })
+            const pendingNumber = ethers.utils.formatEther(pending)
+            console.log({ pendingNumber })
+            setUserPendingAmount(pendingNumber)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
-    // ## Deposit: stake token vao pool // testing: WIP
     const stakeTokenToPool = async (
         masterChefContract,
         tokenContract,
         poolId,
-        depositPrice = 100
+        depositPrice,
+        cbDone = () => undefined,
+        cbError = () => undefined
     ) => {
-        if (typeof depositPrice !== 'number') {
-            console.error('Invalid type depositPrice!')
+        if (isNaN(depositPrice)) {
+            setAmount(0)
+            toast.warning('Invalid amount, please again!')
             return
         }
-        console.log({ masterChefContract })
-        console.log({ tokenContract })
-        console.log({ poolId })
-        console.log({ depositPrice })
 
         if (
             !masterChefContract ||
@@ -118,38 +164,57 @@ const Container = props => {
             typeof tokenContract?.approve !== 'function' ||
             typeof masterChefContract?.deposit !== 'function'
         ) {
+            setSigner(false)
             console.error('stakeTokenToPool invalid contract!')
             return
         }
 
-        const unlimitedAllowance =
-            '115792089237316195423570985008687907853269984665640564039457584007913129639935'
-        const approve = await tokenContract?.approve(
-            masterChefContract?.address,
-            unlimitedAllowance
-        )
-        await approve.wait()
-
-        // deposit
-        const deposit = await masterChefContract.deposit(
-            poolId,
-            ethers?.utils?.parseEther(`1000`)
-        )
-        await deposit.wait()
-        console.log({ deposit })
+        try {
+            setLoading(true)
+            const approve = await tokenContract?.approve(
+                masterChefContract?.address,
+                configs.unlimitedAllowance
+            )
+            await approve.wait()
+            // deposit
+            const deposit = await masterChefContract.deposit(
+                poolId,
+                ethers?.utils?.parseEther(`1000`)
+            )
+            await deposit.wait()
+            cbDone && cbDone(deposit)
+        } catch (error) {
+            cbError && cbError(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    // Withdraw: lay token tu pool // testing: WIP
     const getTokenFromPool = async (
         masterChefContract,
         poolId,
-        amount = 1000
+        amount,
+        cbDone,
+        cbError
     ) => {
-        const withdrawal = await masterChefContract?.withdraw(
-            poolId,
-            ethers.utils.parseEther(`${amount}`)
-        )
-        await withdrawal?.wait()
+        if (typeof amount !== 'number') {
+            toast.warning('Invalid amount, please again!')
+            setAmount(0)
+            return
+        }
+        try {
+            setLoading(true)
+            const withdrawal = await masterChefContract?.withdraw(
+                poolId,
+                ethers.utils.parseEther(`${amount}`)
+            )
+            await withdrawal?.wait()
+            cbDone && cbDone()
+        } catch (error) {
+            cbError && cbError(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const renderComingSoon = () => {
@@ -236,29 +301,19 @@ const Container = props => {
         )
     }
 
-    const StakingButton = () => {
-        const [text, setText] = React.useState('')
-        const onChange = event => {
-            setText(event?.target?.value)
-        }
-        return (
-            <div className="flex flex-col mt-24">
-                <input className="h-8 w-48" onChange={onChange} />
-            </div>
-        )
-    }
-
     const PoolContainer = ({
         couple,
         name,
         tokenStaked,
+        tokenStakedName,
         tokenRewarded,
+        tokenRewardedName,
         onClick,
     }) => {
         return (
             <button
                 onClick={onClick}
-                className="flex flex-col p-4 sm:p-6 bg-Gray-20 rounded-3xl w-68 sm:w-[342px] mx-7 hover:ring hover ring-white mt-4 sm:mt-0">
+                className="flex flex-col p-4 sm:p-6 bg-Gray-20 rounded-3xl w-68 sm:w-[342px] mx-7 hover:ring hover ring-white mt-8 sm:mt-0">
                 <div className="flex flex-row self-center">
                     <div className="flex flex-row">
                         <img
@@ -279,20 +334,73 @@ const Container = props => {
                 <div className="flex flex-col mt-9 w-full">
                     <div className="flex flex-row w-full justify-between">
                         <p className="flex text-Gray-3">Token staked</p>
-                        <p className="flex text-white">{`${tokenStaked}Pancake LPs`}</p>
+                        <p className="flex text-white">{`${tokenStaked} ${tokenStakedName}`}</p>
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
-                        <p className="flex text-Gray-3">Token rewarded</p>
-                        <p className="flex text-white">{`${tokenRewarded}Pancake LPs`}</p>
+                        <p className="flex text-Gray-3">Token pending</p>
+                        <p className="flex text-white">{`${tokenRewarded} ${tokenRewardedName}`}</p>
                     </div>
                 </div>
             </button>
         )
     }
 
-    const onClickHowlHowl = () => {}
+    const onClickHowlHowl = () => {
+        if (loading) return
+        setPoolSelect(Pools.pool1)
+    }
 
-    const onClickBusdHowl = () => {}
+    const onClickBusdHowl = () => {
+        if (loading) return
+        setPoolSelect(Pools.pool1)
+    }
+
+    const onClickStakeButton = () => {
+        if (loading) {
+            toast.warn(lang().pleaseWaiting)
+            return
+        }
+        if (!amount) return null
+        const amountFloat = parseFloat(`${amount}`.replaceAll(',', ''))
+        if (amountFloat < 1) {
+            return
+        }
+        if (actionType === ActionTypes.Stake) {
+            stakeTokenToPool(
+                configs.masterChefContract,
+                configs.tokenContract,
+                Pools.pool1.poodId,
+                amountFloat,
+                () => {
+                    setAmount(0)
+                    toast.success('Your token has been staked successfully!')
+                    getData()
+                },
+                () => {
+                    toast.error(lang().transactionFailed)
+                    getData()
+                }
+            )
+            return
+        }
+        if (actionType === ActionTypes.Unstake) {
+            getTokenFromPool(
+                configs.masterChefContract,
+                Pools.pool1.poodId,
+                amountFloat,
+                () => {
+                    setAmount(0)
+                    toast.success('Your token has been unstaked successfully!')
+                    getData()
+                },
+                () => {
+                    toast.error(lang().transactionFailed)
+                    getData()
+                }
+            )
+            return
+        }
+    }
 
     const Segment = ({ isSelect, title, onClick }) => {
         const selectStyle = isSelect ? 'bg-white' : ''
@@ -315,82 +423,120 @@ const Container = props => {
         )
     }
 
-    return (
-        <div className="flex flex-1 p-4 sm:p-12 flex-col">
-            <div className="flex flex-col self-center">
-                <h1 className="flex text-white text-3xl sm:text-5xl font-semibold">
-                    Liquidity pool
-                </h1>
-            </div>
-            <div className="flex flex-col sm:flex-row mt-4 sm:mt-12 self-center">
-                <PoolContainer
-                    couple={[icons.howl, icons.howl]}
-                    name={'HOWL/HOWL'}
-                    tokenStaked={1200}
-                    tokenRewarded={200}
-                    onClick={onClickHowlHowl}
-                />
-                <PoolContainer
-                    couple={[icons.busd, icons.howl]}
-                    name={'BUSD/HOWL'}
-                    tokenStaked={24500}
-                    tokenRewarded={1200}
-                    onClick={onClickBusdHowl}
-                />
-            </div>
-            <div className="flex flex-col mt-12 self-center items-center">
-                <div className="flex flex-row w-[268px] h-10 bg-Gray-4 rounded-xl">
-                    <Segment
-                        key="stake-button"
-                        isSelect={actionType === ActionTypes.Stake}
-                        title="Stake"
-                        onClick={() => setAction(ActionTypes.Stake)}
-                    />
-                    <Segment
-                        key="unstake-button"
-                        isSelect={actionType === ActionTypes.Unstake}
-                        title="Unstake"
-                        onClick={() => setAction(ActionTypes.Unstake)}
-                    />
-                </div>
-                <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
-                    Single-sided Liquidity Mining First, you need to deposit
-                    your tokens into the liquidity pools. Then, use the returned
-                    HOWL-LP or BUSD-LP tokens and stake them to the HWL/BUSD
-                    liquidity pool on this page
+    const onChangeAmount = event => {
+        if (loading) {
+            toast.warn(lang().pleaseWaiting)
+            return
+        }
+        setAmount(event?.target?.value)
+    }
+
+    const renderStakeButton = () => {
+        if (!amount) return null
+        const isEnableStakeButton =
+            parseFloat(`${amount}`.replaceAll(',', '')) > 1
+
+        const enableStyle = isEnableStakeButton ? 'bg-Blue-2' : 'bg-Gray-2'
+        return (
+            <button
+                disabled={!isEnableStakeButton}
+                onClick={onClickStakeButton}
+                className={classNames(
+                    'flex justify-center items-center mt-5 rounded-xl w-full h-12',
+                    enableStyle
+                )}>
+                <p
+                    className={classNames(
+                        'flex text-base font-bold',
+                        'text-white'
+                    )}>
+                    {'Stake'}
                 </p>
-                <div className="flex flex-col mt-12">
-                    <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
-                        <img
-                            className="flex w-7 h-7"
-                            src={icons.howl}
-                            alt="icon-Input"
+                {loading && (
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white ml-4" />
+                )}
+            </button>
+        )
+    }
+
+    return (
+        <>
+            <div className="flex flex-1 p-4 sm:p-12 flex-col">
+                <div className="flex flex-col self-center">
+                    <h1 className="flex text-white text-3xl sm:text-5xl font-semibold mt-4 sm:mt-0">
+                        Liquidity pool
+                    </h1>
+                </div>
+                <div className="flex flex-col sm:flex-row mt-4 sm:mt-12 self-center">
+                    <PoolContainer
+                        couple={Pools.pool1.icons}
+                        name={Pools.pool1.name}
+                        tokenStaked={formatToCurrency(userAmount, '')}
+                        tokenRewarded={parseFloat(userPendingAmount).toFixed(3)}
+                        tokenStakedName={Pools.pool1.tokenStakedName}
+                        tokenRewardedName={Pools.pool1.tokenRewardedName}
+                        onClick={onClickHowlHowl}
+                    />
+                    {/* <PoolContainer
+                        couple={Pools.pool2.icons}
+                        name={Pools.pool2.name}
+                        tokenStaked={formatToCurrency(userAmount, '')}
+                        tokenRewarded={formatToCurrency(0, '')}
+                        tokenStakedName={Pools.pool2.tokenStakedName}
+                        tokenRewardedName={Pools.pool2.tokenRewardedName}
+                        onClick={onClickBusdHowl}
+                    /> */}
+                </div>
+                <div className="flex flex-col mt-12 self-center items-center">
+                    <div className="flex flex-row w-[268px] h-10 bg-Gray-4 rounded-xl">
+                        <Segment
+                            key="stake-button"
+                            isSelect={actionType === ActionTypes.Stake}
+                            title="Stake"
+                            onClick={() =>
+                                !loading && setAction(ActionTypes.Stake)
+                            }
                         />
-                        <p className="flex text-white text-xl font-semibold ml-2.5">
-                            {'HWL'}
-                        </p>
-                        <input
-                            placeholder={'0'}
-                            maxLength={10}
-                            className="flex w-full bg-transparent outline-none text-white text-right font-semibold text-2xl"
-                            value={amount}
-                            onChange={(event)=>{
-                                setAmount(formatToCurrency(event?.target?.value, ''))
-                            }}
+                        <Segment
+                            key="unstake-button"
+                            isSelect={actionType === ActionTypes.Unstake}
+                            title="Unstake"
+                            onClick={() =>
+                                !loading && setAction(ActionTypes.Unstake)
+                            }
                         />
                     </div>
-                </div>
-                <button className="flex justify-center items-center mt-5 rounded-xl bg-Blue-2 w-full h-12">
-                    <p
-                        className={classNames(
-                            'flex text-base font-bold',
-                            'text-white'
-                        )}>
-                        {'Stake'}
+                    <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
+                        Single-sided Liquidity mining. <br/>
+                        First, you need to deposit your tokens 
+                        into the liquidity pools. <br/>
+                        Then, use the returned HOWL-LP or BUSD-LP tokens 
+                        and stake them to the
+                        HWL/BUSD liquidity pool on this page
                     </p>
-                </button>
+                    <div className="flex flex-col mt-12">
+                        <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
+                            <img
+                                className="flex w-7 h-7"
+                                src={icons.howl}
+                                alt="icon-Input"
+                            />
+                            <p className="flex text-white text-xl font-semibold ml-2.5">
+                                {'HWL'}
+                            </p>
+                            <input
+                                placeholder={'0'}
+                                maxLength={10}
+                                className="flex w-full bg-transparent outline-none text-white text-right font-semibold text-2xl"
+                                value={formatToCurrency(amount, '')}
+                                onChange={onChangeAmount}
+                            />
+                        </div>
+                    </div>
+                    {renderStakeButton()}
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

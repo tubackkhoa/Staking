@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useGlobal } from "reactn"
 import { configs } from 'config/config'
 import { globalKeys } from "config/globalKeys"
+import { lang } from "lang"
 
 // const requestBscTestNet = 
 
@@ -53,7 +54,7 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
             }
             if (switchError?.code === 4001) {
                 // "User rejected the request.
-                toast.error('Từ chối chuyển đúng mạng sẽ khiến bạn không thể lấy được danh sách xe!')
+                toast.error('Từ chối chuyển đúng mạng sẽ khiến bạn không thể sử dụng các chức năng của marketplace!')
                 if (onFailed) onFailed()
                 return
             }

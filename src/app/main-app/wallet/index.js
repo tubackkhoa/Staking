@@ -20,7 +20,7 @@ const networks = {
     localhost: 'localhost',
 }
 
-const connectWallet = async () => {
+const connectWallet = async (cbDone) => {
     // console.log('Check in connectWallet');
     const web3Modal = new Web3Modal({
         network: configs.Networks.BscTestnet.RPCEndpoints,
@@ -37,14 +37,14 @@ const connectWallet = async () => {
     configs.userAddress = userAddress
     // console.log({ signer })
 
-    const marketplaceContract = new ethers.Contract(
+    const marketContract = new ethers.Contract(
         marketAddress,
         Marketplace.abi,
         signer
     )
-    configs.marketContract = marketplaceContract
-    // console.log({ marketplaceContract })
-    // console.log('Check address = ' + marketplaceContract.address)
+    configs.marketContract = marketContract
+    // console.log({ marketContract })
+    // console.log('Check address = ' + marketContract.address)
 
     const gameItemContract = new ethers.Contract(
         nftAddress,
@@ -77,7 +77,9 @@ const connectWallet = async () => {
     configs.masterChefContract = masterChefContract
     // console.log({ storeContract })
 
-    return { marketplaceContract, gameItemContract, signer, howlTokenContract, storeContract }
+    cbDone && cbDone({ masterChefContract, userAddress })
+
+    return { marketplaceContract: marketContract, gameItemContract, signer, howlTokenContract, storeContract }
 }
 
 export default connectWallet
