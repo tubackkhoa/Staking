@@ -36,6 +36,15 @@ const Pools = {
     },
 }
 
+const StakingContracts = {
+    unlimitedAllowance: configs.unlimitedAllowance,
+    tokenContract: null,
+    masterChefContract: null,
+    busdHowlPoolContract: null,
+    signer: null,
+    userAddress: null,
+}
+
 const stakeCouple = [
     {
         id: 0,
@@ -66,6 +75,8 @@ const ActionTypes = {
 const Container = () => {
     React.useEffect(() => {
         checkNetworkAndRequest({
+            chainId: configs.Networks.BscMainnet.ChainId.hex,
+            rpcUrl: configs.Networks.BscMainnet.RPCEndpoints,
             onSuccess: () => {
                 getData()
             },
@@ -75,20 +86,53 @@ const Container = () => {
         })
     }, [])
 
+    // masterchef.totalStakedHWL()
+    // lay ket qua cai nay truyen vao ham calculateHowlPoolAPR la co APR
+    // calculateHowlPoolAPR
+
+    const connectWalletAndGetContract = () => {
+        connectWallet(
+            ({
+                masterChefContract,
+                userAddress,
+                busdHowlPoolContract,
+                signer,
+                tokenContract,
+            }) => {
+                console({
+                    masterChefContract,
+                    userAddress,
+                    busdHowlPoolContract,
+                    signer,
+                    tokenContract,
+                })
+                StakingContracts.masterChefContract = masterChefContract
+                StakingContracts.userAddress = userAddress
+                StakingContracts.busdHowlPoolContract = busdHowlPoolContract
+                StakingContracts.signer = signer
+                StakingContracts.tokenContract = tokenContract
+                getData()
+            }
+        ),
+            configs.Networks.BscMainnet.RPCEndpoints
+    }
+
     const getData = () => {
-        connectWallet()
-        if (!configs.masterChefContract || !configs.userAddress) {
+        if (
+            !StakingContracts.masterChefContract ||
+            !StakingContracts.userAddress
+        ) {
             connectWallet(({ masterChefContract, userAddress }) => {
                 getUserTokenStaked(
                     masterChefContract,
                     userAddress,
                     poolSelect?.poodId
                 )
-            })
+            }, configs.Networks.BscMainnet.RPCEndpoints)
         } else {
             getUserTokenStaked(
-                configs.masterChefContract,
-                configs.userAddress,
+                StakingContracts.masterChefContract,
+                StakingContracts.userAddress,
                 poolSelect?.poodId
             )
         }
@@ -114,10 +158,10 @@ const Container = () => {
 
         // get amount token user staked
         try {
-            const info = await masterChefContract?.userInfo(poolId, userAddress)
+            const info = await masterChefContract?.userInfo(0, userAddress)
             console.log({ info })
             if (!info) {
-                console.error('info undefined!')
+                console.error('Info undefined!')
                 setSigner(false)
                 return
             }
@@ -129,18 +173,18 @@ const Container = () => {
         }
 
         // get amount token user rewarded
-        try {
-            const pending = await masterChefContract?.pendingHowl(
-                poolSelect?.poodId,
-                userAddress
-            )
-            console.log({ pending })
-            const pendingNumber = ethers.utils.formatEther(pending)
-            console.log({ pendingNumber })
-            setUserPendingAmount(pendingNumber)
-        } catch (error) {
-            console.error(error)
-        }
+        // try {
+        //     const pending = await masterChefContract?.pendingHowl(
+        //         poolSelect?.poodId,
+        //         userAddress
+        //     )
+        //     console.log({ pending })
+        //     const pendingNumber = ethers.utils.formatEther(pending)
+        //     console.log({ pendingNumber })
+        //     setUserPendingAmount(pendingNumber)
+        // } catch (error) {
+        //     console.error(error)
+        // }
     }
 
     const stakeTokenToPool = async (
@@ -165,7 +209,8 @@ const Container = () => {
             typeof masterChefContract?.deposit !== 'function'
         ) {
             setSigner(false)
-            console.error('stakeTokenToPool invalid contract!')
+            toast.error(lang().transactionFailed)
+            console.error({ masterChefContract, tokenContract, poolId })
             return
         }
 
@@ -173,7 +218,7 @@ const Container = () => {
             setLoading(true)
             const approve = await tokenContract?.approve(
                 masterChefContract?.address,
-                configs.unlimitedAllowance
+                StakingContracts.unlimitedAllowance
             )
             await approve.wait()
             // deposit
@@ -309,11 +354,16 @@ const Container = () => {
         tokenRewarded,
         tokenRewardedName,
         onClick,
+        isSelect,
     }) => {
+        const selectStyle = isSelect ? 'ring' : 'opacity-50'
         return (
             <button
                 onClick={onClick}
-                className="flex flex-col p-4 sm:p-6 bg-Gray-20 rounded-3xl w-68 sm:w-[342px] mx-7 hover:ring hover ring-white mt-8 sm:mt-0">
+                className={classNames(
+                    'flex flex-col p-4 sm:p-6 bg-Gray-20 rounded-3xl w-68 sm:w-[342px] mx-7 hover:ring hover ring-white mt-8 sm:mt-0',
+                    selectStyle
+                )}>
                 <div className="flex flex-row self-center">
                     <div className="flex flex-row">
                         <img
@@ -352,7 +402,7 @@ const Container = () => {
 
     const onClickBusdHowl = () => {
         if (loading) return
-        setPoolSelect(Pools.pool1)
+        setPoolSelect(Pools.pool2)
     }
 
     const onClickStakeButton = () => {
@@ -367,9 +417,9 @@ const Container = () => {
         }
         if (actionType === ActionTypes.Stake) {
             stakeTokenToPool(
-                configs.masterChefContract,
-                configs.tokenContract,
-                Pools.pool1.poodId,
+                StakingContracts.masterChefContract,
+                StakingContracts.tokenContract,
+                poolSelect.poodId,
                 amountFloat,
                 () => {
                     setAmount(0)
@@ -385,8 +435,8 @@ const Container = () => {
         }
         if (actionType === ActionTypes.Unstake) {
             getTokenFromPool(
-                configs.masterChefContract,
-                Pools.pool1.poodId,
+                StakingContracts.masterChefContract,
+                poolSelect.poodId,
                 amountFloat,
                 () => {
                     setAmount(0)
@@ -476,8 +526,9 @@ const Container = () => {
                         tokenStakedName={Pools.pool1.tokenStakedName}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
+                        isSelect={poolSelect.poodId === Pools.pool1.poodId}
                     />
-                    {/* <PoolContainer
+                    <PoolContainer
                         couple={Pools.pool2.icons}
                         name={Pools.pool2.name}
                         tokenStaked={formatToCurrency(userAmount, '')}
@@ -485,7 +536,8 @@ const Container = () => {
                         tokenStakedName={Pools.pool2.tokenStakedName}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
-                    /> */}
+                        isSelect={poolSelect.poodId === Pools.pool2.poodId}
+                    />
                 </div>
                 <div className="flex flex-col mt-12 self-center items-center">
                     <div className="flex flex-row w-[268px] h-10 bg-Gray-4 rounded-xl">
@@ -507,12 +559,11 @@ const Container = () => {
                         />
                     </div>
                     <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
-                        Single-sided Liquidity mining. <br/>
-                        First, you need to deposit your tokens 
-                        into the liquidity pools. <br/>
-                        Then, use the returned HOWL-LP or BUSD-LP tokens 
-                        and stake them to the
-                        HWL/BUSD liquidity pool on this page
+                        Single-sided Liquidity mining. <br />
+                        First, you need to deposit your tokens into the
+                        liquidity pools. <br />
+                        Then, use the returned HOWL-LP or BUSD-LP tokens and
+                        stake them to the HWL/BUSD liquidity pool on this page
                     </p>
                     <div className="flex flex-col mt-12">
                         <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
@@ -530,6 +581,11 @@ const Container = () => {
                                 className="flex w-full bg-transparent outline-none text-white text-right font-semibold text-2xl"
                                 value={formatToCurrency(amount, '')}
                                 onChange={onChangeAmount}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        onClickStakeButton()
+                                    }
+                                }}
                             />
                         </div>
                     </div>

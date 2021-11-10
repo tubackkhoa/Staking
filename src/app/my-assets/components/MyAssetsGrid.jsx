@@ -9,6 +9,11 @@ import { useRouter } from 'next/dist/client/router'
 import { routes } from 'config/routes'
 import { Loading, NftCard, ActivityIndicator } from '../../components'
 
+// const TicketCard = {
+//     itemKey: 'TicketCard',
+//     URI: ''
+// }
+
 const MyAssetsGrid = ({ isLoading, data }) => {
     const route = useRouter()
     const [myAssetSelect, setMyAssetSelect] = useGlobal(
@@ -37,7 +42,7 @@ const MyAssetsGrid = ({ isLoading, data }) => {
         <div className="first-letter:bg-hwl-gray-1">
             <div className="block sm:flex w-screen sm:w-full overflow-scroll flex-nowrap sm:flex-wrap p-4 px-4 sm:px-24 mt-8">
                 {Array.isArray(data) &&
-                    data.map((item, index) => {
+                    [...data].map((item, index) => {
                         if (!item) return null
                         const tokenIdString = item.tokenId.toString()
                         const itemKey = `NftCard-${tokenIdString}`

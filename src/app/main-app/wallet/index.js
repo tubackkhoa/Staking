@@ -7,6 +7,7 @@ import {
     tokenAddress,
     storeAddress,
     masterChefAddress,
+    busdHowlPoolAddress,
 } from '../../../../deployed_address.json'
 
 import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
@@ -16,70 +17,71 @@ import Store from '../../../../artifacts/contracts/Store.sol/Store.json'
 import MasterChefAbi from '../../../../artifacts/contracts/MasterChef.sol/MasterChef.json'
 import { configs } from 'config/config'
 
-const networks = {
-    localhost: 'localhost',
-}
-
-const connectWallet = async (cbDone) => {
-    // console.log('Check in connectWallet');
+const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEndpoints, cbError) => {
+    console.log('Check in connectWallet network = ' + network);
     const web3Modal = new Web3Modal({
-        network: configs.Networks.BscTestnet.RPCEndpoints,
-        cacheProvider: false,
+        network: network,
+        cacheProvider: true,
     })
     // auto connect metamask wallet
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
-    configs.walletProvider = provider
     const signer = provider.getSigner()
-    configs.signer = signer
+    console.log({ signer })
 
     const userAddress = await signer.getAddress()
-    configs.userAddress = userAddress
-    // console.log({ signer })
-
     const marketContract = new ethers.Contract(
         marketAddress,
         Marketplace.abi,
         signer
     )
-    configs.marketContract = marketContract
-    // console.log({ marketContract })
-    // console.log('Check address = ' + marketContract.address)
 
     const gameItemContract = new ethers.Contract(
         nftAddress,
         GameItem.abi,
         signer
     )
-    configs.gameItemContract = gameItemContract
     // console.log({ gameItemContract })
 
     const howlTokenContract = new ethers.Contract(
         tokenAddress,
-        HowlToken.abi,
+        HowlToken?.abi,
         signer
     )
-    configs.tokenContract = howlTokenContract
 
     const storeContract = new ethers.Contract(
         storeAddress,
         Store.abi,
         signer
     )
-    configs.storeContract = storeContract
 
     const masterChefContract = new ethers.Contract(
         masterChefAddress,
         MasterChefAbi?.abi,
         signer
     )
-    // console.log({ masterChefContract })
-    configs.masterChefContract = masterChefContract
-    // console.log({ storeContract })
+    console.log({ masterChefContract })
+    console.log('Check address = ' + await masterChefContract.signer.getAddress())
 
-    cbDone && cbDone({ masterChefContract, userAddress })
+    const busdHowlPoolContract = new ethers.Contract(
+        busdHowlPoolAddress,
+        HowlToken?.abi,
+        signer
+    )
 
-    return { marketplaceContract: marketContract, gameItemContract, signer, howlTokenContract, storeContract }
+    cbDone && cbDone({ masterChefContract, userAddress, busdHowlPoolContract, signer, tokenContract: howlTokenContract })
+
+    return { 
+        marketplaceContract: marketContract, 
+        gameItemContract, 
+        signer, 
+        howlTokenContract,
+        storeContract,
+        masterChefContract,
+        busdHowlPoolContract,
+        provider,
+        userAddress,
+    }
 }
 
 export default connectWallet

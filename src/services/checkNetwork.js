@@ -12,7 +12,12 @@ const defaultProps = {
     onFailed: () => null,
 }
 
-export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultProps) => {
+export const checkNetworkAndRequest = async ({ 
+        chainId = configs.Networks.BscTestnet.ChainId.hex,
+        rpcUrl = configs.Networks.BscTestnet.RPCEndpoints,
+        onSuccess, 
+        onFailed 
+    } = defaultProps) => {
     // Check if MetaMask is installed
     // MetaMask injects the global API into window.ethereum
     if (window && window?.ethereum) {
@@ -20,7 +25,7 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
             // check if the chain to connect to is installed
             const resSwitch = await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: configs.Networks.BscTestnet.ChainId.hex }], // // chainId must be in hexadecimal numbers
+                params: [{ chainId }], // chainId must be in hexadecimal numbers
             })
             // switched
             if (onSuccess) onSuccess()
@@ -28,14 +33,14 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
             console.log('Check switchError = ' + JSON.stringify(switchError))
             if (switchError?.code === 4902) {
                 // This error code indicates that the chain has not been added to MetaMask.
-                toast.warning('Cần truy cập đúng mạng BSC Testnet để có thể sử dụng được các tính năng của chợ!')
+                toast.warning(lang().accessToCorrectNetwork)
                 try {
                     const results = await window?.ethereum?.request({
                         method: 'wallet_addEthereumChain',
                         params: [
                             {
-                                chainId: configs.Networks.BscTestnet.ChainId.hex,
-                                rpcUrl: configs.Networks.BscTestnet.RPCEndpoints,
+                                chainId,
+                                rpcUrl,
                             },
                         ],
                     }).then((success) => {
@@ -54,13 +59,13 @@ export const checkNetworkAndRequest = async ({ onSuccess, onFailed } = defaultPr
             }
             if (switchError?.code === 4001) {
                 // "User rejected the request.
-                toast.error('Từ chối chuyển đúng mạng sẽ khiến bạn không thể sử dụng các chức năng của marketplace!')
+                toast.error(lang().nefusingConnectNetwork)
                 if (onFailed) onFailed()
                 return
             }
             if (switchError?.code === -32002) {
                 // "Request of type 'wallet_switchEthereumChain' already pending for origin
-                toast.warning('Đã gửi yêu cầu chuyển mạng, vui lòng kiểm tra danh sách yêu cầu ở ví metamask của bạn!')
+                toast.warning(lang().transferRequestSent)
                 if (onFailed) onFailed()
                 return
             }
