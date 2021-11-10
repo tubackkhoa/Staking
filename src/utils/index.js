@@ -148,9 +148,21 @@ export function isURL(str) {
     return !!pattern.test(str);
 }
 
+export const replaceAll = (str, find, replace) => {
+    return str.replace(new RegExp(find, 'g'), replace);
+  };
+
+  
+export const formatToCurrency = (value, currency = '$') => {
+    const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
+    return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
+};
+  
+
 export const utils = {
     getRandom,
     parseMoneyInput,
     detectEthereumNetwork,
     isURL,
+    formatToCurrency,
 }

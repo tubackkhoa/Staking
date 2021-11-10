@@ -11,8 +11,12 @@ module.exports = {
                 'hwl-gray-4': '#535562',
                 'nav-bar': '#1C171D',
                 'Blue-1': '#4664F0',
+                'Blue-2': '#0177FB',
                 'Gray-1': '#232128',
                 'Gray-2': '#2D2E36',
+                'Gray-3': '#8B8CA7',
+                'Gray-5': '#8B8CA6',
+                'Gray-4': '#3B3C4E',
                 'Gray-21': '#23242F',
                 'Gray-20': '#2C2D3A',
                 'Green-1': '#13B9B9',
@@ -22,6 +26,8 @@ module.exports = {
                 'linear-blue-2': 'linear-gradient(101.12deg, #4664F0 27.35%, rgba(70, 100, 240, 0.6) 99.99%, #C81CC5 100%, #4664F0 100%)',
                 'Yellow-1': '#F0B90B',
                 'Purple-1': '#DA18A3',
+                'Purple-2': '#A695FF',
+                'Border-1': 'rgba(190, 194, 196, 0.4)',
             },
             boxShadow: {
                 sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -37,6 +43,15 @@ module.exports = {
                 nav: '0px 4px 12px rgba(0, 0, 0, 0.16)',
             }
         },
+        borderWidth: {
+            DEFAULT: '1px',
+            '0.5': '0.1px',
+            '2': '2px',
+            '3': '3px',
+            '4': '4px',
+            '6': '6px',
+            '8': '8px',
+        }
     },
     variants: {
         extend: {},

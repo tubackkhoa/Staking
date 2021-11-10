@@ -10,12 +10,23 @@ const Networks = {
     },
     RPCEndpoints: 'https://data-seed-prebsc-1-s1.binance.org:8545',
   },
+  BscMainet: {
+    ChainId: {
+      decimal: 97,
+      hex: '0x61',
+    },
+    RPCEndpoints: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+  },
 }
 
 let tokenContract = null
 let marketContract = null
 let gameItemContract = null
 let storeContract = null
+let masterChefContract = null
+let signer = null
+let walletProvider = null
+let userAddress = null
 
 export const configs = {
   unlimitedAllowance,
@@ -24,5 +35,9 @@ export const configs = {
   marketContract,
   gameItemContract,
   storeContract,
+  masterChefContract,
+  signer,
+  walletProvider,
+  userAddress,
 }
 

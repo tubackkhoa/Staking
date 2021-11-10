@@ -51,9 +51,6 @@ const Container = props => {
         setWalletInfo({
            marketplaceContract: marketContract,
            gameItemContract: gameItemContract,
-           signer: null,
-           howlTokenContract: null,
-           signerAddress: null,
         })
 
         setLoading(true)

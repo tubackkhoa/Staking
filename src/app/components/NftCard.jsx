@@ -150,7 +150,7 @@ const NftCard = ({
 NftCard.propTypes = {
     URI: PropTypes.string,
     contractAddress: PropTypes.string,
-    tokenId: PropTypes.string,
+    tokenId: PropTypes.any,
     price: PropTypes.any,
     index: PropTypes.number,
     onClick: PropTypes.func,
@@ -160,7 +160,7 @@ NftCard.propTypes = {
 NftCard.defaultProps = {
     URI: '',
     contractAddress: '',
-    tokenId: '',
+    tokenId: null,
     price: 0,
     index: 0,
     onClick: () => undefined,

@@ -10,6 +10,7 @@ import { routes } from 'config/routes'
 import { ItemConfigs, Loading, NftImage, RatingView, TitleTokenIdSeller } from 'app/components'
 import classNames from 'classnames'
 import { parseMoneyInput } from 'utils'
+import { configs } from 'config/config'
 
 const CreatorView = () => {
     return (
@@ -60,6 +61,8 @@ const CreateSaleButton = ({ tokenId, price }) => {
 
     const { howlTokenContract: tokenCont, marketplaceContract: marketCont } =
         walletInfo
+
+    configs.tokenContract = tokenCont
 
     useEffect(() => {
         _checkConnectWallet()

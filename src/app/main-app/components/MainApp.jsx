@@ -18,14 +18,13 @@ import { marketAddress, nftAddress, storeAddress, masterChefAddress } from '../.
 import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
 import NftAbi from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
 import StoreAbi from '../../../../artifacts/contracts/Store.sol/Store.json'
-
+import MasterChefAbi from '../../../../artifacts/contracts/MasterChef.sol/MasterChef.json'
 
 const MainApp = ({ pageProps, Component }) => {
     // const [walletInfo, setWalletInfo] = useGlobal(globalKeys.walletInfo)
 
     React.useEffect(() => {
         getContractFromProvider()
-        // checkNetworkAndRequest()
     }, [])
 
     const getContractFromProvider = async () => {
@@ -37,6 +36,7 @@ const MainApp = ({ pageProps, Component }) => {
             MarketplaceAbi?.abi,
             provider
         )
+        // console.log({ marketContract })
         configs.marketContract = marketContract
 
         const gameItemContract = new ethers.Contract(
@@ -44,14 +44,23 @@ const MainApp = ({ pageProps, Component }) => {
             NftAbi.abi,
             provider
         )
+        // console.log({ gameItemContract })
         configs.gameItemContract = gameItemContract
 
-        // const storeContract = new ethers.Contract(
-        //     storeAddress,
-        //     StoreAbi?.abi,
-        //     provider
-        // )
-        // configs.storeContract = storeContract
+        const masterChefContract = new ethers.Contract(
+            masterChefAddress,
+            MasterChefAbi?.abi,
+            provider
+        )
+        // console.log({ masterChefContract })
+        configs.masterChefContract = masterChefContract
+
+        const storeContract = new ethers.Contract(
+            storeAddress,
+            StoreAbi?.abi,
+            provider
+        )
+        configs.storeContract = storeContract
         
         // setWalletInfo({
         //     ...walletInfo,
