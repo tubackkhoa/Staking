@@ -33,7 +33,7 @@ export const checkNetworkAndRequest = async ({
             console.log('Check switchError = ' + JSON.stringify(switchError))
             if (switchError?.code === 4902) {
                 // This error code indicates that the chain has not been added to MetaMask.
-                toast.warning('Cần truy cập đúng mạng BSC Testnet để có thể sử dụng được các tính năng của chợ!')
+                toast.warning(lang().accessToCorrectNetwork)
                 try {
                     const results = await window?.ethereum?.request({
                         method: 'wallet_addEthereumChain',
@@ -59,13 +59,13 @@ export const checkNetworkAndRequest = async ({
             }
             if (switchError?.code === 4001) {
                 // "User rejected the request.
-                toast.error('Từ chối chuyển đúng mạng sẽ khiến bạn không thể sử dụng các chức năng của marketplace!')
+                toast.error(lang().nefusingConnectNetwork)
                 if (onFailed) onFailed()
                 return
             }
             if (switchError?.code === -32002) {
                 // "Request of type 'wallet_switchEthereumChain' already pending for origin
-                toast.warning('Đã gửi yêu cầu chuyển mạng, vui lòng kiểm tra danh sách yêu cầu ở ví metamask của bạn!')
+                toast.warning(lang().transferRequestSent)
                 if (onFailed) onFailed()
                 return
             }

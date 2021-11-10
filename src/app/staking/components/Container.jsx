@@ -114,11 +114,14 @@ const Container = () => {
                 getData()
             }
         ),
-        configs.Networks.BscMainnet.RPCEndpoints
+            configs.Networks.BscMainnet.RPCEndpoints
     }
 
     const getData = () => {
-        if (!StakingContracts.masterChefContract || !StakingContracts.userAddress) {
+        if (
+            !StakingContracts.masterChefContract ||
+            !StakingContracts.userAddress
+        ) {
             connectWallet(({ masterChefContract, userAddress }) => {
                 getUserTokenStaked(
                     masterChefContract,
@@ -152,9 +155,6 @@ const Container = () => {
             setSigner(false)
             return
         }
-
-        console.log('test', { masterChefContract })
-        console.log('test', { userAddress })
 
         // get amount token user staked
         try {
@@ -209,7 +209,8 @@ const Container = () => {
             typeof masterChefContract?.deposit !== 'function'
         ) {
             setSigner(false)
-            console.error('stakeTokenToPool invalid contract!')
+            toast.error(lang().transactionFailed)
+            console.error({ masterChefContract, tokenContract, poolId })
             return
         }
 
@@ -355,7 +356,7 @@ const Container = () => {
         onClick,
         isSelect,
     }) => {
-        const selectStyle = isSelect ? 'ring' : ''
+        const selectStyle = isSelect ? 'ring' : 'opacity-50'
         return (
             <button
                 onClick={onClick}
@@ -580,6 +581,11 @@ const Container = () => {
                                 className="flex w-full bg-transparent outline-none text-white text-right font-semibold text-2xl"
                                 value={formatToCurrency(amount, '')}
                                 onChange={onChangeAmount}
+                                onKeyPress={(event) => {
+                                    if (event.key === 'Enter') {
+                                        onClickStakeButton()
+                                    }
+                                }}
                             />
                         </div>
                     </div>
