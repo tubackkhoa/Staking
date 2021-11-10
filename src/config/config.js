@@ -27,6 +27,7 @@ let masterChefContract = null
 let signer = null
 let walletProvider = null
 let userAddress = null
+let busdHowlPoolContract = null
 
 export const configs = {
   unlimitedAllowance,
@@ -39,5 +40,6 @@ export const configs = {
   signer,
   walletProvider,
   userAddress,
+  busdHowlPoolContract,
 }
 

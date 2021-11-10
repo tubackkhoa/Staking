@@ -7,6 +7,7 @@ import {
     tokenAddress,
     storeAddress,
     masterChefAddress,
+    busdHowlPoolAddress,
 } from '../../../../deployed_address.json'
 
 import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
@@ -56,7 +57,7 @@ const connectWallet = async (cbDone) => {
 
     const howlTokenContract = new ethers.Contract(
         tokenAddress,
-        HowlToken.abi,
+        HowlToken?.abi,
         signer
     )
     configs.tokenContract = howlTokenContract
@@ -73,11 +74,16 @@ const connectWallet = async (cbDone) => {
         MasterChefAbi?.abi,
         signer
     )
-    // console.log({ masterChefContract })
     configs.masterChefContract = masterChefContract
-    // console.log({ storeContract })
 
-    cbDone && cbDone({ masterChefContract, userAddress })
+    const busdHowlPoolContract = new ethers.Contract(
+        busdHowlPoolAddress,
+        HowlToken?.abi,
+        signer
+    )
+    configs.busdHowlPoolContract = busdHowlPoolContract
+
+    cbDone && cbDone({ masterChefContract, userAddress, busdHowlPoolContract })
 
     return { marketplaceContract: marketContract, gameItemContract, signer, howlTokenContract, storeContract }
 }
