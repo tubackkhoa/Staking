@@ -21,13 +21,13 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
     console.log('Check in connectWallet network = ' + network);
     const web3Modal = new Web3Modal({
         network: network,
-        cacheProvider: false,
+        cacheProvider: true,
     })
     // auto connect metamask wallet
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
-    // console.log({ signer })
+    console.log({ signer })
 
     const userAddress = await signer.getAddress()
     const marketContract = new ethers.Contract(
@@ -61,7 +61,7 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
         signer
     )
     console.log({ masterChefContract })
-    console.log('Check address = ' + masterChefContract.signer.address)
+    console.log('Check address = ' + await masterChefContract.signer.getAddress())
 
     const busdHowlPoolContract = new ethers.Contract(
         busdHowlPoolAddress,

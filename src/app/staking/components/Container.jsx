@@ -153,12 +153,12 @@ const Container = () => {
             return
         }
 
-        console.log({ masterChefContract })
-        console.log({ userAddress })
+        console.log('test', { masterChefContract })
+        console.log('test', { userAddress })
 
         // get amount token user staked
         try {
-            const info = await masterChefContract?.userInfo(poolId, userAddress)
+            const info = await masterChefContract?.userInfo(0, userAddress)
             console.log({ info })
             if (!info) {
                 console.error('Info undefined!')
