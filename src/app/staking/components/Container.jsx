@@ -182,8 +182,6 @@ const Container = () => {
             setSigner(false)
             return
         }
-
-        // get amount token user staked pool 1
         try {
             const info = await masterChefContract?.userInfo(
                 Pools.pool1.poodId,
@@ -200,8 +198,6 @@ const Container = () => {
             console.log({ amountNumber })
             setUserAmount(amountNumber)
             const lastDeposit1Number = info?.lastDepositTimestamp?.toNumber()
-            // lastDepositTimestamp + (60 * 60 * 24 * 90) > unix time hien tai thi hien thi disable unstake va hien thi ra ngay` co the withdraw
-            // lastDepositTimestamp + (60 * 60 * 24 * 90) <= unix time hien tai thi enable cai unstake
             console.log({ lastDeposit1Number })
             setLockTimePool1(lastDeposit1Number)
         } catch (error) {
@@ -292,7 +288,7 @@ const Container = () => {
             return
         }
 
-        console.log('Check stakeTokenToPool poolId = ' + poolId)
+        // console.log('Check stakeTokenToPool poolId = ' + poolId)
 
         if (
             !masterChefContract ||
@@ -307,7 +303,7 @@ const Container = () => {
             return
         }
 
-        console.log('Check stakeTokenToPool amount = ' + amount)
+        // console.log('Check stakeTokenToPool amount = ' + amount)
 
         try {
             setLoading(true)
