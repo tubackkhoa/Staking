@@ -80,8 +80,6 @@ const ActionTypes = {
     Unstake: 'Unstake',
 }
 
-// lastDepositTimestamp + (60 * 60 * 24 * 90) > unix time hien tai thi hien thi disable unstake va hien thi ra ngay` co the withdraw
-// lastDepositTimestamp + (60 * 60 * 24 * 90) <= unix time hien tai thi enable cai unstake
 const calcTimeLockLeft = (time, hour = 48) => {
     const timeCanUnStake = time + 60 * 60 * hour
     const currentTimestamp = Date.now() / 1000
@@ -101,10 +99,6 @@ const Container = () => {
             },
         })
     }, [])
-
-    // masterchef.totalStakedHWL()
-    // lay ket qua cai nay truyen vao ham calculateHowlPoolAPR la co APR
-    // calculateHowlPoolAPR
 
     const connectWalletAndGetContract = () => {
         connectWallet(
@@ -354,90 +348,6 @@ const Container = () => {
         } finally {
             setLoading(false)
         }
-    }
-
-    const renderComingSoon = () => {
-        return (
-            <h1 className="flex text-white font-bold text-4xl text-center">
-                HOWL Staking Liquidity pool coming soon!
-            </h1>
-        )
-    }
-
-    const renderStakeRow = (item, index) => {
-        const {
-            key,
-            couple = [],
-            name = '',
-            earned = 0,
-            apr = 0,
-            liquidity = 0,
-            multiplier = 0,
-        } = item
-
-        if (!couple || !Array.isArray(couple) || couple.length < 2) return null
-
-        return (
-            <div
-                key={key}
-                className="flex flex-row items-center justify-between w-full h-20 border-b-0.5 border-Border-1 mb-2 px-9">
-                <div className="flex flex-row">
-                    {couple.map((item, index) => {
-                        const { id, icon } = item
-                        return (
-                            <img
-                                key={`couple-${id}`}
-                                className="flex w-7 h-7"
-                                src={icon}
-                            />
-                        )
-                    })}
-                    <p className="flex ml-4 text-Purple-2 text-base font-semibold">
-                        {name}
-                    </p>
-                </div>
-                <div className="flex flex-col">
-                    <p className="flex text-Purple-2 font-semibold text-base">
-                        {'Earned'}
-                    </p>
-                    <p className="flex text-base text-white mt-2">
-                        {`$${earned}`}
-                    </p>
-                </div>
-                {/* <div className="flex flex-col">
-                    <p className="flex text-Purple-2 font-semibold text-base">
-                        {'APR'}
-                    </p>
-                    <p className="flex text-base text-white mt-2">
-                        {`${apr}%`}
-                    </p>
-                </div> */}
-                {/* <div className="flex flex-col">
-                    <p className="flex text-Purple-2 font-semibold text-base">
-                        {'Liquidity'}
-                    </p>
-                    <p className="flex text-base text-white mt-2">
-                        {`$${liquidity}`}
-                    </p>
-                </div> */}
-                {/* <div className="flex flex-col">
-                    <p className="flex text-Purple-2 font-semibold text-base">
-                        {'Multiplier'}
-                    </p>
-                    <p className="flex text-base text-white mt-2">
-                        {`${multiplier}x`}
-                    </p>
-                </div> */}
-            </div>
-        )
-    }
-
-    const renderStakeCoupleList = () => {
-        return (
-            <div className="flex flex-1 mt-6 flex-col">
-                {stakeCouple.map(renderStakeRow)}
-            </div>
-        )
     }
 
     const PoolContainer = ({
