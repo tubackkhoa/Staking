@@ -590,9 +590,9 @@ const Container = () => {
                     <PoolContainer
                         couple={Pools.pool1.icons}
                         name={Pools.pool1.name}
-                        tokenStaked={userAmount}
+                        tokenStaked={parseFloat(userAmount).toFixed(2)}
                         tokenStakedName={Pools.pool1.tokenStakedName}
-                        tokenRewarded={userPendingAmount}
+                        tokenRewarded={[parseFloat(userPendingAmount).toFixed(2)]}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
@@ -602,9 +602,9 @@ const Container = () => {
                     <PoolContainer
                         couple={Pools.pool2.icons}
                         name={Pools.pool2.name}
-                        tokenStaked={userAmountPool2}
+                        tokenStaked={parseFloat(userAmountPool2).toFixed(2)}
                         tokenStakedName={Pools.pool2.tokenStakedName}
-                        tokenRewarded={userPendingAmountPool2}
+                        tokenRewarded={parseFloat(userPendingAmountPool2).toFixed(2)}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
