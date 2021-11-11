@@ -311,11 +311,15 @@ const Container = () => {
 
         try {
             setLoading(true)
-            const approve = await tokenContract?.approve(
-                masterChefContract?.address,
-                StakingContracts.unlimitedAllowance
-            )
-            await approve.wait()
+            const allowance = await tokenContract.allowance(await tokenContract.signer.getAddress(), masterChefAddress)
+
+            if (allowance.eq(ethers.BigNumber.from('0'))) {
+                const approve = await tokenContract?.approve(
+                    masterChefContract?.address,
+                    StakingContracts.unlimitedAllowance
+                )
+                await approve.wait()
+            }
             // deposit
             const deposit = await masterChefContract.deposit(
                 poolId,
