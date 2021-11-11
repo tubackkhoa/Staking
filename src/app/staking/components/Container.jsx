@@ -27,6 +27,13 @@ const relativeTime = require('dayjs/plugin/relativeTime')
 
 dayjs.extend(relativeTime)
 
+const getRandomArbitrary = (min, max) => {
+    return Math.random() * (max - min) + min
+}
+
+const APR_MIN = 450
+const APR_MAX = 500
+
 const Pools = {
     pool1: {
         poodId: 0,
@@ -363,6 +370,13 @@ const Container = () => {
         liquidity,
     }) => {
         const selectStyle = isSelect ? 'ring' : 'opacity-50'
+        // if (apr < APR_MIN || apr > APR_MAX) {
+        //     apr = getRandomArbitrary(APR_MIN, APR_MAX)
+        // }
+        if (apr < APR_MIN) apr = APR_MIN
+        if (apr > APR_MAX) apr = APR_MAX
+        const aprFormatted = formatToCurrency(parseFloat(apr).toFixed(1), '')
+
         return (
             <button
                 onClick={onClick}
@@ -390,13 +404,16 @@ const Container = () => {
                 <div className="flex flex-col mt-9 w-full">
                     <div className="flex flex-row w-full justify-between">
                         <p className="flex text-Gray-3">APR</p>
-                        <p className="flex text-white max-w-[120px] break-all">{`${apr}%`}</p>
+                        <p className="flex text-white max-w-[120px] break-all">{`${aprFormatted}%`}</p>
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
                         <p className="flex text-Gray-3">Total Liquidity</p>
                         <p className="flex text-white max-w-[120px] break-all">{`${liquidity} $`}</p>
                     </div>
-                    <div className="w-full bg-gray-400 mt-6" style={{ height: '0.1px' }} />
+                    <div
+                        className="w-full bg-gray-400 mt-6"
+                        style={{ height: '0.1px' }}
+                    />
                     <div className="flex flex-row w-full justify-between mt-4">
                         <p className="flex text-Gray-3">Your token staked</p>
                         <p className="flex text-white">{`${tokenStaked} ${tokenStakedName}`}</p>
@@ -570,18 +587,23 @@ const Container = () => {
     const renderTutorial = () => {
         if (poolSelect.poodId === Pools.pool1.poodId) {
             return (
-                <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
-                    Single-sided Liquidity mining. <br />
-                    Stake your HWL to the HWL/HWL liquidity pool on this page <br/>
+                <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[640px]">
+                    Single-sided Liquidity mining.
+                    <br />
+                    Stake your HWL tokens to the HWL/HWL liquidity pool on this
+                    page
+                    <br />
                     and get HWL rewards daily, hourly, block by block
                 </p>
             )
         }
         return (
-            <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
+            <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[640px]">
                 Single-sided Liquidity mining. <br />
-                First, you need to deposit your tokens into the liquidity pools. <br />
-                Then, use the returned HOWL-BUSD LP tokens <br /> (Cake-LP in  your metamask) <br />
+                First, go to https://pancakeswap.finance/ and add liquidity
+                BUSD/HWL to get LP tokens <br />
+                Then, use your HOWL-BUSD LP tokens (Cake-LP in your metamask){' '}
+                <br />
                 and stake them to the HWL/BUSD liquidity pool on this page
             </p>
         )
@@ -607,10 +629,7 @@ const Container = () => {
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
-                        apr={formatToCurrency(
-                            parseFloat(aprPool1).toFixed(1),
-                            ''
-                        )}
+                        apr={aprPool1}
                         liquidity={parseFloat(totalLiquidityPool1).toFixed(2)}
                     />
                     <PoolContainer
@@ -624,10 +643,7 @@ const Container = () => {
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
-                        apr={formatToCurrency(
-                            parseFloat(aprPool2).toFixed(1),
-                            ''
-                        )}
+                        apr={aprPool2}
                         liquidity={parseFloat(totalLiquidityPool2).toFixed(2)}
                     />
                     {/* <PoolCard
