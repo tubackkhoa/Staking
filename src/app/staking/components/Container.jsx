@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import { configs } from 'config/config'
 import { ethers } from 'ethers'
@@ -20,6 +21,11 @@ import { lang } from 'lang'
 import { checkNetworkAndRequest } from 'services'
 import PoolCard from './PoolCard'
 import { poolData } from 'services/poolData'
+import dayjs from 'dayjs'
+
+const relativeTime = require('dayjs/plugin/relativeTime')
+
+dayjs.extend(relativeTime)
 
 const Pools = {
     pool1: {
@@ -72,6 +78,14 @@ const stakeCouple = [
 const ActionTypes = {
     Stake: 'Stake',
     Unstake: 'Unstake',
+}
+
+// lastDepositTimestamp + (60 * 60 * 24 * 90) > unix time hien tai thi hien thi disable unstake va hien thi ra ngay` co the withdraw
+// lastDepositTimestamp + (60 * 60 * 24 * 90) <= unix time hien tai thi enable cai unstake
+const calcTimeLockLeft = (time, hour = 48) => {
+    const timeCanUnStake = time + 60 * 60 * hour
+    const currentTimestamp = Date.now() / 1000
+    return timeCanUnStake <= currentTimestamp
 }
 
 const Container = () => {
@@ -145,12 +159,16 @@ const Container = () => {
     const [amount, setAmount] = React.useState(0)
     const [loading, setLoading] = React.useState(false)
     const [isSigner, setSigner] = React.useState(true)
+
     const [userAmount, setUserAmount] = React.useState('0')
     const [userPendingAmount, setUserPendingAmount] = React.useState('0')
+    const [lockTimePool1, setLockTimePool1] = React.useState(null)
+
     const [userAmountPool2, setUserAmountPool2] = React.useState('0')
     const [userPendingAmountPool2, setUserPendingAmountPool2] =
         React.useState('0')
     const [userAddress, setUserAddress] = React.useState('')
+    const [lockTimePool2, setLockTimePool2] = React.useState(null)
 
     const [aprPool1, setAprPool1] = React.useState(0)
     const [totalLiquidityPool1, setLiquidityPool1] = React.useState(0)
@@ -180,6 +198,11 @@ const Container = () => {
             const amountNumber = ethers.utils.formatEther(info?.amount)
             console.log({ amountNumber })
             setUserAmount(amountNumber)
+            const lastDeposit1Number = info?.lastDepositTimestamp?.toNumber()
+            // lastDepositTimestamp + (60 * 60 * 24 * 90) > unix time hien tai thi hien thi disable unstake va hien thi ra ngay` co the withdraw
+            // lastDepositTimestamp + (60 * 60 * 24 * 90) <= unix time hien tai thi enable cai unstake
+            console.log({ lastDeposit1Number })
+            setLockTimePool1(lastDeposit1Number)
         } catch (error) {
             console.error(error)
         }
@@ -200,12 +223,25 @@ const Container = () => {
             const amountNumberPool2 = ethers.utils.formatEther(info?.amount)
             console.log({ amountNumberPool2 })
             setUserAmountPool2(amountNumberPool2)
+            const lastDeposit2Number = info?.lastDepositTimestamp?.toNumber()
+            console.log({ lastDeposit2Number })
+            setLockTimePool2(lastDeposit2Number)
         } catch (error) {
             console.error(error)
         }
 
-        const { howlPoolAPR, lpTokenPoolAPR, howlLiquidity, lpTokenPoolLiquidity } = await poolData()
-        console.log({ howlPoolAPR, lpTokenPoolAPR, howlLiquidity, lpTokenPoolLiquidity })
+        const {
+            howlPoolAPR,
+            lpTokenPoolAPR,
+            howlLiquidity,
+            lpTokenPoolLiquidity,
+        } = await poolData()
+        console.log({
+            howlPoolAPR,
+            lpTokenPoolAPR,
+            howlLiquidity,
+            lpTokenPoolLiquidity,
+        })
 
         setAprPool1(howlPoolAPR ?? 0)
         setAprPool2(lpTokenPoolAPR ?? 0)
@@ -414,7 +450,7 @@ const Container = () => {
         onClick,
         isSelect,
         apr,
-        liquidity
+        liquidity,
     }) => {
         const selectStyle = isSelect ? 'ring' : 'opacity-50'
         return (
@@ -483,8 +519,27 @@ const Container = () => {
         if (amountFloat < 1) {
             return
         }
+
+        const timeLock =
+            poolSelect.poodId === Pools.pool1.poodId
+                ? lockTimePool1
+                : lockTimePool2
+
+        const isEnableUnStake =
+            actionType === ActionTypes.Unstake
+                ? calcTimeLockLeft(timeLock, 48)
+                : true
+            
+        if(!isEnableUnStake){
+            toast.error('Your token is still locked in the pool, please wait for the token lock time to expire!')
+            return
+        }
+
         if (actionType === ActionTypes.Stake) {
-            const contractByPool = poolSelect.poodId === 0 ? StakingContracts.tokenContract : StakingContracts.busdHowlPoolContract
+            const contractByPool =
+                poolSelect.poodId === 0
+                    ? StakingContracts.tokenContract
+                    : StakingContracts.busdHowlPoolContract
             stakeTokenToPool(
                 StakingContracts.masterChefContract,
                 contractByPool,
@@ -555,10 +610,20 @@ const Container = () => {
         const isEnableStakeButton =
             parseFloat(`${amount}`.replaceAll(',', '')) > 1
 
-        const enableStyle = isEnableStakeButton ? 'bg-Blue-2' : 'bg-Gray-2'
+        const timeLock =
+            poolSelect.poodId === Pools.pool1.poodId
+                ? lockTimePool1
+                : lockTimePool2
+
+        const isEnableUnStake =
+            actionType === ActionTypes.Unstake
+                ? calcTimeLockLeft(timeLock, 48)
+                : true
+        const enableStyle =
+            isEnableStakeButton && isEnableUnStake ? 'bg-Blue-2' : 'bg-Gray-2'
         return (
             <button
-                disabled={!isEnableStakeButton}
+                disabled={!isEnableStakeButton && !isEnableUnStake}
                 onClick={onClickStakeButton}
                 className={classNames(
                     'flex justify-center items-center mt-5 rounded-xl w-full h-12',
@@ -578,6 +643,17 @@ const Container = () => {
         )
     }
 
+    const WithdrawTimeLock = ({ isShow, timeStake, timeLockSecond }) => {
+        if (!isShow) return null
+        const timeUnLock = timeStake + timeLockSecond
+        const timeLockLeft = dayjs.unix(timeUnLock).fromNow()
+        return (
+            <div className="flex text-Gray-3 font-medium text-base mt-2.5">
+                {`Withdraw time lock: ${timeLockLeft}`}
+            </div>
+        )
+    }
+
     return (
         <>
             <div className="flex flex-1 p-4 sm:p-12 flex-col">
@@ -592,11 +668,16 @@ const Container = () => {
                         name={Pools.pool1.name}
                         tokenStaked={parseFloat(userAmount).toFixed(2)}
                         tokenStakedName={Pools.pool1.tokenStakedName}
-                        tokenRewarded={[parseFloat(userPendingAmount).toFixed(2)]}
+                        tokenRewarded={[
+                            parseFloat(userPendingAmount).toFixed(2),
+                        ]}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
-                        apr={formatToCurrency(parseFloat(aprPool1).toFixed(1), '')}
+                        apr={formatToCurrency(
+                            parseFloat(aprPool1).toFixed(1),
+                            ''
+                        )}
                         liquidity={parseFloat(totalLiquidityPool1).toFixed(2)}
                     />
                     <PoolContainer
@@ -604,11 +685,16 @@ const Container = () => {
                         name={Pools.pool2.name}
                         tokenStaked={parseFloat(userAmountPool2).toFixed(2)}
                         tokenStakedName={Pools.pool2.tokenStakedName}
-                        tokenRewarded={parseFloat(userPendingAmountPool2).toFixed(2)}
+                        tokenRewarded={parseFloat(
+                            userPendingAmountPool2
+                        ).toFixed(2)}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
-                        apr={formatToCurrency(parseFloat(aprPool2).toFixed(1), '')}
+                        apr={formatToCurrency(
+                            parseFloat(aprPool2).toFixed(1),
+                            ''
+                        )}
                         liquidity={parseFloat(totalLiquidityPool2).toFixed(2)}
                     />
                     {/* <PoolCard
@@ -684,6 +770,15 @@ const Container = () => {
                             />
                         </div>
                     </div>
+                    <WithdrawTimeLock
+                        isShow={actionType === ActionTypes.Unstake}
+                        timeStake={
+                            poolSelect.poodId === Pools.pool1.poodId
+                                ? lockTimePool1
+                                : lockTimePool2
+                        }
+                        timeLockSecond={48 * 60 * 60}
+                    />
                     {renderStakeButton()}
                 </div>
             </div>
