@@ -693,11 +693,11 @@ const Container = () => {
                         <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
                             <img
                                 className="flex w-7 h-7"
-                                src={icons.howl}
+                                src={poolSelect.poodId === Pools.pool1.poodId ? icons.howl : icons.busd}
                                 alt="icon-Input"
                             />
                             <p className="flex text-white text-xl font-semibold ml-2.5">
-                                {'HWL'}
+                                {'Token'}
                             </p>
                             <input
                                 placeholder={'0'}
