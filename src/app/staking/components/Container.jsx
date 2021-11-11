@@ -554,6 +554,8 @@ const Container = () => {
                 : true
         const enableStyle =
             isEnableStakeButton && isEnableUnStake ? 'bg-Blue-2' : 'bg-Gray-2'
+
+        const buttonTitle = actionType === ActionTypes.Stake ? 'Stake' : 'Unstake'
         return (
             <button
                 disabled={!isEnableStakeButton && !isEnableUnStake}
@@ -567,7 +569,7 @@ const Container = () => {
                         'flex text-base font-bold',
                         'text-white'
                     )}>
-                    {'Stake'}
+                    {buttonTitle}
                 </p>
                 {loading && (
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white ml-4" />
