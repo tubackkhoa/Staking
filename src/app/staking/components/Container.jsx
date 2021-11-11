@@ -422,7 +422,7 @@ const Container = () => {
                         <p className="flex text-white">{`${tokenStaked} ${tokenStakedName}`}</p>
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
-                        <p className="flex text-Gray-3">Your rewarded</p>
+                        <p className="flex text-Gray-3">Your pending</p>
                         <p className="flex text-white">{`${tokenRewarded} ${tokenRewardedName}`}</p>
                     </div>
                 </div>
