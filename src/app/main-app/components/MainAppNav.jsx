@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import React from 'react'
 import { useGlobal } from 'reactn'
@@ -61,24 +62,13 @@ const ConnectWalletButton = () => {
 const SearchBar = () => {
     return (
         <div
-            className="flex flex-row items-center h-10"
+            className="flex flex-row items-center h-10 ml-16 px-4 min-w-[332px] rounded-xl"
             style={{
                 backgroundColor: '#1B1A21',
-                borderRadius: 10,
-                minWidth: 332,
-                marginLeft: 72,
-                padding: '0px 16px 0px 16px',
             }}>
-            <img style={{ width: 24, height: 24 }} src={icons.search} />
+            <img className="flex w-6 h-6" src={icons.search} />
             <input
-                style={{
-                    display: 'flex',
-                    color: '#FFFFFF',
-                    backgroundColor: 'transparent',
-                    marginLeft: 10,
-                    outline: 'none',
-                    border: 'none',
-                }}
+                className="flex outline-none border-none ml-2.5 bg-transparent text-white"
                 placeholder={'Search Item'}
             />
         </div>
