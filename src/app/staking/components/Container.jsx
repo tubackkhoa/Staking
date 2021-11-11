@@ -486,12 +486,13 @@ const Container = () => {
                         <p className="flex text-Gray-3">Total Liquidity</p>
                         <p className="flex text-white max-w-[120px] break-all">{`${liquidity} $`}</p>
                     </div>
+                    <div className="w-full bg-gray-400 mt-6" style={{ height: '0.1px' }} />
                     <div className="flex flex-row w-full justify-between mt-4">
-                        <p className="flex text-Gray-3">Token staked</p>
+                        <p className="flex text-Gray-3">Your token staked</p>
                         <p className="flex text-white">{`${tokenStaked} ${tokenStakedName}`}</p>
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
-                        <p className="flex text-Gray-3">Token pending</p>
+                        <p className="flex text-Gray-3">Your rewarded</p>
                         <p className="flex text-white">{`${tokenRewarded} ${tokenRewardedName}`}</p>
                     </div>
                 </div>
