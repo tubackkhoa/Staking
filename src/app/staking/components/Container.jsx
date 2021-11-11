@@ -46,8 +46,8 @@ const Pools = {
         poodId: 1,
         name: 'BUSD/HOWL',
         icons: [icons.busd, icons.howl],
-        tokenStakedName: 'Token LPs',
-        tokenRewardedName: 'Token LPs',
+        tokenStakedName: 'LP Tokens',
+        tokenRewardedName: 'LP Tokens',
     },
 }
 
