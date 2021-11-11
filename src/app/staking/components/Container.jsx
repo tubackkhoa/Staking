@@ -80,7 +80,7 @@ const Container = () => {
             chainId: configs.Networks.BscMainnet.ChainId.hex,
             rpcUrl: configs.Networks.BscMainnet.RPCEndpoints,
             onSuccess: () => {
-                getData()
+                connectWalletAndGetContract()
             },
             onFailed: () => {
                 setSigner(false)
@@ -101,7 +101,7 @@ const Container = () => {
                 signer,
                 tokenContract,
             }) => {
-                console({
+                console.log({
                     masterChefContract,
                     userAddress,
                     busdHowlPoolContract,
@@ -178,6 +178,7 @@ const Container = () => {
             }
             // info = { amount: BigNumber, lastDepositTimestamp: BigNumber, rewardDebt: BigNumber, staked: boolean}
             const amountNumber = ethers.utils.formatEther(info?.amount)
+            console.log({ amountNumber })
             setUserAmount(amountNumber)
         } catch (error) {
             console.error(error)
@@ -197,6 +198,7 @@ const Container = () => {
             }
             // info = { amount: BigNumber, lastDepositTimestamp: BigNumber, rewardDebt: BigNumber, staked: boolean}
             const amountNumberPool2 = ethers.utils.formatEther(info?.amount)
+            console.log({ amountNumberPool2 })
             setUserAmountPool2(amountNumberPool2)
         } catch (error) {
             console.error(error)
@@ -216,9 +218,9 @@ const Container = () => {
                 Pools.pool1.poodId,
                 userAddress
             )
-            console.log({ pending })
+            // console.log({ pending })
             const pendingNumber = ethers.utils.formatEther(pending)
-            console.log({ pendingNumber })
+            // console.log({ pendingNumber })
             setUserPendingAmount(pendingNumber)
         } catch (error) {
             console.error(error)
@@ -230,9 +232,9 @@ const Container = () => {
                 Pools.pool2.poodId,
                 userAddress
             )
-            console.log({ pending })
+            // console.log({ pending })
             const pendingNumberPool2 = ethers.utils.formatEther(pending)
-            console.log({ pendingNumberPool2 })
+            // console.log({ pendingNumberPool2 })
             setUserPendingAmountPool2(pendingNumberPool2)
         } catch (error) {
             console.error(error)
@@ -243,15 +245,17 @@ const Container = () => {
         masterChefContract,
         tokenContract,
         poolId,
-        depositPrice,
+        amount,
         cbDone = () => undefined,
         cbError = () => undefined
     ) => {
-        if (isNaN(depositPrice)) {
+        if (isNaN(amount)) {
             setAmount(0)
             toast.warning('Invalid amount, please again!')
             return
         }
+
+        console.log('Check stakeTokenToPool poolId = ' + poolId)
 
         if (
             !masterChefContract ||
@@ -266,6 +270,8 @@ const Container = () => {
             return
         }
 
+        console.log('Check stakeTokenToPool amount = ' + amount)
+
         try {
             setLoading(true)
             const approve = await tokenContract?.approve(
@@ -276,7 +282,7 @@ const Container = () => {
             // deposit
             const deposit = await masterChefContract.deposit(
                 poolId,
-                ethers?.utils?.parseEther(`1000`)
+                ethers?.utils?.parseEther(`${amount}`)
             )
             await deposit.wait()
             cbDone && cbDone(deposit)
@@ -442,7 +448,7 @@ const Container = () => {
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
                         <p className="flex text-Gray-3">Total Liquidity</p>
-                        <p className="flex text-white max-w-[120px] break-all">{`${liquidity} ${tokenStakedName}`}</p>
+                        <p className="flex text-white max-w-[120px] break-all">{`${liquidity} $`}</p>
                     </div>
                     <div className="flex flex-row w-full justify-between mt-4">
                         <p className="flex text-Gray-3">Token staked</p>
@@ -478,9 +484,10 @@ const Container = () => {
             return
         }
         if (actionType === ActionTypes.Stake) {
+            const contractByPool = poolSelect.poodId === 0 ? StakingContracts.tokenContract : StakingContracts.busdHowlPoolContract
             stakeTokenToPool(
                 StakingContracts.masterChefContract,
-                StakingContracts.tokenContract,
+                contractByPool,
                 poolSelect.poodId,
                 amountFloat,
                 () => {
@@ -589,7 +596,7 @@ const Container = () => {
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
-                        apr={formatToCurrency(parseInt(aprPool1), '')}
+                        apr={formatToCurrency(parseFloat(aprPool1).toFixed(1), '')}
                         liquidity={parseFloat(totalLiquidityPool1).toFixed(2)}
                     />
                     <PoolContainer
@@ -601,7 +608,7 @@ const Container = () => {
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
-                        apr={formatToCurrency(parseInt(aprPool2), '')}
+                        apr={formatToCurrency(parseFloat(aprPool2).toFixed(1), '')}
                         liquidity={parseFloat(totalLiquidityPool2).toFixed(2)}
                     />
                     {/* <PoolCard
