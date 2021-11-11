@@ -18,6 +18,8 @@ import { ActivityIndicator, Loading } from 'app/components'
 import { toast } from 'react-toastify'
 import { lang } from 'lang'
 import { checkNetworkAndRequest } from 'services'
+import PoolCard from './PoolCard'
+import { poolData } from 'services/poolData'
 
 const Pools = {
     pool1: {
@@ -31,8 +33,8 @@ const Pools = {
         poodId: 1,
         name: 'BUSD/HOWL',
         icons: [icons.busd, icons.howl],
-        tokenStakedName: 'Cake LPs',
-        tokenRewardedName: 'Cake LPs',
+        tokenStakedName: 'Token LPs',
+        tokenRewardedName: 'Token LPs',
     },
 }
 
@@ -145,20 +147,29 @@ const Container = () => {
     const [isSigner, setSigner] = React.useState(true)
     const [userAmount, setUserAmount] = React.useState('0')
     const [userPendingAmount, setUserPendingAmount] = React.useState('0')
+    const [userAmountPool2, setUserAmountPool2] = React.useState('0')
+    const [userPendingAmountPool2, setUserPendingAmountPool2] =
+        React.useState('0')
+    const [userAddress, setUserAddress] = React.useState('')
 
-    const getUserTokenStaked = async (
-        masterChefContract,
-        userAddress,
-        poolId
-    ) => {
-        if (!userAddress || isNaN(poolId) || !masterChefContract) {
+    const [aprPool1, setAprPool1] = React.useState(0)
+    const [totalLiquidityPool1, setLiquidityPool1] = React.useState(0)
+
+    const [aprPool2, setAprPool2] = React.useState(0)
+    const [totalLiquidityPool2, setLiquidityPool2] = React.useState(0)
+
+    const getUserTokenStaked = async (masterChefContract, userAddress) => {
+        if (!userAddress || !masterChefContract) {
             setSigner(false)
             return
         }
 
-        // get amount token user staked
+        // get amount token user staked pool 1
         try {
-            const info = await masterChefContract?.userInfo(0, userAddress)
+            const info = await masterChefContract?.userInfo(
+                Pools.pool1.poodId,
+                userAddress
+            )
             console.log({ info })
             if (!info) {
                 console.error('Info undefined!')
@@ -172,19 +183,60 @@ const Container = () => {
             console.error(error)
         }
 
-        // get amount token user rewarded
-        // try {
-        //     const pending = await masterChefContract?.pendingHowl(
-        //         poolSelect?.poodId,
-        //         userAddress
-        //     )
-        //     console.log({ pending })
-        //     const pendingNumber = ethers.utils.formatEther(pending)
-        //     console.log({ pendingNumber })
-        //     setUserPendingAmount(pendingNumber)
-        // } catch (error) {
-        //     console.error(error)
-        // }
+        // get amount token user staked pool 2
+        try {
+            const info = await masterChefContract?.userInfo(
+                Pools.pool2.poodId,
+                userAddress
+            )
+            console.log({ info })
+            if (!info) {
+                console.error('Info undefined!')
+                setSigner(false)
+                return
+            }
+            // info = { amount: BigNumber, lastDepositTimestamp: BigNumber, rewardDebt: BigNumber, staked: boolean}
+            const amountNumberPool2 = ethers.utils.formatEther(info?.amount)
+            setUserAmountPool2(amountNumberPool2)
+        } catch (error) {
+            console.error(error)
+        }
+
+        const { howlPoolAPR, lpTokenPoolAPR, howlLiquidity, lpTokenPoolLiquidity } = await poolData()
+        console.log({ howlPoolAPR, lpTokenPoolAPR, howlLiquidity, lpTokenPoolLiquidity })
+
+        setAprPool1(howlPoolAPR ?? 0)
+        setAprPool2(lpTokenPoolAPR ?? 0)
+        setLiquidityPool1(howlLiquidity ?? 0)
+        setLiquidityPool2(lpTokenPoolLiquidity ?? 0)
+
+        // get amount token user rewarded pool 1
+        try {
+            const pending = await masterChefContract?.pendingHowl(
+                Pools.pool1.poodId,
+                userAddress
+            )
+            console.log({ pending })
+            const pendingNumber = ethers.utils.formatEther(pending)
+            console.log({ pendingNumber })
+            setUserPendingAmount(pendingNumber)
+        } catch (error) {
+            console.error(error)
+        }
+
+        // get amount token user rewarded pool 2
+        try {
+            const pending = await masterChefContract?.pendingHowl(
+                Pools.pool2.poodId,
+                userAddress
+            )
+            console.log({ pending })
+            const pendingNumberPool2 = ethers.utils.formatEther(pending)
+            console.log({ pendingNumberPool2 })
+            setUserPendingAmountPool2(pendingNumberPool2)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const stakeTokenToPool = async (
@@ -355,6 +407,8 @@ const Container = () => {
         tokenRewardedName,
         onClick,
         isSelect,
+        apr,
+        liquidity
     }) => {
         const selectStyle = isSelect ? 'ring' : 'opacity-50'
         return (
@@ -383,6 +437,14 @@ const Container = () => {
                 </div>
                 <div className="flex flex-col mt-9 w-full">
                     <div className="flex flex-row w-full justify-between">
+                        <p className="flex text-Gray-3">APR</p>
+                        <p className="flex text-white max-w-[120px] break-all">{`${apr}%`}</p>
+                    </div>
+                    <div className="flex flex-row w-full justify-between mt-4">
+                        <p className="flex text-Gray-3">Total Liquidity</p>
+                        <p className="flex text-white max-w-[120px] break-all">{`${liquidity} ${tokenStakedName}`}</p>
+                    </div>
+                    <div className="flex flex-row w-full justify-between mt-4">
                         <p className="flex text-Gray-3">Token staked</p>
                         <p className="flex text-white">{`${tokenStaked} ${tokenStakedName}`}</p>
                     </div>
@@ -521,23 +583,49 @@ const Container = () => {
                     <PoolContainer
                         couple={Pools.pool1.icons}
                         name={Pools.pool1.name}
-                        tokenStaked={formatToCurrency(userAmount, '')}
-                        tokenRewarded={parseFloat(userPendingAmount).toFixed(3)}
+                        tokenStaked={userAmount}
                         tokenStakedName={Pools.pool1.tokenStakedName}
+                        tokenRewarded={userPendingAmount}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
                         onClick={onClickHowlHowl}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
+                        apr={formatToCurrency(parseInt(aprPool1), '')}
+                        liquidity={parseFloat(totalLiquidityPool1).toFixed(2)}
                     />
                     <PoolContainer
                         couple={Pools.pool2.icons}
                         name={Pools.pool2.name}
-                        tokenStaked={formatToCurrency(userAmount, '')}
-                        tokenRewarded={formatToCurrency(0, '')}
+                        tokenStaked={userAmountPool2}
+                        tokenStakedName={Pools.pool2.tokenStakedName}
+                        tokenRewarded={userPendingAmountPool2}
+                        tokenRewardedName={Pools.pool2.tokenRewardedName}
+                        onClick={onClickBusdHowl}
+                        isSelect={poolSelect.poodId === Pools.pool2.poodId}
+                        apr={formatToCurrency(parseInt(aprPool2), '')}
+                        liquidity={parseFloat(totalLiquidityPool2).toFixed(2)}
+                    />
+                    {/* <PoolCard
+                        couple={Pools.pool1.icons}
+                        name={Pools.pool1.name}
+                        tokenStakedName={Pools.pool1.tokenStakedName}
+                        tokenRewardedName={Pools.pool1.tokenRewardedName}
+                        onClick={onClickHowlHowl}
+                        isSelect={poolSelect.poodId === Pools.pool1.poodId}
+                        masterChefContract={StakingContracts.masterChefContract}
+                        userAddress={StakingContracts.userAddress}
+                        poolId={Pools.pool1.poodId}
+                    />
+                    <PoolCard
+                        couple={Pools.pool2.icons}
+                        name={Pools.pool2.name}
                         tokenStakedName={Pools.pool2.tokenStakedName}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
                         onClick={onClickBusdHowl}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
-                    />
+                        masterChefContract={StakingContracts.masterChefContract}
+                        userAddress={StakingContracts.userAddress}
+                        poolId={Pools.pool2.poodId}
+                    /> */}
                 </div>
                 <div className="flex flex-col mt-12 self-center items-center">
                     <div className="flex flex-row w-[268px] h-10 bg-Gray-4 rounded-xl">
@@ -581,7 +669,7 @@ const Container = () => {
                                 className="flex w-full bg-transparent outline-none text-white text-right font-semibold text-2xl"
                                 value={formatToCurrency(amount, '')}
                                 onChange={onChangeAmount}
-                                onKeyPress={(event) => {
+                                onKeyPress={event => {
                                     if (event.key === 'Enter') {
                                         onClickStakeButton()
                                     }
