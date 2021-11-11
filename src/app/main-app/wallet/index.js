@@ -18,7 +18,6 @@ import MasterChefAbi from '../../../../artifacts/contracts/MasterChef.sol/Master
 import { configs } from 'config/config'
 
 const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEndpoints, cbError) => {
-    console.log('Check in connectWallet network = ' + network);
     const web3Modal = new Web3Modal({
         network: network,
         cacheProvider: true,
@@ -27,7 +26,7 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
-    console.log({ signer })
+    // console.log({ signer })
 
     const userAddress = await signer.getAddress()
     const marketContract = new ethers.Contract(
@@ -60,8 +59,8 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
         MasterChefAbi?.abi,
         signer
     )
-    console.log({ masterChefContract })
-    console.log('Check address = ' + await masterChefContract.signer.getAddress())
+    // console.log({ masterChefContract })
+    // console.log('Check address = ' + await masterChefContract.signer.getAddress())
 
     const busdHowlPoolContract = new ethers.Contract(
         busdHowlPoolAddress,
