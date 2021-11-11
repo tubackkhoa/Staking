@@ -529,9 +529,11 @@ const Container = () => {
             actionType === ActionTypes.Unstake
                 ? calcTimeLockLeft(timeLock, 48)
                 : true
-            
-        if(!isEnableUnStake){
-            toast.error('Your token is still locked in the pool, please wait for the token lock time to expire!')
+
+        if (!isEnableUnStake) {
+            toast.error(
+                'Your token is still locked in the pool, please wait for the token lock time to expire!'
+            )
             return
         }
 
@@ -654,6 +656,26 @@ const Container = () => {
         )
     }
 
+    const renderTutorial = () => {
+        if (poolSelect.poodId === Pools.pool1.poodId) {
+            return (
+                <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
+                    Single-sided Liquidity mining. <br />
+                    Stake your HWL to the HWL/HWL liquidity pool on this page <br/>
+                    and get HWL rewards daily, hourly, block by block
+                </p>
+            )
+        }
+        return (
+            <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
+                Single-sided Liquidity mining. <br />
+                First, you need to deposit your tokens into the liquidity pools. <br />
+                Then, use the returned HOWL-BUSD LP tokens <br /> (Cake-LP in  your metamask) <br />
+                and stake them to the HWL/BUSD liquidity pool on this page
+            </p>
+        )
+    }
+
     return (
         <>
             <div className="flex flex-1 p-4 sm:p-12 flex-col">
@@ -739,13 +761,7 @@ const Container = () => {
                             }
                         />
                     </div>
-                    <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[464px]">
-                        Single-sided Liquidity mining. <br />
-                        First, you need to deposit your tokens into the
-                        liquidity pools. <br />
-                        Then, use the returned HOWL-LP or BUSD-LP tokens and
-                        stake them to the HWL/BUSD liquidity pool on this page
-                    </p>
+                    {renderTutorial()}
                     <div className="flex flex-col mt-12">
                         <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
                             <img
