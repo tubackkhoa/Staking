@@ -369,13 +369,16 @@ const Container = () => {
         apr,
         liquidity,
     }) => {
-        const selectStyle = isSelect ? 'ring' : 'opacity-50'
+
         // if (apr < APR_MIN || apr > APR_MAX) {
         //     apr = getRandomArbitrary(APR_MIN, APR_MAX)
         // }
-        if (apr < APR_MIN) apr = APR_MIN
-        if (apr > APR_MAX) apr = APR_MAX
-        const aprFormatted = formatToCurrency(parseFloat(apr).toFixed(1), '')
+        let aprFormatted = formatToCurrency(parseFloat(apr).toFixed(1), '')
+        if (apr > APR_MAX) {
+            aprFormatted = '500+ '
+        }
+        
+        const selectStyle = isSelect ? 'ring' : 'opacity-50'
 
         return (
             <button
