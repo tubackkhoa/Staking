@@ -578,7 +578,9 @@ const Container = () => {
 
     const WithdrawTimeLock = ({ isShow, timeStake, timeLockSecond }) => {
         if (!isShow) return null
-        const timeUnLock = timeStake + timeLockSecond
+        let timeUnLock = timeStake + timeLockSecond
+        const currentTimestamp = Date.now() / 1000
+        if(timeUnLock < currentTimestamp) return null;
         const timeLockLeft = dayjs.unix(timeUnLock).fromNow()
         return (
             <div className="flex text-Gray-3 font-medium text-base mt-2.5">

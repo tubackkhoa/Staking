@@ -173,7 +173,7 @@ const MainAppNav = ({ showSearchBar = false }) => {
                 {renderLogoAndName()}
                 {!!showSearchBar && <SearchBar />}
                 {renderRoutes()}
-                <ConnectWalletButton />
+                {/* <ConnectWalletButton /> */}
             </div>
         </nav>
     )
