@@ -3,7 +3,7 @@ const mainAppInitState = {
     nfts: [],
     activeSales: [],
     inactiveSales: [],
-    howlTokenBalance: 0,
+    dnftTokenBalance: 0,
     userPurchasedSales: [],
     userCreatedSales: [],
 }

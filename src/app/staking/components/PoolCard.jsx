@@ -54,7 +54,7 @@ const PoolCard = ({
 
         // get amount token user rewarded
         // try {
-        //     const pending = await masterChefContract?.pendingHowl(
+        //     const pending = await masterChefContract?.pendingDareNFT(
         //         poolSelect?.poodId,
         //         userAddress
         //     )
@@ -68,7 +68,7 @@ const PoolCard = ({
     }
 
     const selectStyle = isSelect ? 'ring' : 'opacity-50'
-    
+
     return (
         <button
             onClick={onClick}
@@ -81,7 +81,7 @@ const PoolCard = ({
                     <img
                         className="flex left-0 w-8 h-8"
                         src={couple[0]}
-                        alt="image-howl"
+                        alt="image-dnft"
                     />
                     <img
                         className="flex left-2 w-8 h-8"
@@ -122,10 +122,10 @@ PoolCard.propTypes = {
 
 PoolCard.defaultProps = {
     style: {},
-    couple: [icons.howl, icons.howl],
-    name: 'HWL',
-    tokenStakedName: 'HWL',
-    tokenRewardedName: 'HWL',
+    couple: [icons.dnft, icons.dnft],
+    name: 'DareNFT',
+    tokenStakedName: 'DNFT',
+    tokenRewardedName: 'DNFT',
     onClick: () => undefined,
     isSelect: false,
     masterChefContract: null,

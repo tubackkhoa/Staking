@@ -7,7 +7,7 @@ const twitter = '/assets/icons/twitter.svg'
 const telegram = '/assets/icons/telegram.svg'
 const discord = '/assets/icons/discord.svg'
 const busd = '/assets/icons/busd.svg'
-const howl = '/howl.png'
+const dnft = '/assets/icons/dnft.png'
 
 const metamask = '/assets/wallets/meta-mask.svg'
 const walletconnect = '/assets/wallets/walletconnect.svg'
@@ -24,5 +24,5 @@ export const icons = {
     metamask,
     walletconnect,
     busd,
-    howl,
+    dnft,
 }

@@ -1,10 +1,23 @@
+## Compile contract and test
+
+```bash
+yarn compile
+yarn test test/MasterChef.spec.js
+```
+
 ## Deploy contracts and auto-mint NFT on localhost
 
 ```bash
 npx hardhat node
 => start server, open another terminal
 
-sh deploy_local.sh
+npx hardhat run scripts/deploy-token.js --network localhost
+
+# mint token
+npx hardhat run scripts/mint-token.js  --network localhost
+
+# then deploy masterchef
+npx hardhat run scripts/deploy-masterchef.js --network localhost
 ```
 
 Deployed contract address in `deployed_address.json`
@@ -16,7 +29,7 @@ npx hardhat mint [--quantity 5] [--address 0xf39fd6e51aad88f6f4ce6ab8827279cfffb
 npx hardhat mint --quantity 5 --address 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
 ```
 
-##  
+##
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped
 with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).

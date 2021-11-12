@@ -1,9 +1,5 @@
 {
-  "marketAddress":"0xB49336deA09E146F91445673cac6447eC3976c89",
-  "tokenAddress":"0x549cc5df432cdbaebc8b9158a6bdfe1cbd0ba16d",
-  "busdHowlPoolAddress": "0x6D662dC7b435F07cc7ec12507F65AaB2d5b0d5d5",
-  "nftAddress":"0xbbD271DD4AE88c10D9d6f920a20dE55bEE406314",
-  "controllerAddress":"0x92d9261Bfa0259b6Ba249672d8687617ED687dd7",
-  "storeAddress":"0x5d0d69A5774b520c950F045010155c71Fa20a517",
-  "masterChefAddress":"0xC7e54C54Fab6c8026264c671b9504260bee71F87"
+    "tokenAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "busdDareNFTPoolAddress": "0x6D662dC7b435F07cc7ec12507F65AaB2d5b0d5d5",
+    "masterChefAddress": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
 }

@@ -7,17 +7,18 @@ import {
     tokenAddress,
     storeAddress,
     masterChefAddress,
-    busdHowlPoolAddress,
+    busdDareNFTPoolAddress,
 } from '../../../../deployed_address.json'
 
-import Marketplace from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
-import GameItem from '../../../../artifacts/contracts/GameItem.sol/GameItem.json'
-import HowlToken from '../../../../artifacts/contracts/HowlToken.sol/HOWL.json'
-import Store from '../../../../artifacts/contracts/Store.sol/Store.json'
+import DareNFTToken from '../../../../artifacts/contracts/DNFT.sol/DNFT.json'
 import MasterChefAbi from '../../../../artifacts/contracts/MasterChef.sol/MasterChef.json'
 import { configs } from 'config/config'
 
-const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEndpoints, cbError) => {
+const connectWallet = async (
+    cbDone,
+    network = configs.Networks.BscTestnet.RPCEndpoints,
+    cbError
+) => {
     const web3Modal = new Web3Modal({
         network: network,
         cacheProvider: true,
@@ -29,28 +30,10 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
     // console.log({ signer })
 
     const userAddress = await signer.getAddress()
-    const marketContract = new ethers.Contract(
-        marketAddress,
-        Marketplace.abi,
-        signer
-    )
 
-    const gameItemContract = new ethers.Contract(
-        nftAddress,
-        GameItem.abi,
-        signer
-    )
-    // console.log({ gameItemContract })
-
-    const howlTokenContract = new ethers.Contract(
+    const dnftTokenContract = new ethers.Contract(
         tokenAddress,
-        HowlToken?.abi,
-        signer
-    )
-
-    const storeContract = new ethers.Contract(
-        storeAddress,
-        Store.abi,
+        DareNFTToken?.abi,
         signer
     )
 
@@ -62,22 +45,26 @@ const connectWallet = async (cbDone, network = configs.Networks.BscTestnet.RPCEn
     // console.log({ masterChefContract })
     // console.log('Check address = ' + await masterChefContract.signer.getAddress())
 
-    const busdHowlPoolContract = new ethers.Contract(
-        busdHowlPoolAddress,
-        HowlToken?.abi,
+    const busdDareNFTPoolContract = new ethers.Contract(
+        busdDareNFTPoolAddress,
+        DareNFTToken?.abi,
         signer
     )
 
-    cbDone && cbDone({ masterChefContract, userAddress, busdHowlPoolContract, signer, tokenContract: howlTokenContract })
+    cbDone &&
+        cbDone({
+            masterChefContract,
+            userAddress,
+            busdDareNFTPoolContract,
+            signer,
+            tokenContract: dnftTokenContract,
+        })
 
-    return { 
-        marketplaceContract: marketContract, 
-        gameItemContract, 
-        signer, 
-        howlTokenContract,
-        storeContract,
+    return {
+        signer,
+        dnftTokenContract,
         masterChefContract,
-        busdHowlPoolContract,
+        busdDareNFTPoolContract,
         provider,
         userAddress,
     }

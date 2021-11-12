@@ -1,36 +1,25 @@
-//import ethers from 'ethers'
-//import axios from 'axios'
-//
-//import tokenAbi from '../../artifacts/contracts/HOWL.sol/HOWL.json'
-//import { masterChefAddress } from '../../deployed_address.json'
-//import configs from '../config/config.js'
-
 const ethers = require('ethers')
 const axios = require('axios')
 
-const tokenAbi = require('../../artifacts/contracts/HOWL.sol/HOWL.json')
+const tokenAbi = require('../../artifacts/contracts/DNFT.sol/DNFT.json')
 const masterChefAbi = require('../../artifacts/contracts/MasterChef.sol/MasterChef.json')
-const { tokenAddress, masterChefAddress } = require('../../deployed_address.json')
+const {
+    tokenAddress,
+    masterChefAddress,
+} = require('../../deployed_address.json')
 
-const NUM_HWL_PER_POOL = 3000019.68
-const lpAddress = '0x6d662dc7b435f07cc7ec12507f65aab2d5b0d5d5' 
+const NUM_DNFT_PER_POOL = 3000019.68
+const lpAddress = '0x6d662dc7b435f07cc7ec12507f65aab2d5b0d5d5'
 const busdAddress = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
 
 const provider = new ethers.providers.JsonRpcProvider(
     'https://bsc-dataseed.binance.org/'
 )
 
-const lpToken = new ethers.Contract(
-    lpAddress,
-    tokenAbi.abi,
-    provider
-)
+// from const
+const lpToken = new ethers.Contract(lpAddress, tokenAbi.abi, provider)
 
-const busdToken = new ethers.Contract(
-    busdAddress,
-    tokenAbi.abi,
-    provider
-)
+const busdToken = new ethers.Contract(busdAddress, tokenAbi.abi, provider)
 
 const masterChef = new ethers.Contract(
     masterChefAddress,
@@ -38,36 +27,32 @@ const masterChef = new ethers.Contract(
     provider
 )
 
-const howl = new ethers.Contract(
-    tokenAddress,
-    tokenAbi.abi,
-    provider
-)
+const dnft = new ethers.Contract(tokenAddress, tokenAbi.abi, provider)
 
-const getLpTokenPoolAPR = async (howlPrice, liquidity) => {
-    const totalValueHwlToken = NUM_HWL_PER_POOL * howlPrice
-    
-    return (totalValueHwlToken / liquidity) * 100
+const getLpTokenPoolAPR = async (dnftPrice, liquidity) => {
+    const totalValueDfntToken = NUM_DNFT_PER_POOL * dnftPrice
+
+    return (totalValueDfntToken / liquidity) * 100
 }
 
-const getStakedHWL = async () => {
-    let numStakedHwl = await masterChef.totalStakedHWL()
-    numStakedHwl = parseFloat(ethers.utils.formatEther(numStakedHwl))
-    return numStakedHwl
+const getStakedDNFT = async () => {
+    let numStakedDfnt = await masterChef.totalStakedDNFT()
+    numStakedDfnt = parseFloat(ethers.utils.formatEther(numStakedDfnt))
+    return numStakedDfnt
 }
 
-const getHowlPoolAPR = async (numStakedHwl) => {
-    return (NUM_HWL_PER_POOL / numStakedHwl) * 100
+const getDareNFTPoolAPR = async numStakedDfnt => {
+    return (NUM_DNFT_PER_POOL / numStakedDfnt) * 100
 }
 
-const getHWLPrice = async () => {
+const getDNFTPrice = async () => {
     const res = await axios({
         method: 'get',
         url: 'https://api.pancakeswap.info/api/v2/tokens/0x549cc5df432cdbaebc8b9158a6bdfe1cbd0ba16d',
     })
 
     let price = res.data.data.price
-    price = '0.' + price.substr(20,)
+    price = '0.' + price.substr(20)
     price = parseFloat(price)
 
     return price
@@ -92,38 +77,41 @@ const getLpStakedBUSD = async () => {
     return numStaked
 }
 
-const getLpStakedHWL = async () => {
-    let numStaked = await howl.balanceOf(lpAddress)
+const getLpStakedDNFT = async () => {
+    let numStaked = await dnft.balanceOf(lpAddress)
     numStaked = parseFloat(ethers.utils.formatEther(numStaked))
 
     return numStaked
 }
 
-const getLpLiquidity = async (howlPrice) => {
+const getLpLiquidity = async dnftPrice => {
     const numBUSD = await getLpStakedBUSD()
-    const numHWL = await getLpStakedHWL()
+    const numDNFT = await getLpStakedDNFT()
 
-    return numHWL * howlPrice + numBUSD * 1
+    return numDNFT * dnftPrice + numBUSD * 1
 }
 
-const getLpTokenPrice = async (howlPrice) => {
-    const liquidity = await getLpLiquidity(howlPrice)
+const getLpTokenPrice = async dnftPrice => {
+    const liquidity = await getLpLiquidity(dnftPrice)
     const lpTokenSupply = await getTotalLpToken()
 
     return liquidity / lpTokenSupply
 }
 
 export const poolData = async () => {
-    const howlPrice = await getHWLPrice()
-    const lpTokenPrice = await getLpTokenPrice(howlPrice)
+    const dnftPrice = await getDNFTPrice()
+    const lpTokenPrice = await getLpTokenPrice(dnftPrice)
 
-    const numStakedHWL = await getStakedHWL()
-    const howlLiquidity = howlPrice * numStakedHWL
-    const howlPoolAPR = await getHowlPoolAPR(numStakedHWL)
+    const numStakedDNFT = await getStakedDNFT()
+    const dnftLiquidity = dnftPrice * numStakedDNFT
+    const dnftPoolAPR = await getDareNFTPoolAPR(numStakedDNFT)
 
     const numStakedLpToken = await getStakedLpToken()
     const lpTokenPoolLiquidity = lpTokenPrice * numStakedLpToken
-    const lpTokenPoolAPR = await getLpTokenPoolAPR(howlPrice, lpTokenPoolLiquidity)
+    const lpTokenPoolAPR = await getLpTokenPoolAPR(
+        dnftPrice,
+        lpTokenPoolLiquidity
+    )
 
-    return { howlPoolAPR, lpTokenPoolAPR, howlLiquidity, lpTokenPoolLiquidity }
+    return { dnftPoolAPR, lpTokenPoolAPR, dnftLiquidity, lpTokenPoolLiquidity }
 }

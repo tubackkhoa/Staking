@@ -23,7 +23,7 @@ const NftStoreCard = ({
         id: '',
         title: '',
         image: '',
-        tokenCode: 'HWL',
+        tokenCode: 'DNFT',
         star: 3,
     })
 
@@ -41,13 +41,13 @@ const NftStoreCard = ({
         return null
     }
     // console.log('Check price = ', price)
-    const priceInHwl = ethers?.utils?.formatEther(price) || ''
+    const priceInDfnt = ethers?.utils?.formatEther(price) || ''
 
     const renderPrice = () => {
         if (!showPrice) return null
         return (
             <div className="flex flex-row items-center w-full mt-1">
-                <div className="flex text-white Price">{priceInHwl}</div>
+                <div className="flex text-white Price">{priceInDfnt}</div>
                 <div className="flex text-white mx-2 TokenCode">
                     {attributes?.tokenCode}
                 </div>
@@ -93,9 +93,7 @@ const NftStoreCard = ({
                 )}
             </div>
             <div className="flex flex-col items-left w-full mt-2 px-3 py-4">
-                <div className="text-white text-left text-base">
-                    {name}
-                </div>
+                <div className="text-white text-left text-base">{name}</div>
                 {renderPrice()}
                 <div className="flex flex-row items-center justify-between mt-2">
                     <RatingView numberStar={attributes?.star} />
@@ -129,7 +127,7 @@ NftStoreCard.defaultProps = {
     onClick: () => undefined,
     showPrice: true,
     nftImageUri: '',
-    name: 'Howlcity motorbike xxx'
+    name: 'DareNFTcity motorbike xxx',
 }
 
 export default NftStoreCard

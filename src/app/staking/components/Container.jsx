@@ -3,13 +3,7 @@
 import { configs } from 'config/config'
 import { ethers } from 'ethers'
 import React from 'react'
-import {
-    marketAddress,
-    nftAddress,
-    storeAddress,
-    masterChefAddress,
-} from '../../../../deployed_address.json'
-import MarketplaceAbi from '../../../../artifacts/contracts/Marketplace.sol/Marketplace.json'
+import { masterChefAddress } from '../../../../deployed_address.json'
 import MasterChefAbi from '../../../../artifacts/contracts/MasterChef.sol/MasterChef.json'
 import { icons } from 'assets'
 import connectWallet from 'app/main-app/wallet'
@@ -37,15 +31,15 @@ const APR_MAX = 500
 const Pools = {
     pool1: {
         poodId: 0,
-        name: 'HOWL/HOWL',
-        icons: [icons.howl, icons.howl],
-        tokenStakedName: 'HWL',
-        tokenRewardedName: 'HWL',
+        name: 'DareNFT/DareNFT',
+        icons: [icons.dnft, icons.dnft],
+        tokenStakedName: 'DNFT',
+        tokenRewardedName: 'DNFT',
     },
     pool2: {
         poodId: 1,
-        name: 'BUSD/HOWL',
-        icons: [icons.busd, icons.howl],
+        name: 'BUSD/DareNFT',
+        icons: [icons.busd, icons.dnft],
         tokenStakedName: 'LP Tokens',
         tokenRewardedName: 'LP Tokens',
     },
@@ -55,7 +49,7 @@ const StakingContracts = {
     unlimitedAllowance: configs.unlimitedAllowance,
     tokenContract: null,
     masterChefContract: null,
-    busdHowlPoolContract: null,
+    busdDareNFTPoolContract: null,
     signer: null,
     userAddress: null,
 }
@@ -63,18 +57,18 @@ const StakingContracts = {
 const stakeCouple = [
     {
         id: 0,
-        key: 'hwl-busd-0',
+        key: 'dnft-busd-0',
         couple: [
             {
                 id: 0,
-                icon: icons.howl,
+                icon: icons.dnft,
             },
             {
                 id: 1,
                 icon: icons.busd,
             },
         ],
-        name: 'HWL-USDB',
+        name: 'DNFT-USDB',
         earned: 0,
         apr: 42.14,
         liquidity: 594406633, // 594,406,633
@@ -96,8 +90,8 @@ const calcTimeLockLeft = (time, hour = 48) => {
 const Container = () => {
     React.useEffect(() => {
         checkNetworkAndRequest({
-            chainId: configs.Networks.BscMainnet.ChainId.hex,
-            rpcUrl: configs.Networks.BscMainnet.RPCEndpoints,
+            chainId: configs.Networks.Default.ChainId.hex,
+            rpcUrl: configs.Networks.Default.RPCEndpoints,
             onSuccess: () => {
                 connectWalletAndGetContract()
             },
@@ -112,26 +106,27 @@ const Container = () => {
             ({
                 masterChefContract,
                 userAddress,
-                busdHowlPoolContract,
+                busdDareNFTPoolContract,
                 signer,
                 tokenContract,
             }) => {
                 console.log({
                     masterChefContract,
                     userAddress,
-                    busdHowlPoolContract,
+                    busdDareNFTPoolContract,
                     signer,
                     tokenContract,
                 })
                 StakingContracts.masterChefContract = masterChefContract
                 StakingContracts.userAddress = userAddress
-                StakingContracts.busdHowlPoolContract = busdHowlPoolContract
+                StakingContracts.busdDareNFTPoolContract =
+                    busdDareNFTPoolContract
                 StakingContracts.signer = signer
                 StakingContracts.tokenContract = tokenContract
                 getData()
             }
         ),
-            configs.Networks.BscMainnet.RPCEndpoints
+            configs.Networks.Default.RPCEndpoints
     }
 
     const getData = () => {
@@ -145,7 +140,7 @@ const Container = () => {
                     userAddress,
                     poolSelect?.poodId
                 )
-            }, configs.Networks.BscMainnet.RPCEndpoints)
+            }, configs.Networks.Default.RPCEndpoints)
         } else {
             getUserTokenStaked(
                 StakingContracts.masterChefContract,
@@ -228,26 +223,26 @@ const Container = () => {
         }
 
         const {
-            howlPoolAPR,
+            dareNFTPoolAPR,
             lpTokenPoolAPR,
-            howlLiquidity,
+            dareNFTLiquidity,
             lpTokenPoolLiquidity,
         } = await poolData()
         console.log({
-            howlPoolAPR,
+            dareNFTPoolAPR,
             lpTokenPoolAPR,
-            howlLiquidity,
+            dareNFTLiquidity,
             lpTokenPoolLiquidity,
         })
 
-        setAprPool1(howlPoolAPR ?? 0)
+        setAprPool1(dareNFTPoolAPR ?? 0)
         setAprPool2(lpTokenPoolAPR ?? 0)
-        setLiquidityPool1(howlLiquidity ?? 0)
+        setLiquidityPool1(dareNFTLiquidity ?? 0)
         setLiquidityPool2(lpTokenPoolLiquidity ?? 0)
 
         // get amount token user rewarded pool 1
         try {
-            const pending = await masterChefContract?.pendingHowl(
+            const pending = await masterChefContract?.pendingDareNFT(
                 Pools.pool1.poodId,
                 userAddress
             )
@@ -261,7 +256,7 @@ const Container = () => {
 
         // get amount token user rewarded pool 2
         try {
-            const pending = await masterChefContract?.pendingHowl(
+            const pending = await masterChefContract?.pendingDareNFT(
                 Pools.pool2.poodId,
                 userAddress
             )
@@ -307,7 +302,10 @@ const Container = () => {
 
         try {
             setLoading(true)
-            const allowance = await tokenContract.allowance(await tokenContract.signer.getAddress(), masterChefAddress)
+            const allowance = await tokenContract.allowance(
+                await tokenContract.signer.getAddress(),
+                masterChefAddress
+            )
 
             if (allowance.eq(ethers.BigNumber.from('0'))) {
                 const approve = await tokenContract?.approve(
@@ -369,7 +367,6 @@ const Container = () => {
         apr,
         liquidity,
     }) => {
-
         // if (apr < APR_MIN || apr > APR_MAX) {
         //     apr = getRandomArbitrary(APR_MIN, APR_MAX)
         // }
@@ -377,7 +374,7 @@ const Container = () => {
         if (apr > APR_MAX) {
             aprFormatted = '500+ '
         }
-        
+
         const selectStyle = isSelect ? 'ring' : 'opacity-50'
 
         return (
@@ -392,7 +389,7 @@ const Container = () => {
                         <img
                             className="flex left-0 w-8 h-8"
                             src={couple[0]}
-                            alt="image-howl"
+                            alt="image-dnft"
                         />
                         <img
                             className="flex left-2 w-8 h-8"
@@ -430,12 +427,12 @@ const Container = () => {
         )
     }
 
-    const onClickHowlHowl = () => {
+    const onClickDareNFTDareNFT = () => {
         if (loading) return
         setPoolSelect(Pools.pool1)
     }
 
-    const onClickBusdHowl = () => {
+    const onClickBusdDareNFT = () => {
         if (loading) return
         setPoolSelect(Pools.pool2)
     }
@@ -472,7 +469,7 @@ const Container = () => {
             const contractByPool =
                 poolSelect.poodId === 0
                     ? StakingContracts.tokenContract
-                    : StakingContracts.busdHowlPoolContract
+                    : StakingContracts.busdDareNFTPoolContract
             stakeTokenToPool(
                 StakingContracts.masterChefContract,
                 contractByPool,
@@ -555,7 +552,8 @@ const Container = () => {
         const enableStyle =
             isEnableStakeButton && isEnableUnStake ? 'bg-Blue-2' : 'bg-Gray-2'
 
-        const buttonTitle = actionType === ActionTypes.Stake ? 'Stake' : 'Unstake'
+        const buttonTitle =
+            actionType === ActionTypes.Stake ? 'Stake' : 'Unstake'
         return (
             <button
                 disabled={!isEnableStakeButton && !isEnableUnStake}
@@ -582,7 +580,7 @@ const Container = () => {
         if (!isShow) return null
         let timeUnLock = timeStake + timeLockSecond
         const currentTimestamp = Date.now() / 1000
-        if(timeUnLock < currentTimestamp) return null;
+        if (timeUnLock < currentTimestamp) return null
         const timeLockLeft = dayjs.unix(timeUnLock).fromNow()
         return (
             <div className="flex text-Gray-3 font-medium text-base mt-2.5">
@@ -597,10 +595,10 @@ const Container = () => {
                 <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[640px]">
                     Single-sided Liquidity mining.
                     <br />
-                    Stake your HWL tokens to the HWL/HWL liquidity pool on this
-                    page
+                    Stake your DNFT tokens to the DNFT/DNFT liquidity pool on
+                    this page
                     <br />
-                    and get HWL rewards daily, hourly, block by block
+                    and get DNFT rewards daily, hourly, block by block
                 </p>
             )
         }
@@ -608,10 +606,10 @@ const Container = () => {
             <p className="flex text-Gray-5 font-base mt-12 text-center max-w-2xl sm:max-w-[640px]">
                 Single-sided Liquidity mining. <br />
                 First, go to https://pancakeswap.finance/ and add liquidity
-                BUSD/HWL to get LP tokens <br />
-                Then, use your HOWL-BUSD LP tokens (Cake-LP in your metamask){' '}
+                BUSD/DNFT to get LP tokens <br />
+                Then, use your DNFT-BUSD LP tokens (Cake-LP in your metamask){' '}
                 <br />
-                and stake them to the HWL/BUSD liquidity pool on this page
+                and stake them to the DNFT/BUSD liquidity pool on this page
             </p>
         )
     }
@@ -634,7 +632,7 @@ const Container = () => {
                             parseFloat(userPendingAmount).toFixed(2),
                         ]}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
-                        onClick={onClickHowlHowl}
+                        onClick={onClickDareNFTDareNFT}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
                         apr={aprPool1}
                         liquidity={parseFloat(totalLiquidityPool1).toFixed(2)}
@@ -648,7 +646,7 @@ const Container = () => {
                             userPendingAmountPool2
                         ).toFixed(2)}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
-                        onClick={onClickBusdHowl}
+                        onClick={onClickBusdDareNFT}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
                         apr={aprPool2}
                         liquidity={parseFloat(totalLiquidityPool2).toFixed(2)}
@@ -658,7 +656,7 @@ const Container = () => {
                         name={Pools.pool1.name}
                         tokenStakedName={Pools.pool1.tokenStakedName}
                         tokenRewardedName={Pools.pool1.tokenRewardedName}
-                        onClick={onClickHowlHowl}
+                        onClick={onClickDareNFTDareNFT}
                         isSelect={poolSelect.poodId === Pools.pool1.poodId}
                         masterChefContract={StakingContracts.masterChefContract}
                         userAddress={StakingContracts.userAddress}
@@ -669,7 +667,7 @@ const Container = () => {
                         name={Pools.pool2.name}
                         tokenStakedName={Pools.pool2.tokenStakedName}
                         tokenRewardedName={Pools.pool2.tokenRewardedName}
-                        onClick={onClickBusdHowl}
+                        onClick={onClickBusdDareNFT}
                         isSelect={poolSelect.poodId === Pools.pool2.poodId}
                         masterChefContract={StakingContracts.masterChefContract}
                         userAddress={StakingContracts.userAddress}
@@ -700,7 +698,11 @@ const Container = () => {
                         <div className="flex rounded-xl border border-Gray-4 bg-transparent w-full sm:w-[464px] outline-none h-14 flex-row items-center px-5">
                             <img
                                 className="flex w-7 h-7"
-                                src={poolSelect.poodId === Pools.pool1.poodId ? icons.howl : icons.busd}
+                                src={
+                                    poolSelect.poodId === Pools.pool1.poodId
+                                        ? icons.dnft
+                                        : icons.busd
+                                }
                                 alt="icon-Input"
                             />
                             <p className="flex text-white text-xl font-semibold ml-2.5">

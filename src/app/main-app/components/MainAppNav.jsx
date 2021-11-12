@@ -27,22 +27,13 @@ const ConnectWalletButton = () => {
             console.log('connectWallet failed!')
             return
         }
-        const {
-            marketplaceContract,
-            gameItemContract,
-            signer,
-            howlTokenContract,
-        } = wallet
+        const { signer, dnftTokenContract } = wallet
 
         setWalletInfo({
-            marketplaceContract,
-            gameItemContract,
             signer,
-            howlTokenContract,
+            dnftTokenContract,
         })
     }
-
-    if (walletInfo?.marketplaceContract) return null
 
     return (
         <>
@@ -87,22 +78,6 @@ const MainAppNav = ({ showSearchBar = false }) => {
             },
         },
         {
-            id: 'Store',
-            title: 'Store',
-            route: routes.storePage,
-            onClick: () => {
-                route.push(routes.storePage)
-            },
-        },
-        {
-            id: 'myAssets',
-            title: 'My assets',
-            route: routes.myAssets,
-            onClick: () => {
-                route.push(routes.myAssets)
-            },
-        },
-        {
             id: 'Staking',
             title: 'Staking',
             route: routes.staking,
@@ -110,22 +85,6 @@ const MainAppNav = ({ showSearchBar = false }) => {
                 route.push(routes.staking)
             },
         },
-        // {
-        //     id: 'lending',
-        //     title: 'Lend',
-        //     route: routes.lending,
-        //     onClick: () => {
-        //         route.push(routes.lending)
-        //     },
-        // },
-        // {
-        //     id: 'Borrow',
-        //     title: 'Borrow',
-        //     route: routes.borrow,
-        //     onClick: () => {
-        //         route.push(routes.borrow)
-        //     },
-        // },
     ]
 
     const renderRoutes = () => {
@@ -157,11 +116,11 @@ const MainAppNav = ({ showSearchBar = false }) => {
             <Link href="/" passHref={true}>
                 <div className="flex flex-wrap items-center text-white text-xl sm:text-3xl font-semibold">
                     <img
-                        src="/howl.png"
-                        alt="HowlCity"
+                        src="https://darenft.com/img/logo-web.webp"
+                        style={{ width: '100%' }}
+                        alt="Dare NFT"
                         className="flex h-12 w-12"
                     />
-                    <span className="ml-4">{'HowlCity'}</span>
                 </div>
             </Link>
         )

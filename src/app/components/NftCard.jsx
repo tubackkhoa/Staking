@@ -24,7 +24,7 @@ const NftCard = ({
         title: '',
         image: '',
         like: 99,
-        tokenCode: 'HWL',
+        tokenCode: 'DNFT',
         star: 3,
     })
 
@@ -59,13 +59,13 @@ const NftCard = ({
         return null
     }
     // console.log('Check price = ', price)
-    const priceInHwl = ethers.utils.formatEther(price) || ''
+    const priceInDfnt = ethers.utils.formatEther(price) || ''
 
     const renderPrice = () => {
         if (!showPrice) return null
         return (
             <div className="flex flex-row items-center w-full mt-1">
-                <div className="flex text-white Price">{priceInHwl}</div>
+                <div className="flex text-white Price">{priceInDfnt}</div>
                 <div className="flex text-white mx-2 TokenCode">
                     {attributes?.tokenCode}
                 </div>
@@ -81,8 +81,6 @@ const NftCard = ({
     const hoverTransition = 'transition ease-in-out'
     const hoverScale = 'hover:scale-105'
     const hoverAnim = 'duration-500 transform hover:-translate-y-2'
-
-
 
     const renderImage = () => {
         if (!itemInfo?.image) return null
@@ -167,4 +165,4 @@ NftCard.defaultProps = {
     showPrice: true,
 }
 
-export default NftCard;
+export default NftCard
